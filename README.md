@@ -1,11 +1,11 @@
 <div style="display: flex; align-items: center; justify-content: center; gap: 1rem;">
-<div style="display: flex; align-items: center; justify-content: center; gap: 1rem; flex-direction: row;">
+<div>
 <a href="https://migliacci.fr/">
 <img alt="Portfolio" src="https://img.shields.io/website?style=for-the-badge&url=https%3A%2F%2Fmigliacci.fr%2F"/>
 </a>
 </div>
 <div>
-<img align="right" src="https://github-readme-stats.vercel.app/api?username=geofmigliacci&show_icons=true&icon_color=57606aff&text_color=57606a&bg_color=00000000&hide_title=true&hide_border=true" />
+<img src="https://github-readme-stats.vercel.app/api?username=geofmigliacci&show_icons=true&icon_color=57606aff&text_color=57606a&bg_color=00000000&hide_title=true&hide_border=true" />
 </div>
 </div>
 
