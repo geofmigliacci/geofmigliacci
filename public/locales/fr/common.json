@@ -1,0 +1,14 @@
+{
+    "tooltips": {
+        "home": "Accueil",
+        "profile": "Profil",
+        "projects": "Projets"
+    },
+    "home": {
+        "description": "Un développeur fullstack avec 4 ans d'expérience, passionné par les nouvelles technologies, les frameworks et la guitare."
+    },
+    "404": {
+        "title": "Vous avez trouvé un endroit secret.",
+        "description": "Malheureusement, il s'agit uniquement d'une page 404. Vous avez peut-être fait une erreur de frappe dans l'adresse, ou la page a été déplacée vers une autre URL."
+    }
+}
