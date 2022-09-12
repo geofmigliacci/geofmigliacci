@@ -1,4 +1,11 @@
-import { ActionIcon, Avatar, createStyles, Group, Stack, Text } from '@mantine/core';
+import {
+  ActionIcon,
+  Avatar,
+  createStyles,
+  Group,
+  Stack,
+  Text,
+} from '@mantine/core';
 import { IconFileDownload } from '@tabler/icons';
 import Link from 'next/link';
 
@@ -49,7 +56,7 @@ export default function AppCertification({
 
           <Stack spacing={0}>
             {certifications.map((certification) => (
-              <Group spacing="xs">
+              <Group key={certification.name} spacing="xs">
                 <Link href={certification.src} passHref>
                   <ActionIcon
                     component="a"
