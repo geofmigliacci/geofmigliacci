@@ -56,7 +56,7 @@ export default function AppCertification({
 
           <Stack spacing={0}>
             {certifications.map((certification) => (
-              <Group key={certification.name} spacing="xs">
+              <Group key={certification.name} spacing={4}>
                 <Link href={certification.src} passHref>
                   <ActionIcon
                     component="a"
