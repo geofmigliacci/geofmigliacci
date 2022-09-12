@@ -48,7 +48,7 @@ export function AppProjectCard({ repository }: AppProjectCard) {
     <Card withBorder radius="md" p="md" className={classes.card}>
       <Card.Section className={classes.section} mt="xs">
         <Group position="apart">
-          <Text size="lg" weight={500}>
+          <Text size="lg" weight={500} transform="uppercase">
             {repository?.name}
           </Text>
           <Badge size="sm">{repository?.language ?? `Divers`}</Badge>
