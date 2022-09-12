@@ -20,7 +20,14 @@ export default function ProjectsPage() {
             <Skeleton height={170} />
           </Grid.Col>
           <Grid.Col span={12}>
-            <SimpleGrid cols={4}>
+            <SimpleGrid
+              cols={4}
+              breakpoints={[
+                { maxWidth: `md`, cols: 3, spacing: `md` },
+                { maxWidth: `sm`, cols: 2, spacing: `sm` },
+                { maxWidth: `xs`, cols: 1, spacing: `sm` },
+              ]}
+            >
               {Array(16)
                 .fill(1)
                 .map((el, i) => (
