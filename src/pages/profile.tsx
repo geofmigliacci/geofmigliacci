@@ -1,19 +1,8 @@
-import { ProfileInfos } from '@/components/Profile/ProfileInfos';
-import {
-  Avatar,
-  Badge,
-  Container,
-  createStyles,
-  Grid,
-  Group,
-  Image,
-  Stack,
-  Text,
-  Timeline,
-  Title,
-  Tooltip,
-  useMantineTheme,
-} from '@mantine/core';
+import AppCertification from '@/components/Profile/AppCertification';
+import AppLanguage from '@/components/Profile/AppLanguage';
+import { AppProfile } from '@/components/Profile/AppProfile';
+import AppSkill from '@/components/Profile/AppSkill';
+import { Container, createStyles, Grid, Group, Stack, Text, Timeline, Title, useMantineTheme } from '@mantine/core';
 
 const useStyles = createStyles((theme) => ({
   title: {
@@ -45,233 +34,72 @@ export default function ProfilePage() {
 
   return (
     <Container size="xl">
-      <Grid grow gutter="md">
+      <Grid grow gutter="xs">
         <Grid.Col span={4}>
-          <ProfileInfos
+          <AppProfile
             avatar="/images/gmi.jpg"
             name="Geoffrey MIGLIACCI"
-            title="ANALYSTE DÉVELOPPEUR"
+            title="DÉVELOPPEUR FULL STACK"
             phone="+33618514026"
             email="geoffrey.migliacci@gmail.com"
           />
-          <Title mt="xl" className={classes.title}>
+          <Title mt="xs" className={classes.title}>
             COMPÉTENCES
           </Title>
           <Title className={classes.experience}>FRAMEWORKS</Title>
-          <Group mt="md" spacing="xs">
-            <Tooltip label="NestJs" position="left">
-              <Image
-                alt="NestJs"
-                width={64}
-                height={64}
-                src="images/logos/nestjs.svg"
-                placeholder="NestJs"
-              />
-            </Tooltip>
-
-            <Tooltip label="Angular" position="left">
-              <Image
-                alt="Angular"
-                width={64}
-                height={64}
-                src="images/logos/angular.svg"
-                placeholder="Angular"
-              />
-            </Tooltip>
-
-            <Tooltip label="VueJs" position="left">
-              <Image
-                alt="VueJs"
-                width={64}
-                height={64}
-                src="images/logos/vuejs.svg"
-                placeholder="VueJs"
-              />
-            </Tooltip>
-
-            <Tooltip label="NextJs" position="left">
-              <Image
-                alt="NextJs"
-                width={64}
-                height={64}
-                src="images/logos/nextjs.svg"
-                placeholder="NextJs"
-              />
-            </Tooltip>
-
-            <Tooltip label=".NET" position="left">
-              <Image
-                alt=".NET"
-                width={64}
-                height={64}
-                src="images/logos/netcore.svg"
-                placeholder=".NET"
-              />
-            </Tooltip>
-
-            <Tooltip label="jQuery" position="left">
-              <Image
-                alt="jQuery"
-                width={64}
-                height={64}
-                src="images/logos/jquery.svg"
-                placeholder="jQuery"
-              />
-            </Tooltip>
-
-            <Tooltip label="Bootstrap" position="left">
-              <Image
-                alt="Bootstrap"
-                width={64}
-                height={64}
-                src="images/logos/bootstrap.svg"
-                placeholder="Bootstrap"
-              />
-            </Tooltip>
+          <Group mt="xs" spacing="xs">
+            <AppSkill label="NestJs" src="images/logos/nestjs.svg" />
+            <AppSkill label="Angular" src="images/logos/angular.svg" />
+            <AppSkill label="VueJs" src="images/logos/vuejs.svg" />
+            <AppSkill label=".NET" src="images/logos/netcore.svg" />
+            <AppSkill label="Bootstrap" src="images/logos/bootstrap.svg" />
           </Group>
 
           <Title className={classes.experience}>LANGUAGES</Title>
-          <Group mt="md" spacing="xs">
-            <Tooltip label="Typescript" position="left">
-              <Image
-                alt="Typescript"
-                width={64}
-                height={64}
-                src="images/logos/typescript.svg"
-                placeholder="Typescript"
-              />
-            </Tooltip>
-
-            <Tooltip label="JavaScript" position="left">
-              <Image
-                alt="JavaScript"
-                width={64}
-                height={64}
-                src="images/logos/javascript.svg"
-                placeholder="JavaScript"
-              />
-            </Tooltip>
-
-            <Tooltip label="C#" position="left">
-              <Image
-                alt="C#"
-                width={64}
-                height={64}
-                src="images/logos/csharp.svg"
-                placeholder="C#"
-              />
-            </Tooltip>
-
-            <Tooltip label="HTML5" position="left">
-              <Image
-                alt="HTML5"
-                width={64}
-                height={64}
-                src="images/logos/html.svg"
-                placeholder="HTML5"
-              />
-            </Tooltip>
-
-            <Tooltip label="CSS" position="left">
-              <Image
-                alt="CSS"
-                width={64}
-                height={64}
-                src="images/logos/css.svg"
-                placeholder="CSS"
-              />
-            </Tooltip>
-
-            <Tooltip label="SASS" position="left">
-              <Image
-                alt="SASS"
-                width={64}
-                height={64}
-                src="images/logos/sass.svg"
-                placeholder="SASS"
-              />
-            </Tooltip>
-
-            <Tooltip label="PHP" position="left">
-              <Image
-                alt="PHP"
-                width={64}
-                height={64}
-                src="images/logos/php.svg"
-                placeholder="PHP"
-              />
-            </Tooltip>
-
-            <Tooltip label="MSSQL" position="left">
-              <Image
-                alt="MSSQL"
-                width={64}
-                height={64}
-                src="images/logos/mssql.svg"
-                placeholder="MSSQL"
-              />
-            </Tooltip>
-
-            <Tooltip label="MySQL" position="left">
-              <Image
-                alt="MySQL"
-                width={64}
-                height={64}
-                src="images/logos/mysql.svg"
-                placeholder="MySQL"
-              />
-            </Tooltip>
-
-            <Tooltip label="PostgreSQL" position="left">
-              <Image
-                alt="PostgreSQL"
-                width={64}
-                height={64}
-                src="images/logos/postgresql.svg"
-                placeholder="PostgreSQL"
-              />
-            </Tooltip>
+          <Group mt="xs" spacing="xs">
+            <AppSkill label="Typescript" src="images/logos/typescript.svg" />
+            <AppSkill label="JavaScript" src="images/logos/javascript.svg" />
+            <AppSkill label="C#" src="images/logos/csharp.svg" />
+            <AppSkill label="HTML5" src="images/logos/html.svg" />
+            <AppSkill label="CSS" src="images/logos/css.svg" />
+            <AppSkill label="SASS" src="images/logos/sass.svg" />
+            <AppSkill label="PHP" src="images/logos/php.svg" />
+            <AppSkill label="MSSQL" src="images/logos/mssql.svg" />
+            <AppSkill label="MySQL" src="images/logos/mysql.svg" />
+            <AppSkill label="PostgreSQL" src="images/logos/postgresql.svg" />
           </Group>
 
+          <Title className={classes.experience}>CERTIFICATIONS</Title>
+          <Stack mt="xs" spacing="xs" align="flex-start">
+            <AppCertification
+              topic="NestJs"
+              src="images/logos/nestjs.svg"
+              certifications={[
+                {
+                  name: `NestJS Fundamentals`,
+                  src: `https://drive.google.com/file/d/1pnj6iHQ0zoxLMQG9_QSDfA7FEg8kbI7z/view`,
+                },
+              ]}
+            />
+          </Stack>
+
           <Title className={classes.experience}>LANGUES</Title>
-          <Stack mt="md" spacing="xs" align="flex-start">
-            <Badge
-              sx={{ paddingLeft: 0 }}
-              size="lg"
-              radius="xl"
-              leftSection={
-                <Avatar alt="Français" size={32} src="images/flags/fr.svg" />
-              }
-            >
-              Français (bilingue ou langue natale)
-            </Badge>
-
-            <Badge
-              sx={{ paddingLeft: 0 }}
-              size="lg"
-              radius="xl"
-              leftSection={
-                <Avatar alt="Anglais" size={32} src="images/flags/gb.svg" />
-              }
-            >
-              Anglais (compétence professionnelle)
-            </Badge>
-
-            <Badge
-              sx={{ paddingLeft: 0 }}
-              size="lg"
-              radius="xl"
-              leftSection={
-                <Avatar
-                  alt="Italien"
-                  size={32}
-                  mr={5}
-                  src="images/flags/it.svg"
-                />
-              }
-            >
-              Italien (compétence professionnelle limitée)
-            </Badge>
+          <Stack mt="xs" spacing="xs" align="flex-start">
+            <AppLanguage
+              language="Français"
+              level="Français (langue natale)"
+              src="images/flags/fr.svg"
+            />
+            <AppLanguage
+              language="Anglais"
+              level="Anglais (C1)"
+              src="images/flags/gb.svg"
+            />
+            <AppLanguage
+              language="Italien"
+              level="Italien (B1)"
+              src="images/flags/it.svg"
+            />
           </Stack>
         </Grid.Col>
         <Grid.Col span={8}>
@@ -282,7 +110,7 @@ export default function ProfilePage() {
             fournir une solution rapide, fiable et durable.`}
           </Text>
 
-          <Title mt="md" className={classes.title}>
+          <Title mt="xs" className={classes.title}>
             EXPÉRIENCES PROFESSIONNELLES
           </Title>
           <Timeline
@@ -293,7 +121,7 @@ export default function ProfilePage() {
             }
             active={1}
             lineWidth={2}
-            mt="xl"
+            mt="xs"
           >
             <Timeline.Item
               title={
@@ -409,7 +237,7 @@ export default function ProfilePage() {
             </Timeline.Item>
           </Timeline>
 
-          <Title mt="md" className={classes.title}>
+          <Title mt="xs" className={classes.title}>
             FORMATIONS
           </Title>
           <Timeline

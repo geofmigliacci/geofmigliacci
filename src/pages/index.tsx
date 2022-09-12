@@ -11,7 +11,6 @@ const useStyles = createStyles((theme) => ({
     fontWeight: 800,
     fontSize: 40,
     letterSpacing: -1,
-    color: theme.white,
     marginBottom: theme.spacing.xs,
     textAlign: `left`,
 
@@ -28,7 +27,6 @@ const useStyles = createStyles((theme) => ({
   },
 
   description: {
-    color: theme.colors.gray[0],
     textAlign: `left`,
 
     [theme.fn.smallerThan(`sm`)]: {
@@ -51,7 +49,7 @@ export default function HomePage() {
         </Title>
 
         <Text size="lg" className={classes.description}>
-          {`Un développeur fullstack avec 4 ans d'expérience, passionné par les
+          {`Un développeur full stack avec 4 ans d'expérience, passionné par les
           nouvelles technologies, les frameworks et la guitare.`}
         </Text>
       </Container>

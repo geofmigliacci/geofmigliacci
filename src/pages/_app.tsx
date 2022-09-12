@@ -4,7 +4,6 @@ import {
   ColorScheme,
   ColorSchemeProvider,
   MantineProvider,
-  useMantineTheme,
 } from '@mantine/core';
 import { useColorScheme } from '@mantine/hooks';
 import {
@@ -19,7 +18,6 @@ import Head from 'next/head';
 import { useState } from 'react';
 
 function App({ Component, pageProps, router }: AppProps) {
-  const theme = useMantineTheme();
   const preferredColorScheme = useColorScheme();
 
   const [colorScheme, setColorScheme] =
@@ -78,22 +76,7 @@ function App({ Component, pageProps, router }: AppProps) {
                 colorScheme,
               }}
             >
-              <AppShell
-                styles={{
-                  main: {
-                    background:
-                      router.pathname === `/`
-                        ? `url(images/bg.jpg) no-repeat center center fixed`
-                        : colorScheme === `dark`
-                        ? theme.colors.dark[8]
-                        : theme.colors.gray[0],
-                    backgroundSize: `cover`,
-                  },
-                }}
-                navbarOffsetBreakpoint="sm"
-                asideOffsetBreakpoint="sm"
-                aside={<AppAside />}
-              >
+              <AppShell asideOffsetBreakpoint="md" aside={<AppAside />}>
                 <Component {...pageProps} key={router.pathname} />
               </AppShell>
             </MantineProvider>

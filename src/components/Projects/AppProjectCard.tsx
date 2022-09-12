@@ -46,7 +46,7 @@ export function AppProjectCard({ repository }: AppProjectCard) {
 
   return (
     <Card withBorder radius="md" p="md" className={classes.card}>
-      <Card.Section className={classes.section} mt="md">
+      <Card.Section className={classes.section} mt="xs">
         <Group position="apart">
           <Text size="lg" weight={500}>
             {repository?.name}

@@ -47,7 +47,7 @@ export default function NotFoundTitle() {
       <Container>
         <div className={classes.label}>404</div>
         <Title className={classes.title}>
-          Vous avez trouvé un endroit secret.
+          {`Vous avez trouvé un endroit secret.`}
         </Title>
         <Text
           color="dimmed"

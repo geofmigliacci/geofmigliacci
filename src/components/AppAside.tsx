@@ -1,5 +1,4 @@
 import {
-  Avatar,
   Center,
   createStyles,
   Navbar,
@@ -13,6 +12,7 @@ import { useRouter } from 'next/router';
 import React, { ReactNode } from 'react';
 
 import { AppLogo } from './AppLogo';
+import { AppResumeDownload } from './AppResumeDownload';
 import { AppThemeSwitch } from './AppThemeSwitch';
 
 const useStyles = createStyles((theme) => ({
@@ -92,7 +92,7 @@ export function AppAside() {
       <Navbar.Section>
         <Stack justify="center" align="center" spacing={8}>
           <AppThemeSwitch />
-          <Avatar size={32} src="/images/gmi.jpg" alt="Geoffrey Migliacci" />
+          <AppResumeDownload />
         </Stack>
       </Navbar.Section>
     </Navbar>

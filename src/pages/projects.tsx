@@ -28,7 +28,7 @@ export default function ProjectsPage() {
                 { maxWidth: `xs`, cols: 1, spacing: `sm` },
               ]}
             >
-              {Array(16)
+              {Array(12)
                 .fill(1)
                 .map((el, i) => (
                   <Skeleton key={i} height={450} />
@@ -55,11 +55,9 @@ export default function ProjectsPage() {
               { maxWidth: `xs`, cols: 1, spacing: `sm` },
             ]}
           >
-            {repositories?.map((repository) => {
-              return (
-                <AppProjectCard key={repository.id} repository={repository} />
-              );
-            })}
+            {repositories?.map((repository) => (
+              <AppProjectCard key={repository.id} repository={repository} />
+            ))}
           </SimpleGrid>
         </Grid.Col>
       </Grid>

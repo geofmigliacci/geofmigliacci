@@ -14,7 +14,7 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-interface UserInfoIconsProps {
+interface AppAppProfileProps {
   avatar: string;
   name: string;
   title: string;
@@ -22,13 +22,13 @@ interface UserInfoIconsProps {
   email: string;
 }
 
-export function ProfileInfos({
+export function AppProfile({
   avatar,
   name,
   title,
   phone,
   email,
-}: UserInfoIconsProps) {
+}: AppAppProfileProps) {
   const { classes } = useStyles();
 
   return (
