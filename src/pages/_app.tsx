@@ -1,7 +1,17 @@
 import { AppHeader } from '@/components/AppHeader';
-import { AppShell, ColorScheme, ColorSchemeProvider, MantineProvider, useMantineTheme } from '@mantine/core';
-import { useColorScheme, useDisclosure } from '@mantine/hooks';
-import { Hydrate, QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import {
+  AppShell,
+  ColorScheme,
+  ColorSchemeProvider,
+  MantineProvider,
+  useMantineTheme,
+} from '@mantine/core';
+import { useColorScheme } from '@mantine/hooks';
+import {
+  Hydrate,
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { appWithTranslation } from 'next-i18next';
 import { AppProps } from 'next/app';
@@ -9,7 +19,6 @@ import Head from 'next/head';
 import { useState } from 'react';
 
 function App({ Component, pageProps, router }: AppProps) {
-  const [opened, { toggle }] = useDisclosure(false);
   const theme = useMantineTheme();
 
   const preferredColorScheme = useColorScheme();
@@ -79,7 +88,7 @@ function App({ Component, pageProps, router }: AppProps) {
                         : theme.colors.gray[0],
                   },
                 }}
-                header={<AppHeader opened={opened} toggle={toggle} />}
+                header={<AppHeader />}
               >
                 <Component {...pageProps} key={router.pathname} />
               </AppShell>

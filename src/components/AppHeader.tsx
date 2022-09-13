@@ -1,8 +1,19 @@
-import { ActionIcon, Container, createStyles, Group, Header } from '@mantine/core';
+import {
+  ActionIcon,
+  Container,
+  createStyles,
+  Group,
+  Header,
+} from '@mantine/core';
 import { NextLink } from '@mantine/next';
-import { IconArchive, IconBrandGithub, IconBrandTwitter, IconHome2, IconUserSearch } from '@tabler/icons';
+import {
+  IconArchive,
+  IconBrandGithub,
+  IconBrandTwitter,
+  IconHome2,
+  IconUserSearch,
+} from '@tabler/icons';
 import { useRouter } from 'next/router';
-import { ReactNode } from 'react';
 
 import { AppLogo } from './AppLogo';
 import { AppThemeSwitch } from './AppThemeSwitch';
@@ -15,9 +26,7 @@ const useStyles = createStyles((theme) => ({
     height: 56,
   },
 
-  link: {
-
-  },
+  link: {},
 
   active: {
     '&, &:hover': {
@@ -25,7 +34,8 @@ const useStyles = createStyles((theme) => ({
         variant: `light`,
         color: theme.primaryColor,
       }).background,
-      color: theme.fn.variant({ variant: `light`, color: theme.primaryColor }).color,
+      color: theme.fn.variant({ variant: `light`, color: theme.primaryColor })
+        .color,
     },
   },
 }));
@@ -44,12 +54,7 @@ const mockdata = [
   },
 ];
 
-interface AppHeaderProps {
-  opened: boolean;
-  toggle: () => void;
-}
-
-export function AppHeader({ opened, toggle }: AppHeaderProps) {
+export function AppHeader() {
   const router = useRouter();
   const { classes, cx } = useStyles();
 
