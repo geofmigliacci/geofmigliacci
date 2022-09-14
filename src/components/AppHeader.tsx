@@ -1,6 +1,18 @@
-import { ActionIcon, Container, createStyles, Group, Header } from '@mantine/core';
+import {
+  ActionIcon,
+  Container,
+  createStyles,
+  Group,
+  Header,
+} from '@mantine/core';
 import { NextLink } from '@mantine/next';
-import { IconArchive, IconBrandGithub, IconBrandLinkedin, IconHome2, IconUserSearch } from '@tabler/icons';
+import {
+  IconArchive,
+  IconBrandGithub,
+  IconBrandLinkedin,
+  IconHome2,
+  IconUserSearch,
+} from '@tabler/icons';
 import { useRouter } from 'next/router';
 
 import { AppLogo } from './AppLogo';
@@ -75,7 +87,10 @@ export function AppHeader() {
             </ActionIcon>
           </NextLink>
 
-          <NextLink href="https://www.linkedin.com/in/geofmigliacci/" target="_blank">
+          <NextLink
+            href="https://www.linkedin.com/in/geofmigliacci/"
+            target="_blank"
+          >
             <ActionIcon size="lg">
               <IconBrandLinkedin size={18} stroke={1.5} />
             </ActionIcon>
