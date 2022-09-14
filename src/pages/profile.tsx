@@ -2,17 +2,7 @@ import AppCertification from '@/components/Profile/AppCertification';
 import AppLanguage from '@/components/Profile/AppLanguage';
 import { AppProfile } from '@/components/Profile/AppProfile';
 import AppSkill from '@/components/Profile/AppSkill';
-import {
-  Container,
-  createStyles,
-  Grid,
-  Group,
-  Stack,
-  Text,
-  Timeline,
-  Title,
-  useMantineTheme,
-} from '@mantine/core';
+import { Container, createStyles, Grid, Group, Stack, Text, Timeline, Title, useMantineTheme } from '@mantine/core';
 
 const useStyles = createStyles((theme) => ({
   title: {
@@ -60,8 +50,10 @@ export default function ProfilePage() {
           <Group mt="xs" spacing="xs">
             <AppSkill label="NestJs" src="images/logos/nestjs.svg" />
             <AppSkill label="Angular" src="images/logos/angular.svg" />
+            <AppSkill label="NextJs" src="images/logos/nextjs.svg" />
             <AppSkill label="VueJs" src="images/logos/vuejs.svg" />
             <AppSkill label=".NET" src="images/logos/netcore.svg" />
+            <AppSkill label="Symfony" src="images/logos/symfony.svg" />
             <AppSkill label="Bootstrap" src="images/logos/bootstrap.svg" />
           </Group>
 

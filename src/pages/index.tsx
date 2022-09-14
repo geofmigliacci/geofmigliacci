@@ -1,10 +1,13 @@
-import { Container, createStyles, Text, Title } from '@mantine/core';
+import { AppResumeDownload } from '@/components/AppResumeDownload';
+import { AppWaves } from '@/components/AppWaves';
+import { Center, Container, createStyles, Text, Title } from '@mantine/core';
 
 const useStyles = createStyles((theme) => ({
   wrapper: {
     height: `100%`,
     display: `flex`,
-    alignItems: `center`,
+    justifyContent: `center`,
+    flexDirection: `column`,
   },
 
   title: {
@@ -39,20 +42,27 @@ export default function HomePage() {
   const { classes } = useStyles();
 
   return (
-    <div className={classes.wrapper}>
-      <Container size="xl">
-        <Title className={classes.title}>
-          Geoffrey&nbsp;
-          <Text component="span" inherit className={classes.highlight}>
-            MIGLIACCI
-          </Text>
-        </Title>
+    <>
+      <div className={classes.wrapper}>
+        <Container size="xl">
+          <Title className={classes.title}>
+            Geoffrey&nbsp;
+            <Text component="span" inherit className={classes.highlight}>
+              MIGLIACCI
+            </Text>
+          </Title>
 
-        <Text size="lg" className={classes.description}>
-          {`Un développeur full stack avec 4 ans d'expérience, passionné par les
-          nouvelles technologies, les frameworks et la guitare.`}
-        </Text>
-      </Container>
-    </div>
+          <Text size="lg" className={classes.description}>
+            {`Un développeur full stack avec 4 ans d'expérience, passionné par les
+          nouvelles technologies, les frameworks & la musique.`}
+          </Text>
+
+          <Center mt="xs">
+            <AppResumeDownload />
+          </Center>
+        </Container>
+        <AppWaves />
+      </div>
+    </>
   );
 }

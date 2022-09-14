@@ -1,19 +1,19 @@
-import { ActionIcon } from '@mantine/core';
+import { ActionIcon, Tooltip } from '@mantine/core';
 import { IconFileDownload } from '@tabler/icons';
-import Link from 'next/link';
 import React from 'react';
 
 export function AppResumeDownload() {
   return (
-    <Link href="/files/Migliacci Geoffrey - CV.pdf" passHref>
+    <Tooltip label="Cliquez ici pour télécharger mon CV" position="bottom">
       <ActionIcon
+        href="/files/Migliacci Geoffrey - CV.pdf"
         component="a"
         target="_blank"
         download="Migliacci Geoffrey - CV.pdf"
         rel="noopener noreferrer"
       >
-        <IconFileDownload />
+        <IconFileDownload size={32} stroke={1.5} />
       </ActionIcon>
-    </Link>
+    </Tooltip>
   );
 }
