@@ -23,6 +23,14 @@ const useStyles = createStyles((theme) => ({
     fontSize: theme.fontSizes.xs,
     fontWeight: 700,
   },
+
+  button: {
+    background: `linear-gradient(-60deg, ${
+      theme.colorScheme === `dark`
+        ? theme.colors.arancia[2]
+        : theme.colors.arancia[8]
+    } 0%, ${theme.colors[theme.primaryColor][7]} 100%)`,
+  },
 }));
 
 interface AppProjectCard {
@@ -69,7 +77,13 @@ export function AppProjectCard({ repository }: AppProjectCard) {
 
       <Group mt="auto">
         <Link href={repository?.html_url ?? `https://github.com/404`} passHref>
-          <Button component="a" radius="md" target="_blank" style={{ flex: 1 }}>
+          <Button
+            className={classes.button}
+            component="a"
+            radius="md"
+            target="_blank"
+            style={{ flex: 1 }}
+          >
             <IconEye size={18} />
           </Button>
         </Link>

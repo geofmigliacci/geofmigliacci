@@ -80,6 +80,7 @@ function App({ Component, pageProps, router }: AppProps) {
               }}
             >
               <AppShell
+                fixed
                 styles={{
                   main: {
                     background:
@@ -94,7 +95,7 @@ function App({ Component, pageProps, router }: AppProps) {
               </AppShell>
             </MantineProvider>
           </ColorSchemeProvider>
-          <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
+          <ReactQueryDevtools initialIsOpen={false} />
         </Hydrate>
       </QueryClientProvider>
     </>
