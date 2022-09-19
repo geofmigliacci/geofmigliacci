@@ -2,17 +2,7 @@ import AppCertification from '@/components/Profile/AppCertification';
 import AppLanguage from '@/components/Profile/AppLanguage';
 import { AppProfile } from '@/components/Profile/AppProfile';
 import AppSkill from '@/components/Profile/AppSkill';
-import {
-  Container,
-  createStyles,
-  Grid,
-  Group,
-  Stack,
-  Text,
-  Timeline,
-  Title,
-  useMantineTheme,
-} from '@mantine/core';
+import { Container, createStyles, Grid, Group, Stack, Text, Timeline, Title, useMantineTheme } from '@mantine/core';
 
 const useStyles = createStyles((theme) => ({
   title: {
@@ -65,7 +55,9 @@ export default function ProfilePage() {
             <AppSkill label="VueJs" src="images/logos/vuejs.svg" />
             <AppSkill label=".NET" src="images/logos/netcore.svg" />
             <AppSkill label="Symfony" src="images/logos/symfony.svg" />
+            <AppSkill label="Laravel" src="images/logos/laravel.svg" />
             <AppSkill label="Bootstrap" src="images/logos/bootstrap.svg" />
+            <AppSkill label="Jest" src="images/logos/jest.svg" />
           </Group>
 
           <Title className={classes.experience}>LANGUAGES</Title>
@@ -151,13 +143,16 @@ export default function ProfilePage() {
               <Text size="md">
                 {`Maintenance évolutive et corrective d'une plateforme de
                 paramétrage SaaS d'assurés dans le domaine des assurances avec
-                un front VueJs & un back Laravel en REST conteneurisé via
+                un front VueJs & un back Laravel (MSSQL) en REST conteneurisé via
                 Docker.`}
               </Text>
               <Text size="md" mt="xs">
                 {`Mise en place de services logistiques de synchronisation de
                 données entre plusieurs types de sources données via plusieurs
                 micro-services en NestJs & RabbitMq en tant que message broker.`}
+              </Text>
+              <Text size="md" mt="xs">
+                {`Mise en place des tests unitaires PHPUnit pour la partie métier, ainsi que les tests unitaires et E2E Jest & supertest sur les différents micro-services.`}
               </Text>
             </Timeline.Item>
 
@@ -173,9 +168,10 @@ export default function ProfilePage() {
                 {`Octobre 2019 - Mai 2021 (1 an et 8 mois)`}
               </Text>
               <Text size="md">
-                {`Maintenance évolutive et corrective d'une application de gestion
-                de demandes interopérables le tout sur le fournisseur cloud
-                Azure.`}
+                {`Maintenance et développement d'une plateforme de gestion d'application sous Angular en étant le référent. Ainsi qu'une application mobile Xamarin, en lien avec une API REST sous ASP.NET Core & MSSQL.`}
+              </Text>
+              <Text size="md" mt="xs">
+                {`Mise en place du CI pour vérifier le linting, la configuration, la compilation ainsi que les tests unitaires Jest.`}
               </Text>
             </Timeline.Item>
 
@@ -193,7 +189,7 @@ export default function ProfilePage() {
               <Text size="md">
                 {`Maintenance évolutive et corrective d’une API REST ASP.NET Core
                 avec une application Xamarin ainsi que la formation des équipes
-                et la mise en place d'un site sous Angular.`}
+                et la mise en place d'un site sous Angular en étant le référent.`}
               </Text>
             </Timeline.Item>
 
