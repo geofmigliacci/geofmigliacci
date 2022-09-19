@@ -31,7 +31,7 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-export function AppWaves() {
+export default function AppWaves() {
   const { classes } = useStyles();
 
   return (

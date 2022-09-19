@@ -1,11 +1,4 @@
-import {
-  ActionIcon,
-  Avatar,
-  createStyles,
-  Group,
-  Stack,
-  Text,
-} from '@mantine/core';
+import { ActionIcon, Avatar, createStyles, Group, Stack, Text } from '@mantine/core';
 import { IconFileDownload } from '@tabler/icons';
 import Link from 'next/link';
 
@@ -23,7 +16,7 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-interface AppCertification {
+interface Certification {
   name: string;
   src: string;
 }
@@ -31,7 +24,7 @@ interface AppCertification {
 interface AppCertificationProps {
   topic: string;
   src: string;
-  certifications?: AppCertification[];
+  certifications?: Certification[];
 }
 
 export default function AppCertification({

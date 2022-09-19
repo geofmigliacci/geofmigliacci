@@ -1,6 +1,6 @@
 import { AppShell, ColorScheme, ColorSchemeProvider, MantineProvider, useMantineTheme } from '@mantine/core';
 import { useColorScheme } from '@mantine/hooks';
-import { Hydrate, QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
@@ -42,51 +42,49 @@ function App({ Component, pageProps, router }: AppProps) {
       </Head>
 
       <QueryClientProvider client={queryClient}>
-        <Hydrate state={pageProps.dehydratedState}>
-          <ColorSchemeProvider
-            colorScheme={colorScheme}
-            toggleColorScheme={toggleColorScheme}
+        <ColorSchemeProvider
+          colorScheme={colorScheme}
+          toggleColorScheme={toggleColorScheme}
+        >
+          <MantineProvider
+            withGlobalStyles
+            withNormalizeCSS
+            theme={{
+              colors: {
+                arancia: [
+                  `#FFECD3`,
+                  `#FFD49D`,
+                  `#FFBF6C`,
+                  `#FFAB3F`,
+                  `#FF9917`,
+                  `#FF8A00`,
+                  `#F57F17`,
+                  `#FF6E00`,
+                  `#FF6200`,
+                  `#F45800`,
+                ],
+              },
+              primaryColor: `arancia`,
+              colorScheme,
+            }}
           >
-            <MantineProvider
-              withGlobalStyles
-              withNormalizeCSS
-              theme={{
-                colors: {
-                  arancia: [
-                    `#FFECD3`,
-                    `#FFD49D`,
-                    `#FFBF6C`,
-                    `#FFAB3F`,
-                    `#FF9917`,
-                    `#FF8A00`,
-                    `#F57F17`,
-                    `#FF6E00`,
-                    `#FF6200`,
-                    `#F45800`,
-                  ],
+            <AppShell
+              fixed
+              styles={{
+                main: {
+                  background:
+                    colorScheme === `dark`
+                      ? theme.colors.dark[8]
+                      : theme.colors.gray[0],
                 },
-                primaryColor: `arancia`,
-                colorScheme,
               }}
+              header={<AppHeader />}
             >
-              <AppShell
-                fixed
-                styles={{
-                  main: {
-                    background:
-                      colorScheme === `dark`
-                        ? theme.colors.dark[8]
-                        : theme.colors.gray[0],
-                  },
-                }}
-                header={<AppHeader />}
-              >
-                <Component {...pageProps} key={router.pathname} />
-              </AppShell>
-            </MantineProvider>
-          </ColorSchemeProvider>
-          <ReactQueryDevtools initialIsOpen={false} />
-        </Hydrate>
+              <Component {...pageProps} key={router.pathname} />
+            </AppShell>
+          </MantineProvider>
+        </ColorSchemeProvider>
+        <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
     </>
   );

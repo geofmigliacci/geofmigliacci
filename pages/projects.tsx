@@ -2,12 +2,12 @@ import { Alert, Container, Grid, SimpleGrid, Skeleton } from '@mantine/core';
 import { IconAlertCircle } from '@tabler/icons';
 import { useQuery } from '@tanstack/react-query';
 
-import { AppProjectCard } from '../components/Projects/AppProjectCard';
-import { AppProjectsStats } from '../components/Projects/AppProjectsStats';
+import AppProjectCard from '../components/Projects/AppProjectCard';
+import AppProjectsStats from '../components/Projects/AppProjectsStats';
 import { Repository } from '../types/repository.interface';
 
 const getRepos = async (): Promise<Repository[]> =>
-  await await (
+  await (
     await fetch(`https://api.github.com/users/geofmigliacci/repos`)
   ).json();
 

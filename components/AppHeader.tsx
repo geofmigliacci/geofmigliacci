@@ -1,22 +1,10 @@
-import {
-  ActionIcon,
-  Container,
-  createStyles,
-  Group,
-  Header,
-} from '@mantine/core';
+import { ActionIcon, Container, createStyles, Group, Header } from '@mantine/core';
 import { NextLink } from '@mantine/next';
-import {
-  IconArchive,
-  IconBrandGithub,
-  IconBrandLinkedin,
-  IconHome2,
-  IconUserSearch,
-} from '@tabler/icons';
+import { IconArchive, IconBrandGithub, IconBrandLinkedin, IconHome2, IconUserSearch } from '@tabler/icons';
 import { useRouter } from 'next/router';
 
-import { AppLogo } from './AppLogo';
-import { AppThemeSwitch } from './AppThemeSwitch';
+import AppLogo from './AppLogo';
+import AppThemeSwitch from './AppThemeSwitch';
 
 const useStyles = createStyles((theme) => ({
   inner: {

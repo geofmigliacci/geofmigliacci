@@ -1,7 +1,7 @@
 import { useMantineTheme } from '@mantine/core';
 import React from 'react';
 
-export function AppLogo() {
+export default function AppLogo() {
   const theme = useMantineTheme();
   return (
     <svg

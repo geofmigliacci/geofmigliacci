@@ -34,11 +34,11 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-interface AppProjectCard {
+interface AppProjectCardProps {
   repository: Repository;
 }
 
-export function AppProjectCard({ repository }: AppProjectCard) {
+export default function AppProjectCard({ repository }: AppProjectCardProps) {
   const { classes, theme } = useStyles();
 
   const topics =

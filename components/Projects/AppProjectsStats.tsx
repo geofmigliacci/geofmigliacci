@@ -58,7 +58,7 @@ interface AppProjectsStatsProps {
   repositories?: Repository[];
 }
 
-export function AppProjectsStats({ repositories }: AppProjectsStatsProps) {
+export default function AppProjectsStats({ repositories }: AppProjectsStatsProps) {
   const { classes } = useStyles();
 
   const totalRepos = repositories?.length;

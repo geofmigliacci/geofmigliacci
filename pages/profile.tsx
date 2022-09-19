@@ -2,7 +2,7 @@ import { Container, createStyles, Grid, Group, Stack, Text, Timeline, Title, use
 
 import AppCertification from '../components/Profile/AppCertification';
 import AppLanguage from '../components/Profile/AppLanguage';
-import { AppProfile } from '../components/Profile/AppProfile';
+import AppProfile from '../components/Profile/AppProfile';
 import AppSkill from '../components/Profile/AppSkill';
 
 const useStyles = createStyles((theme) => ({

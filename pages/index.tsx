@@ -1,7 +1,7 @@
 import { Center, Container, createStyles, Text, Title } from '@mantine/core';
 
-import { AppResumeDownload } from '../components/AppResumeDownload';
-import { AppWaves } from '../components/AppWaves';
+import AppResumeDownload from '../components/AppResumeDownload';
+import AppWaves from '../components/AppWaves';
 
 const useStyles = createStyles((theme) => ({
   wrapper: {

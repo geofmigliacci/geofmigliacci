@@ -2,7 +2,7 @@ import { ActionIcon, Tooltip } from '@mantine/core';
 import { IconFileDownload } from '@tabler/icons';
 import React from 'react';
 
-export function AppResumeDownload() {
+export default function AppResumeDownload() {
   return (
     <Tooltip label="Cliquez ici pour télécharger mon CV" position="bottom">
       <ActionIcon

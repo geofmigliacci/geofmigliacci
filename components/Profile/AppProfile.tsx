@@ -22,7 +22,7 @@ interface AppAppProfileProps {
   email: string;
 }
 
-export function AppProfile({
+export default function AppProfile({
   avatar,
   name,
   title,
