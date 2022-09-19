@@ -1,5 +1,6 @@
-import { Repository } from '@/types/repository.interface';
 import { createStyles, Text } from '@mantine/core';
+
+import { Repository } from '../../types/repository.interface';
 
 const useStyles = createStyles((theme) => ({
   root: {

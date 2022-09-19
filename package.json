@@ -1,63 +1,36 @@
 {
-  "name": "typescript-nextjs-starter",
-  "description": "A TypeScript starter for Next.js that includes all you need to build amazing projects",
+  "name": "geofmigliacci",
   "version": "1.0.0",
-  "private": true,
-  "author": "João Pedro Schmitz <hey@joaopedro.dev> (@jpedroschmitz)",
+  "description": "My portfolio made with NextJs & Mantine",
   "license": "MIT",
-  "keywords": [
-    "nextjs",
-    "starter",
-    "typescript"
-  ],
   "scripts": {
-    "dev": "next",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "type-check": "tsc",
-    "lint": "eslint --ignore-path .gitignore \"src/**/*.+(ts|js|tsx)\"",
-    "format": "prettier --ignore-path .gitignore \"src/**/*.+(ts|js|tsx)\" --write"
-  },
-  "lint-staged": {
-    "./src/**/*.{ts,js,jsx,tsx}": [
-      "eslint --ignore-path .gitignore --fix",
-      "prettier --ignore-path .gitignore --write"
-    ]
+    "lint": "next lint"
   },
   "dependencies": {
-    "@emotion/react": "11.10.0",
-    "@emotion/server": "11.10.0",
-    "@mantine/carousel": "5.2.4",
-    "@mantine/core": "5.2.4",
-    "@mantine/hooks": "5.2.4",
-    "@mantine/next": "5.2.4",
-    "@mantine/notifications": "5.2.4",
-    "@mantine/nprogress": "5.2.4",
-    "@tabler/icons": "1.91.0",
-    "@tanstack/react-query": "4.2.3",
-    "@tanstack/react-query-devtools": "4.2.3",
-    "embla-carousel-react": "7.0.1",
-    "framer-motion": "7.3.2",
-    "next": "12.2.5",
-    "next-i18next": "12.0.1",
+    "next": "12.3.0",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "@emotion/react": "11.10.4",
+    "@emotion/server": "11.10.0",
+    "@mantine/carousel": "5.4.0",
+    "@mantine/core": "5.4.0",
+    "@mantine/hooks": "5.4.0",
+    "@mantine/next": "5.4.0",
+    "@mantine/notifications": "5.4.0",
+    "@mantine/nprogress": "5.4.0",
+    "@tabler/icons": "1.96.0",
+    "@tanstack/react-query": "4.3.9",
+    "@tanstack/react-query-devtools": "4.3.9"
   },
   "devDependencies": {
-    "@types/node": "16.11.49",
-    "@types/react": "18.0.17",
+    "@types/node": "18.7.18",
+    "@types/react": "18.0.20",
     "@types/react-dom": "18.0.6",
-    "@typescript-eslint/eslint-plugin": "5.33.1",
-    "@typescript-eslint/parser": "5.33.1",
-    "eslint": "8.22.0",
-    "eslint-config-next": "12.2.5",
-    "eslint-config-prettier": "8.5.0",
-    "eslint-import-resolver-typescript": "3.5.0",
-    "eslint-plugin-import": "2.26.0",
-    "eslint-plugin-prettier": "4.2.1",
-    "lint-staged": "13.0.3",
-    "prettier": "2.7.1",
-    "sass": "1.54.5",
-    "typescript": "4.7.4"
+    "eslint": "8.23.1",
+    "eslint-config-next": "12.3.0",
+    "typescript": "4.8.3"
   }
 }

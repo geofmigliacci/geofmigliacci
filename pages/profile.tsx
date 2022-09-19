@@ -1,18 +1,9 @@
-import AppCertification from '@/components/Profile/AppCertification';
-import AppLanguage from '@/components/Profile/AppLanguage';
-import { AppProfile } from '@/components/Profile/AppProfile';
-import AppSkill from '@/components/Profile/AppSkill';
-import {
-  Container,
-  createStyles,
-  Grid,
-  Group,
-  Stack,
-  Text,
-  Timeline,
-  Title,
-  useMantineTheme,
-} from '@mantine/core';
+import { Container, createStyles, Grid, Group, Stack, Text, Timeline, Title, useMantineTheme } from '@mantine/core';
+
+import AppCertification from '../components/Profile/AppCertification';
+import AppLanguage from '../components/Profile/AppLanguage';
+import { AppProfile } from '../components/Profile/AppProfile';
+import AppSkill from '../components/Profile/AppSkill';
 
 const useStyles = createStyles((theme) => ({
   title: {

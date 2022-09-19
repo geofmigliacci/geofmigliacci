@@ -1,7 +1,8 @@
-import { Repository } from '@/types/repository.interface';
 import { Badge, Button, Card, createStyles, Group, Text } from '@mantine/core';
 import { IconEye } from '@tabler/icons';
 import Link from 'next/link';
+
+import { Repository } from '../../types/repository.interface';
 
 const useStyles = createStyles((theme) => ({
   card: {

@@ -1,22 +1,12 @@
-import { AppHeader } from '@/components/AppHeader';
-import {
-  AppShell,
-  ColorScheme,
-  ColorSchemeProvider,
-  MantineProvider,
-  useMantineTheme,
-} from '@mantine/core';
+import { AppShell, ColorScheme, ColorSchemeProvider, MantineProvider, useMantineTheme } from '@mantine/core';
 import { useColorScheme } from '@mantine/hooks';
-import {
-  Hydrate,
-  QueryClient,
-  QueryClientProvider,
-} from '@tanstack/react-query';
+import { Hydrate, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { appWithTranslation } from 'next-i18next';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
 import { useState } from 'react';
+
+import { AppHeader } from '../components/AppHeader';
 
 function App({ Component, pageProps, router }: AppProps) {
   const theme = useMantineTheme();
@@ -102,4 +92,4 @@ function App({ Component, pageProps, router }: AppProps) {
   );
 }
 
-export default appWithTranslation(App);
+export default App;
