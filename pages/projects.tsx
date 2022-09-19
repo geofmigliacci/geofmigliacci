@@ -7,9 +7,7 @@ import AppProjectsStats from '../components/Projects/AppProjectsStats';
 import { Repository } from '../types/repository.interface';
 
 const getRepos = async (): Promise<Repository[]> =>
-  await (
-    await fetch(`https://api.github.com/users/geofmigliacci/repos`)
-  ).json();
+  (await fetch(`https://api.github.com/users/geofmigliacci/repos`)).json();
 
 export default function ProjectsPage() {
   const {
