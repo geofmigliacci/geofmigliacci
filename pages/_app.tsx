@@ -3,7 +3,6 @@ import { useColorScheme } from '@mantine/hooks';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { AppProps } from 'next/app';
-import Head from 'next/head';
 import { useState } from 'react';
 
 import { AppHeader } from '../components/AppHeader';
@@ -28,19 +27,6 @@ function App({ Component, pageProps, router }: AppProps) {
 
   return (
     <>
-      <Head>
-        <title>Geoffrey Migliacci ‒ Portfolio</title>
-        <meta
-          name="viewport"
-          content="minimum-scale=1, initial-scale=1, width=device-width"
-        />
-        <link rel="shortcut icon" href="/favicon.svg" />
-        <meta
-          name="description"
-          content="Geoffrey Migliacci est un développeur de premier plan avec 2 ans d'expérience en développement d'applications se basant sur les dernières technologies. Ces applications sont rapides, faciles à utiliser et construites en utilisant les meilleures pratiques de développement (SOLID, YAGNI, KISS)..."
-        />
-      </Head>
-
       <QueryClientProvider client={queryClient}>
         <ColorSchemeProvider
           colorScheme={colorScheme}
