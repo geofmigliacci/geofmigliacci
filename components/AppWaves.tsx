@@ -13,8 +13,12 @@ const useStyles = createStyles((theme) => ({
     svg: {
       position: `relative`,
       display: `block`,
-      width: `calc(100% + 1.3px)`,
+      width: `100vw`,
       height: `160px`,
+
+      [theme.fn.smallerThan(`sm`)]: {
+        height: `128px`,
+      },
     },
   },
 
@@ -32,7 +36,6 @@ export default function AppWaves() {
   return (
     <div className={classes.wavesContainer}>
       <svg
-        data-name="Layer 1"
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 1200 120"
         preserveAspectRatio="none"
