@@ -57,22 +57,23 @@ export default function ProfilePage() {
             <AppSkill label=".NET" src="images/logos/netcore.svg" />
             <AppSkill label="Symfony" src="images/logos/symfony.svg" />
             <AppSkill label="Laravel" src="images/logos/laravel.svg" />
-            <AppSkill label="Bootstrap" src="images/logos/bootstrap.svg" />
-            <AppSkill label="Jest" src="images/logos/jest.svg" />
           </Group>
 
-          <Title className={classes.experience}>LANGUAGES</Title>
+          <Title className={classes.experience}>DIVERS</Title>
           <Group mt="xs" spacing="xs">
             <AppSkill label="Typescript" src="images/logos/typescript.svg" />
             <AppSkill label="JavaScript" src="images/logos/javascript.svg" />
             <AppSkill label="C#" src="images/logos/csharp.svg" />
+            <AppSkill label="PHP" src="images/logos/php.svg" />
             <AppSkill label="HTML5" src="images/logos/html.svg" />
             <AppSkill label="CSS" src="images/logos/css.svg" />
             <AppSkill label="SASS" src="images/logos/sass.svg" />
-            <AppSkill label="PHP" src="images/logos/php.svg" />
             <AppSkill label="MSSQL" src="images/logos/mssql.svg" />
             <AppSkill label="MySQL" src="images/logos/mysql.svg" />
             <AppSkill label="PostgreSQL" src="images/logos/postgresql.svg" />
+            <AppSkill label="Bootstrap" src="images/logos/bootstrap.svg" />
+            <AppSkill label="Jest" src="images/logos/jest.svg" />
+            <AppSkill label="GraphQL" src="images/logos/graphql.svg" />
           </Group>
 
           <Title className={classes.experience}>CERTIFICATIONS</Title>
