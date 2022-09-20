@@ -4,22 +4,17 @@ import React from 'react';
 const useStyles = createStyles((theme) => ({
   wavesContainer: {
     position: `absolute`,
-    bottom: 0,
+    top: 0,
     left: 0,
     width: `100%`,
     overflow: `hidden`,
     lineHeight: 0,
-    transform: `rotate(180deg)`,
 
     svg: {
       position: `relative`,
       display: `block`,
       width: `calc(100% + 1.3px)`,
-      height: `128px`,
-
-      [theme.fn.smallerThan(`sm`)]: {
-        height: `64px`,
-      },
+      height: `160px`,
     },
   },
 

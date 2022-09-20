@@ -45,6 +45,7 @@ export default function HomePage() {
   return (
     <>
       <div className={classes.wrapper}>
+        <AppWaves />
         <Container size="xl">
           <Title className={classes.title}>
             Geoffrey&nbsp;
@@ -62,7 +63,6 @@ export default function HomePage() {
             <AppResumeDownload />
           </Center>
         </Container>
-        <AppWaves />
       </div>
     </>
   );
