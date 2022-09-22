@@ -1,9 +1,16 @@
 import { ActionIcon, useMantineColorScheme } from '@mantine/core';
+import { useHotkeys } from '@mantine/hooks';
 import { IconMoonStars, IconSun } from '@tabler/icons';
 
 export default function AppThemeSwitch() {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
 
+  useHotkeys([
+    [
+      "mod+J", () => toggleColorScheme(),
+    ]
+  ]);
+  
   return (
     <ActionIcon
       onClick={() => toggleColorScheme()}

@@ -1,5 +1,5 @@
 import { AppShell, ColorScheme, ColorSchemeProvider, MantineProvider, useMantineTheme } from '@mantine/core';
-import { useColorScheme } from '@mantine/hooks';
+import { useColorScheme, useHotkeys } from '@mantine/hooks';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { AppProps } from 'next/app';
@@ -17,6 +17,15 @@ function App({ Component, pageProps, router }: AppProps) {
     useState<ColorScheme>(preferredColorScheme);
   const toggleColorScheme = (value?: ColorScheme) =>
     setColorScheme(value || (colorScheme === `dark` ? `light` : `dark`));
+
+  useHotkeys([
+    [
+      "alt+mod+shift+X",
+      () => {
+        window.location.href = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
+      },
+    ],
+  ]);
 
   const queryClient = new QueryClient({
     defaultOptions: {
