@@ -28,8 +28,8 @@ const useStyles = createStyles((theme) => ({
   button: {
     background: `linear-gradient(-60deg, ${
       theme.colorScheme === `dark`
-        ? theme.colors.arancia[2]
-        : theme.colors.arancia[8]
+        ? theme.colors[theme.primaryColor][2]
+        : theme.colors[theme.primaryColor][8]
     } 0%, ${theme.colors[theme.primaryColor][7]} 100%)`,
   },
 }));

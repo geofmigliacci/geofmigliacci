@@ -26,8 +26,8 @@ const useStyles = createStyles((theme) => ({
   highlight: {
     color:
       theme.colorScheme === `dark`
-        ? theme.colors.arancia[2]
-        : theme.colors.arancia[8],
+        ? theme.colors[theme.primaryColor][2]
+        : theme.colors[theme.primaryColor][8],
   },
 
   description: {

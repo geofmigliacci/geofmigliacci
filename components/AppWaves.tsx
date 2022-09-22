@@ -25,8 +25,8 @@ const useStyles = createStyles((theme) => ({
   shapeFill: {
     fill:
       theme.colorScheme === `dark`
-        ? theme.colors.arancia[2]
-        : theme.colors.arancia[8],
+        ? theme.colors[theme.primaryColor][2]
+        : theme.colors[theme.primaryColor][8],
   },
 }));
 

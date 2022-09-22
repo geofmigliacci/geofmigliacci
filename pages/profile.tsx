@@ -10,8 +10,8 @@ const useStyles = createStyles((theme) => ({
     fontWeight: 900,
     color:
       theme.colorScheme === `dark`
-        ? theme.colors.arancia[2]
-        : theme.colors.arancia[8],
+        ? theme.colors[theme.primaryColor][2]
+        : theme.colors[theme.primaryColor][8],
 
     [theme.fn.smallerThan(`sm`)]: {
       fontSize: 32,
@@ -123,8 +123,8 @@ export default function ProfilePage() {
           <Timeline
             color={
               theme.colorScheme === `dark`
-                ? theme.colors.arancia[2]
-                : theme.colors.arancia[8]
+                ? theme.colors[theme.primaryColor][2]
+                : theme.colors[theme.primaryColor][8]
             }
             active={1}
             lineWidth={2}
@@ -254,8 +254,8 @@ export default function ProfilePage() {
           <Timeline
             color={
               theme.colorScheme === `dark`
-                ? theme.colors.arancia[2]
-                : theme.colors.arancia[8]
+                ? theme.colors[theme.primaryColor][2]
+                : theme.colors[theme.primaryColor][8]
             }
             active={1}
             lineWidth={2}

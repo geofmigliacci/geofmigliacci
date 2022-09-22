@@ -7,8 +7,8 @@ const useStyles = createStyles((theme) => ({
     display: `flex`,
     backgroundImage: `linear-gradient(-60deg, ${
       theme.colorScheme === `dark`
-        ? theme.colors.arancia[2]
-        : theme.colors.arancia[8]
+        ? theme.colors[theme.primaryColor][2]
+        : theme.colors[theme.primaryColor][8]
     } 0%, ${theme.colors[theme.primaryColor][7]} 100%)`,
     padding: theme.spacing.xl * 1.5,
     borderRadius: theme.radius.md,

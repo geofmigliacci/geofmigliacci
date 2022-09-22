@@ -15,8 +15,8 @@ const useStyles = createStyles((theme) => ({
     marginBottom: theme.spacing.xl * 1.5,
     color:
       theme.colorScheme === `dark`
-        ? theme.colors.arancia[2]
-        : theme.colors.arancia[8],
+        ? theme.colors[theme.primaryColor][2]
+        : theme.colors[theme.primaryColor][8],
 
     [theme.fn.smallerThan(`sm`)]: {
       fontSize: 120,
