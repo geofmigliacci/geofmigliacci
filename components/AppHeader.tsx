@@ -62,13 +62,13 @@ export function AppHeader() {
   return (
     <Header height={56} mb={120}>
       <Container className={classes.inner}>
-        <Group spacing={0} position="left" noWrap>
+        <Group spacing={2} position="left" noWrap>
           {links}
         </Group>
 
         <AppLogo />
 
-        <Group spacing={0} position="right" noWrap>
+        <Group spacing={2} position="right" noWrap>
           <NextLink href="https://github.com/geofmigliacci" target="_blank">
             <ActionIcon size="lg">
               <IconBrandGithub size={18} stroke={1.5} />
