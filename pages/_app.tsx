@@ -2,6 +2,7 @@ import { AppShell, ColorScheme, ColorSchemeProvider, MantineProvider, useMantine
 import { useColorScheme, useHotkeys } from '@mantine/hooks';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { AnimatePresence, motion } from 'framer-motion';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
 import { useState } from 'react';
@@ -83,48 +84,89 @@ function App({ Component, pageProps, router }: AppProps) {
       </Head>
 
       <QueryClientProvider client={queryClient}>
-        <ColorSchemeProvider
-          colorScheme={colorScheme}
-          toggleColorScheme={toggleColorScheme}
-        >
-          <MantineProvider
-            withGlobalStyles
-            withNormalizeCSS
-            theme={{
-              colors: {
-                arancia: [
-                  `#FFECD3`,
-                  `#FFD49D`,
-                  `#FFBF6C`,
-                  `#FFAB3F`,
-                  `#FF9917`,
-                  `#FF8A00`,
-                  `#F57F17`,
-                  `#FF6E00`,
-                  `#FF6200`,
-                  `#F45800`,
-                ],
+        <AnimatePresence exitBeforeEnter>
+          <motion.div
+            key={router.route}
+            initial="initialState"
+            animate="animateState"
+            exit="exitState"
+            transition={{
+              duration: 0.75,
+            }}
+            variants={{
+              initialState: {
+                opacity: 0,
+                clipPath: "polygon(0 0, 100% 0, 100% 0, 0 0)",
               },
-              primaryColor: `arancia`,
-              colorScheme,
+              animateState: {
+                opacity: 1,
+                clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)",
+              },
+              exitState: {
+                opacity: 0,
+                clipPath: "polygon(0 0, 100% 0, 100% 10%, 0 10%)",
+              },
             }}
           >
-            <AppShell
-              fixed
-              styles={{
-                main: {
-                  background:
-                    colorScheme === `dark`
-                      ? theme.colors.dark[8]
-                      : theme.colors.gray[0],
-                },
-              }}
-              header={<AppHeader />}
+            <ColorSchemeProvider
+              colorScheme={colorScheme}
+              toggleColorScheme={toggleColorScheme}
             >
-              <Component {...pageProps} key={router.pathname} />
-            </AppShell>
-          </MantineProvider>
-        </ColorSchemeProvider>
+              <MantineProvider
+                withGlobalStyles
+                withNormalizeCSS
+                theme={{
+                  globalStyles: (theme) => ({
+                    "*::-webkit-scrollbar": {
+                      width: "0.5rem",
+                    },
+                    "*::-webkit-scrollbar-track": {
+                      "-webkit-box-shadow": "inset 0 0 6px rgba(0, 0, 0 ,0.00)",
+                    },
+                    "*::-webkit-scrollbar-thumb": {
+                      background: `linear-gradient(-60deg, ${
+                        theme.colorScheme === `dark`
+                          ? theme.colors[theme.primaryColor][2]
+                          : theme.colors[theme.primaryColor][8]
+                      } 0%, ${theme.colors[theme.primaryColor][7]} 100%)`,
+                    },
+                  }),
+                  colors: {
+                    arancia: [
+                      `#FFECD3`,
+                      `#FFD49D`,
+                      `#FFBF6C`,
+                      `#FFAB3F`,
+                      `#FF9917`,
+                      `#FF8A00`,
+                      `#F57F17`,
+                      `#FF6E00`,
+                      `#FF6200`,
+                      `#F45800`,
+                    ],
+                  },
+                  primaryColor: `arancia`,
+                  colorScheme,
+                }}
+              >
+                <AppShell
+                  fixed
+                  styles={{
+                    main: {
+                      background:
+                        colorScheme === `dark`
+                          ? theme.colors.dark[8]
+                          : theme.colors.gray[0],
+                    },
+                  }}
+                  header={<AppHeader />}
+                >
+                  <Component {...pageProps} key={router.pathname} />
+                </AppShell>
+              </MantineProvider>
+            </ColorSchemeProvider>
+          </motion.div>
+        </AnimatePresence>
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
     </>
