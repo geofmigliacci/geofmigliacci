@@ -1,4 +1,4 @@
-import { ActionIcon, Container, createStyles, Group, Header } from '@mantine/core';
+import { ActionIcon, Container, createStyles, Group, Header, Tooltip } from '@mantine/core';
 import { NextLink } from '@mantine/next';
 import { IconArchive, IconBrandGithub, IconBrandLinkedin, IconHome2, IconUserSearch } from '@tabler/icons';
 import { useRouter } from 'next/router';
@@ -17,7 +17,7 @@ const useStyles = createStyles((theme) => ({
   link: {},
 
   active: {
-    '&, &:hover': {
+    "&, &:hover": {
       backgroundColor: theme.fn.variant({
         variant: `light`,
         color: theme.primaryColor,
@@ -48,14 +48,16 @@ export function AppHeader() {
 
   const links = mockdata.map((link) => (
     <NextLink key={link.label} href={link.href}>
-      <ActionIcon
-        size="lg"
-        className={cx(classes.link, {
-          [classes.active]: router.pathname === link.href,
-        })}
-      >
-        {link.icon}
-      </ActionIcon>
+      <Tooltip label={link.label} position="bottom">
+        <ActionIcon
+          size="lg"
+          className={cx(classes.link, {
+            [classes.active]: router.pathname === link.href,
+          })}
+        >
+          {link.icon}
+        </ActionIcon>
+      </Tooltip>
     </NextLink>
   ));
 

@@ -91,7 +91,7 @@ function App({ Component, pageProps, router }: AppProps) {
             animate="animateState"
             exit="exitState"
             transition={{
-              duration: 0.75,
+              duration: 0.5,
             }}
             variants={{
               initialState: {
