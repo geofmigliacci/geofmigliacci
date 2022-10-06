@@ -85,6 +85,7 @@ export const AppShell = forwardRef<HTMLDivElement, AppShellProps>(
     } = useComponentDefaultProps("AppShell", defaultProps, props);
     
     const { classes, cx } = useStyles(
+      // @ts-ignore
       { padding, fixed, navbarOffsetBreakpoint, asideOffsetBreakpoint },
       { styles, classNames, unstyled, name: "AppShell" }
     );
