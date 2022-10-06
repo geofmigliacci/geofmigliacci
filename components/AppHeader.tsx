@@ -62,7 +62,7 @@ export function AppHeader() {
   ));
 
   return (
-    <Header height={56} mb={120}>
+    <Header height={56}>
       <Container className={classes.inner}>
         <Group spacing={2} position="left" noWrap>
           {links}
