@@ -8,7 +8,7 @@ import { Repository } from '../types/repository.interface';
 
 const getRepos = async (): Promise<Repository[]> => (await fetch(`https://api.github.com/users/geofmigliacci/repos`)).json();
 
-export async function getStaticProps() {
+export async function getServerSideProps() {
   const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery<Repository[]>([`projects`], getRepos);
