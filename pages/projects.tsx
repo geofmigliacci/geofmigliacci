@@ -1,24 +1,12 @@
 import { Alert, Container, Grid, SimpleGrid, Skeleton } from '@mantine/core';
 import { IconAlertCircle } from '@tabler/icons';
-import { dehydrate, QueryClient, useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 
 import AppProjectCard from '../components/Projects/AppProjectCard';
 import AppProjectsStats from '../components/Projects/AppProjectsStats';
 import { Repository } from '../types/repository.interface';
 
 const getRepos = async (): Promise<Repository[]> => (await fetch(`https://api.github.com/users/geofmigliacci/repos`)).json();
-
-export async function getServerSideProps() {
-  const queryClient = new QueryClient();
-
-  await queryClient.prefetchQuery<Repository[]>([`projects`], getRepos);
-
-  return {
-    props: {
-      dehydrate: dehydrate(queryClient)
-    }
-  }
-}
 
 export default function ProjectsPage() {
   const {
