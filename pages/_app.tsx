@@ -1,6 +1,6 @@
 import { ColorScheme, ColorSchemeProvider, MantineProvider, useMantineTheme } from '@mantine/core';
 import { useColorScheme, useHotkeys } from '@mantine/hooks';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { Hydrate, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
@@ -9,7 +9,13 @@ import { useState } from 'react';
 import { AppShell } from '../components/_app/AppShell';
 import { AppHeader } from '../components/AppHeader';
 
-function App({ Component, pageProps, router }: AppProps) {
+function App({
+  Component,
+  pageProps,
+  router,
+}: AppProps<{
+  dehydrate: any;
+}>) {
   const theme = useMantineTheme();
 
   const preferredColorScheme = useColorScheme();
@@ -84,65 +90,67 @@ function App({ Component, pageProps, router }: AppProps) {
       </Head>
 
       <QueryClientProvider client={queryClient}>
-        <ColorSchemeProvider
-          colorScheme={colorScheme}
-          toggleColorScheme={toggleColorScheme}
-        >
-          <MantineProvider
-            withGlobalStyles
-            withNormalizeCSS
-            theme={{
-              globalStyles: (theme) => ({
-                "*::-webkit-scrollbar": {
-                  width: "0.5rem",
-                },
-                "*::-webkit-scrollbar-track": {
-                  "-webkit-box-shadow": "inset 0 0 6px rgba(0, 0, 0 ,0.00)",
-                },
-                "*::-webkit-scrollbar-thumb": {
-                  background: `linear-gradient(-60deg, ${
-                    theme.colorScheme === `dark`
-                      ? theme.colors[theme.primaryColor][2]
-                      : theme.colors[theme.primaryColor][8]
-                  } 0%, ${theme.colors[theme.primaryColor][7]} 100%)`,
-                },
-              }),
-              colors: {
-                arancia: [
-                  `#FFECD3`,
-                  `#FFD49D`,
-                  `#FFBF6C`,
-                  `#FFAB3F`,
-                  `#FF9917`,
-                  `#FF8A00`,
-                  `#F57F17`,
-                  `#FF6E00`,
-                  `#FF6200`,
-                  `#F45800`,
-                ],
-              },
-              primaryColor: `arancia`,
-              colorScheme,
-            }}
+        <Hydrate state={pageProps.dehydrate}>
+          <ColorSchemeProvider
+            colorScheme={colorScheme}
+            toggleColorScheme={toggleColorScheme}
           >
-            <AppShell
-              fixed
-              styles={{
-                main: {
-                  background:
-                    colorScheme === `dark`
-                      ? theme.colors.dark[8]
-                      : theme.colors.gray[0],
+            <MantineProvider
+              withGlobalStyles
+              withNormalizeCSS
+              theme={{
+                globalStyles: (theme) => ({
+                  "*::-webkit-scrollbar": {
+                    width: "0.5rem",
+                  },
+                  "*::-webkit-scrollbar-track": {
+                    "-webkit-box-shadow": "inset 0 0 6px rgba(0, 0, 0 ,0.00)",
+                  },
+                  "*::-webkit-scrollbar-thumb": {
+                    background: `linear-gradient(-60deg, ${
+                      theme.colorScheme === `dark`
+                        ? theme.colors[theme.primaryColor][2]
+                        : theme.colors[theme.primaryColor][8]
+                    } 0%, ${theme.colors[theme.primaryColor][7]} 100%)`,
+                  },
+                }),
+                colors: {
+                  arancia: [
+                    `#FFECD3`,
+                    `#FFD49D`,
+                    `#FFBF6C`,
+                    `#FFAB3F`,
+                    `#FF9917`,
+                    `#FF8A00`,
+                    `#F57F17`,
+                    `#FF6E00`,
+                    `#FF6200`,
+                    `#F45800`,
+                  ],
                 },
+                primaryColor: `arancia`,
+                colorScheme,
               }}
-              header={<AppHeader />}
             >
-              <Component {...pageProps} key={router.pathname} />
-            </AppShell>
-          </MantineProvider>
-        </ColorSchemeProvider>
+              <AppShell
+                fixed
+                styles={{
+                  main: {
+                    background:
+                      colorScheme === `dark`
+                        ? theme.colors.dark[8]
+                        : theme.colors.gray[0],
+                  },
+                }}
+                header={<AppHeader />}
+              >
+                <Component {...pageProps} key={router.pathname} />
+              </AppShell>
+            </MantineProvider>
+          </ColorSchemeProvider>
 
-        <ReactQueryDevtools initialIsOpen={false} />
+          <ReactQueryDevtools initialIsOpen={false} />
+        </Hydrate>
       </QueryClientProvider>
     </>
   );
