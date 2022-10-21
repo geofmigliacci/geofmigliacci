@@ -1,16 +1,22 @@
 import { useMantineTheme } from '@mantine/core';
-import React from 'react';
+import { motion } from 'framer-motion';
 
-export default function AppLogo() {
+interface AppLogoProps {
+  width: number;
+}
+
+export default function AppLogo({ width }: AppLogoProps) {
   const theme = useMantineTheme();
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       height="100%"
-      width="33"
+      width={width}
       viewBox="0 0 490 490"
     >
-      <path
+      <motion.path
+        animate={{ rotate: 180 }}
+        transition={{ from: 90, duration: 4 }}
         fill={
           theme.colorScheme === `dark`
             ? theme.colors[theme.primaryColor][2]

@@ -1,7 +1,8 @@
 import { Center, Container, createStyles, Text, Title } from '@mantine/core';
+import { motion } from 'framer-motion';
 
-import AppResumeDownload from '../components/AppResumeDownload';
-import AppWaves from '../components/AppWaves';
+import AppLogo from '../components/_app/AppLogo';
+import AppResumeDownload from '../components/_app/AppResumeDownload';
 
 const useStyles = createStyles((theme) => ({
   wrapper: {
@@ -43,27 +44,43 @@ export default function HomePage() {
   const { classes } = useStyles();
 
   return (
-    <>
-      <div className={classes.wrapper}>
-        <AppWaves />
-        <Container size="xl">
+    <div className={classes.wrapper}>
+      <Container size="xl">
+        <motion.div
+          initial={{ x: "-50%", opacity: 0 }}
+          animate={{ x: "0%", opacity: 1 }}
+          transition={{ delay: 0.5 }}
+        >
           <Title className={classes.title}>
-            Geoffrey&nbsp;
+            <AppLogo width={28} />
+            &nbsp;Geoffrey&nbsp;
             <Text component="span" inherit className={classes.highlight}>
               MIGLIACCI
             </Text>
           </Title>
+        </motion.div>
 
+        <motion.div
+          initial={{ x: "-50%", opacity: 0 }}
+          animate={{ x: "0%", opacity: 1 }}
+          transition={{ delay: 0.7 }}
+        >
           <Text size="lg" className={classes.description}>
             {`Un développeur full stack avec 4 ans d'expérience, passionné par les
           nouvelles technologies, les frameworks & la musique.`}
           </Text>
+        </motion.div>
 
+        <motion.div
+          initial={{ x: "-50%", opacity: 0 }}
+          animate={{ x: "0%", opacity: 1 }}
+          transition={{ delay: 0.9 }}
+        >
           <Center mt="xs">
             <AppResumeDownload />
           </Center>
-        </Container>
-      </div>
-    </>
+        </motion.div>
+      </Container>
+    </div>
   );
 }

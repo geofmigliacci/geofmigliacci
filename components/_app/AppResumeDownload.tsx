@@ -1,6 +1,5 @@
 import { ActionIcon, Tooltip } from '@mantine/core';
 import { IconFileDownload } from '@tabler/icons';
-import React from 'react';
 
 export default function AppResumeDownload() {
   return (

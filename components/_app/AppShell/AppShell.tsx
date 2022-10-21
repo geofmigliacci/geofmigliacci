@@ -122,6 +122,7 @@ export const AppShell = forwardRef<HTMLDivElement, AppShellProps>(
                   exitState: {
                     opacity: 0,
                     clipPath: "polygon(0 0, 100% 0, 100% 10%, 0 10%)",
+                    y: '+100%'
                   },
                 }}
               >

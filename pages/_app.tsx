@@ -6,8 +6,8 @@ import { AppProps } from 'next/app';
 import Head from 'next/head';
 import { useState } from 'react';
 
+import { AppHeader } from '../components/_app/AppHeader';
 import { AppShell } from '../components/_app/AppShell';
-import { AppHeader } from '../components/AppHeader';
 
 function App({
   Component,

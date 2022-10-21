@@ -1,9 +1,8 @@
-import { ActionIcon, Container, createStyles, Group, Header, Tooltip } from '@mantine/core';
+import { ActionIcon, Container, createStyles, Group, Header } from '@mantine/core';
 import { NextLink } from '@mantine/next';
 import { IconArchive, IconBrandGithub, IconBrandLinkedin, IconHome2, IconUserSearch } from '@tabler/icons';
 import { useRouter } from 'next/router';
 
-import AppLogo from './AppLogo';
 import AppThemeSwitch from './AppThemeSwitch';
 
 const useStyles = createStyles((theme) => ({
@@ -14,7 +13,20 @@ const useStyles = createStyles((theme) => ({
     height: 56,
   },
 
-  link: {},
+  link: {
+    display: 'block',
+    lineHeight: 1,
+    padding: '8px 12px',
+    borderRadius: theme.radius.sm,
+    textDecoration: 'none',
+    color: theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.colors.gray[7],
+    fontSize: theme.fontSizes.sm,
+    fontWeight: 500,
+
+    '&:hover': {
+      backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
+    },
+  },
 
   active: {
     "&, &:hover": {
@@ -47,17 +59,14 @@ export function AppHeader() {
   const { classes, cx } = useStyles();
 
   const links = mockdata.map((link) => (
-    <NextLink key={link.label} href={link.href}>
-      <Tooltip label={link.label} position="bottom">
-        <ActionIcon
-          size="lg"
-          className={cx(classes.link, {
-            [classes.active]: router.pathname === link.href,
-          })}
-        >
-          {link.icon}
-        </ActionIcon>
-      </Tooltip>
+    <NextLink
+      key={link.label}
+      href={link.href}
+      className={cx(classes.link, {
+        [classes.active]: router.pathname === link.href,
+      })}
+    >
+      {link.icon}
     </NextLink>
   ));
 
@@ -67,8 +76,6 @@ export function AppHeader() {
         <Group spacing={2} position="left" noWrap>
           {links}
         </Group>
-
-        <AppLogo />
 
         <Group spacing={2} position="right" noWrap>
           <NextLink href="https://github.com/geofmigliacci" target="_blank">
