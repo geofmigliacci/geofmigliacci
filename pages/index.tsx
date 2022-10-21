@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 
 import AppLogo from '../components/_app/AppLogo';
 import AppResumeDownload from '../components/_app/AppResumeDownload';
+import AppWaves from '../components/_app/AppWaves';
 
 const useStyles = createStyles((theme) => ({
   wrapper: {
@@ -45,6 +46,7 @@ export default function HomePage() {
 
   return (
     <div className={classes.wrapper}>
+      <AppWaves />
       <Container size="xl">
         <motion.div
           initial={{ x: "-50%", opacity: 0 }}
