@@ -16,7 +16,7 @@ export default function AppLogo({ width }: AppLogoProps) {
     >
       <motion.path
         animate={{ rotate: 180 }}
-        transition={{ from: 90, duration: 4 }}
+        transition={{ from: 90, duration: 3 }}
         fill={
           theme.colorScheme === `dark`
             ? theme.colors[theme.primaryColor][2]

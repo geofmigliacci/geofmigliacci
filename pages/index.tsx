@@ -53,9 +53,16 @@ export default function HomePage() {
           animate={{ x: "0%", opacity: 1 }}
           transition={{ delay: 0.5 }}
         >
+          <AppLogo width={64}></AppLogo>
+        </motion.div>
+
+        <motion.div
+          initial={{ x: "-50%", opacity: 0 }}
+          animate={{ x: "0%", opacity: 1 }}
+          transition={{ delay: 0.5 }}
+        >
           <Title className={classes.title}>
-            <AppLogo width={28} />
-            &nbsp;Geoffrey&nbsp;
+            Geoffrey&nbsp;
             <Text component="span" inherit className={classes.highlight}>
               MIGLIACCI
             </Text>
