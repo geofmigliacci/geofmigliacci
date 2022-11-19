@@ -56,7 +56,6 @@ export default function ProfilePage() {
             <AppSkill label="VueJs" src="images/logos/vuejs.svg" />
             <AppSkill label=".NET" src="images/logos/netcore.svg" />
             <AppSkill label="Symfony" src="images/logos/symfony.svg" />
-            <AppSkill label="Laravel" src="images/logos/laravel.svg" />
           </Group>
 
           <Title className={classes.experience}>DIVERS</Title>
