@@ -41,7 +41,7 @@ export default function AppCertification({
   return (
     <div>
       <Group noWrap>
-        <Avatar src={src} size={40} radius="md" />
+        <Avatar src={src} size={40} />
         <div>
           <Text size="lg" weight={500} className={classes.name}>
             {topic}
