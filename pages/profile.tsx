@@ -85,6 +85,10 @@ export default function ProfilePage() {
                   name: `NestJS Fundamentals`,
                   src: `https://drive.google.com/file/d/1pnj6iHQ0zoxLMQG9_QSDfA7FEg8kbI7z/view?usp=share_link`,
                 },
+                {
+                  name: `NestJS Authentication & Authorization`,
+                  src: `https://drive.google.com/file/d/1t6ZlVkm1W7fv7RUmFxPW_Aww9TNg08_n/view?usp=share_link`,
+                },
               ]}
             />
             <AppCertification
