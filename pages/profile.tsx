@@ -99,6 +99,10 @@ export default function ProfilePage() {
                   name: `Découverte de la sécurité des applications`,
                   src: `https://drive.google.com/file/d/1VWCN-Lqartx9ERKpexLEzgW1xIECH0hz/view?usp=share_link`,
                 },
+                {
+                  name: `La sécurité dans les développements Web`,
+                  src: `https://drive.google.com/file/d/1J-wVNxq6DG4HhHnTfrCE4B8qFyqc7cfI/view?usp=sharing`,
+                },
               ]}
             />
           </Stack>
