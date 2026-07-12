@@ -1,0 +1,136 @@
+"use client";
+
+import { ArrowRight } from "lucide-react";
+import { motion, useReducedMotion } from "motion/react";
+import Link from "next/link";
+import { FaEnvelope, FaGithub, FaLinkedinIn } from "react-icons/fa6";
+import { BlueprintArc } from "@/components/blueprint-arc";
+import { BlueprintCorners } from "@/components/blueprint-corners";
+import { EASE, StaggerText } from "@/components/stagger-text";
+import { Button } from "@/components/ui/button";
+
+const NAME_LINES = ["GEOFFREY", "MIGLIACCI"] as const;
+const NAME_DELAY = 0.15;
+const LETTER_STAGGER = 0.04;
+const NAME_SIZE =
+  "text-[clamp(2rem,12vw,10rem)] 2xl:text-[clamp(2rem,12vw,11.5rem)]";
+
+export function Hero() {
+  const reducedMotion = useReducedMotion();
+  const lettersDone =
+    NAME_DELAY + (NAME_LINES[0].length + NAME_LINES[1].length) * LETTER_STAGGER;
+
+  return (
+    <section className="relative isolate flex min-h-[calc(100svh-4.5rem)] flex-col justify-center px-6 py-8 md:py-12">
+      <BlueprintArc
+        corner="bottom-right"
+        delay={lettersDone + 0.2}
+        className="size-[clamp(20rem,45vw,34rem)]"
+      />
+      <div className="relative mx-auto w-full max-w-[60rem] p-6 2xl:max-w-[75rem]">
+        <motion.div
+          aria-hidden
+          className="pointer-events-none absolute inset-0"
+          initial={reducedMotion ? false : { opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: lettersDone + 0.2, duration: 0.6, ease: EASE }}
+        >
+          <BlueprintCorners />
+        </motion.div>
+        <motion.p
+          className="font-mono text-xs tracking-[0.35em] text-primary uppercase md:text-sm"
+          initial={reducedMotion ? false : { opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: lettersDone, duration: 0.5, ease: EASE }}
+        >
+          Ingénieur logiciel
+        </motion.p>
+        <h1
+          aria-label="Geoffrey Migliacci"
+          className="mt-4 font-bold leading-[0.95] tracking-tight"
+        >
+          <StaggerText
+            text={NAME_LINES[0]}
+            delay={NAME_DELAY}
+            stagger={LETTER_STAGGER}
+            className={NAME_SIZE}
+          />
+          <StaggerText
+            text={NAME_LINES[1]}
+            delay={NAME_DELAY + NAME_LINES[0].length * LETTER_STAGGER}
+            stagger={LETTER_STAGGER}
+            className={NAME_SIZE}
+            letterClassName="text-transparent [-webkit-text-stroke:2px_var(--color-foreground)]"
+          />
+        </h1>
+        <motion.div
+          className="mt-10 flex flex-col items-start gap-6"
+          initial={reducedMotion ? false : { opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: lettersDone + 0.1, duration: 0.6, ease: EASE }}
+        >
+          <p className="max-w-xl text-lg text-muted-foreground md:text-xl">
+            J'écris sur le code, la cuisine, les langues, la philosophie — tout
+            ce qui nourrit ma curiosité et la vie autour.
+          </p>
+          <div className="flex flex-wrap gap-3">
+            <Button
+              size="lg"
+              nativeButton={false}
+              render={<Link href="/articles" />}
+            >
+              Lire les articles
+              <ArrowRight />
+            </Button>
+            <div className="flex gap-2">
+              <Button
+                size="icon-lg"
+                variant="outline"
+                aria-label="Me contacter par email"
+                nativeButton={false}
+                render={
+                  // biome-ignore lint/a11y/useAnchorContent: Base UI merges the Button children into the rendered anchor
+                  <a href="mailto:geoffrey.migliacci@gmail.com" />
+                }
+              >
+                <FaEnvelope aria-hidden />
+              </Button>
+              <Button
+                size="icon-lg"
+                variant="outline"
+                aria-label="GitHub"
+                nativeButton={false}
+                render={
+                  // biome-ignore lint/a11y/useAnchorContent: Base UI merges the Button children into the rendered anchor
+                  <a
+                    href="https://github.com/geofmigliacci"
+                    target="_blank"
+                    rel="noreferrer"
+                  />
+                }
+              >
+                <FaGithub aria-hidden />
+              </Button>
+              <Button
+                size="icon-lg"
+                variant="outline"
+                aria-label="LinkedIn"
+                nativeButton={false}
+                render={
+                  // biome-ignore lint/a11y/useAnchorContent: Base UI merges the Button children into the rendered anchor
+                  <a
+                    href="https://www.linkedin.com/in/geofmigliacci/"
+                    target="_blank"
+                    rel="noreferrer"
+                  />
+                }
+              >
+                <FaLinkedinIn aria-hidden />
+              </Button>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
