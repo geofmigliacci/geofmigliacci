@@ -1,4 +1,4 @@
-import { defineConfig } from "vitest/config";
+import { defaultExclude, defineConfig } from "vitest/config";
 
 export default defineConfig({
   resolve: {
@@ -6,5 +6,6 @@ export default defineConfig({
   },
   test: {
     environment: "node",
+    exclude: [...defaultExclude, ".claude/**", ".next/**"],
   },
 });
