@@ -42,7 +42,7 @@ export function Hero() {
           className="flex flex-col items-start gap-6 xl:flex-row xl:gap-8"
           initial={reducedMotion ? false : { opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: lettersDone, duration: 0.5, ease: EASE }}
+          transition={{ duration: 0.5, ease: EASE }}
         >
           <div className="relative size-40 shrink-0 overflow-hidden md:size-52 xl:size-56">
             <BlueprintCorners />
