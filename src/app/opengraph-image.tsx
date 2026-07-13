@@ -58,8 +58,8 @@ export default async function Image() {
             color: OG_COLORS.mutedForeground,
           }}
         >
-          J'écris sur le code, la cuisine, les langues, la philosophie — tout ce
-          qui nourrit ma curiosité et la vie autour.
+          Je conçois des systèmes .NET capables d'absorber la charge sans
+          broncher — de l'architecture backend jusqu'à l'interface.
         </div>
         <div
           style={{

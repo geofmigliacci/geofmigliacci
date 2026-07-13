@@ -18,17 +18,27 @@ afterEach(() => {
 describe("Hero", () => {
   it("applies the initial motion offset by default", () => {
     render(<Hero />);
-    expect(screen.getByText("Ingénieur logiciel")).toHaveStyle({
-      opacity: 0,
-    });
+    const identityRow =
+      screen.getByText("Ingénieur logiciel").parentElement?.parentElement;
+    expect(identityRow).toHaveStyle({ opacity: 0 });
   });
 
   it("skips the initial motion offset when the user prefers reduced motion", () => {
     mockedUseReducedMotion.mockReturnValue(true);
     render(<Hero />);
-    expect(screen.getByText("Ingénieur logiciel")).toHaveStyle({
-      opacity: 1,
-    });
+    const identityRow =
+      screen.getByText("Ingénieur logiciel").parentElement?.parentElement;
+    expect(identityRow).toHaveStyle({ opacity: 1 });
+  });
+
+  it("renders the portrait photo and technical specialization line", () => {
+    render(<Hero />);
+    expect(
+      screen.getByAltText("Portrait de Geoffrey Migliacci"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("Performance · CQRS · Clean Architecture"),
+    ).toBeInTheDocument();
   });
 
   it("renders the name as the accessible heading", () => {
@@ -38,9 +48,12 @@ describe("Hero", () => {
     ).toBeInTheDocument();
   });
 
-  it("renders the job title and tagline", () => {
+  it("renders the job title, technical positioning, and personal tagline", () => {
     render(<Hero />);
     expect(screen.getByText("Ingénieur logiciel")).toBeInTheDocument();
+    expect(
+      screen.getByText(/je conçois des systèmes \.net/i),
+    ).toBeInTheDocument();
     expect(
       screen.getByText(/j'écris sur le code, la cuisine/i),
     ).toBeInTheDocument();
