@@ -1,9 +1,36 @@
 // @vitest-environment jsdom
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { useReducedMotion } from "motion/react";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { Hero } from "@/app/_components/hero";
 
+vi.mock("motion/react", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("motion/react")>();
+  return { ...actual, useReducedMotion: vi.fn(() => false) };
+});
+
+const mockedUseReducedMotion = vi.mocked(useReducedMotion);
+
+afterEach(() => {
+  mockedUseReducedMotion.mockReturnValue(false);
+});
+
 describe("Hero", () => {
+  it("applies the initial motion offset by default", () => {
+    render(<Hero />);
+    expect(screen.getByText("Ingénieur logiciel")).toHaveStyle({
+      opacity: 0,
+    });
+  });
+
+  it("skips the initial motion offset when the user prefers reduced motion", () => {
+    mockedUseReducedMotion.mockReturnValue(true);
+    render(<Hero />);
+    expect(screen.getByText("Ingénieur logiciel")).toHaveStyle({
+      opacity: 1,
+    });
+  });
+
   it("renders the name as the accessible heading", () => {
     render(<Hero />);
     expect(
