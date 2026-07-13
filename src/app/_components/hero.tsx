@@ -51,6 +51,7 @@ export function Hero() {
               alt="Portrait de Geoffrey Migliacci"
               fill
               priority
+              sizes="(min-width: 1280px) 224px, (min-width: 768px) 208px, 160px"
               className="object-cover grayscale contrast-125"
             />
           </div>
