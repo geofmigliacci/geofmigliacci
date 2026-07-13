@@ -4,9 +4,9 @@ import { ArrowRight } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
 import Link from "next/link";
 import { FaEnvelope, FaGithub, FaLinkedinIn } from "react-icons/fa6";
-import { BlueprintArc } from "@/components/blueprint-arc";
-import { BlueprintCorners } from "@/components/blueprint-corners";
-import { EASE, StaggerText } from "@/components/stagger-text";
+import { BlueprintArc } from "@/components/decorative/blueprint-arc";
+import { BlueprintCorners } from "@/components/decorative/blueprint-corners";
+import { EASE, StaggerText } from "@/components/decorative/stagger-text";
 import { Button } from "@/components/ui/button";
 
 const NAME_LINES = ["GEOFFREY", "MIGLIACCI"] as const;

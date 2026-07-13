@@ -1,6 +1,6 @@
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { BlueprintCorners } from "@/components/blueprint-corners";
+import { BlueprintCorners } from "@/components/decorative/blueprint-corners";
 import { Card, CardContent } from "@/components/ui/card";
 import type { ArticleMeta } from "@/lib/articles";
 import { cn } from "@/lib/utils";

@@ -1,4 +1,4 @@
-import { BlueprintCorners } from "@/components/blueprint-corners";
+import { BlueprintCorners } from "@/components/decorative/blueprint-corners";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 

@@ -2,7 +2,7 @@
 
 import { motion, useReducedMotion } from "motion/react";
 import { useId } from "react";
-import { EASE } from "@/components/stagger-text";
+import { EASE } from "@/components/decorative/stagger-text";
 import { cn } from "@/lib/utils";
 
 type Corner = "top-left" | "top-right" | "bottom-right" | "bottom-left";

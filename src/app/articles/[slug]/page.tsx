@@ -6,7 +6,7 @@ import {
   ArticleTableOfContents,
   ReadingProgressBar,
 } from "@/app/articles/[slug]/_components/article-reading-experience";
-import { BlueprintCorners } from "@/components/blueprint-corners";
+import { BlueprintCorners } from "@/components/decorative/blueprint-corners";
 import { JsonLd } from "@/components/json-ld";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";

@@ -3,7 +3,7 @@
 import { X } from "lucide-react";
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { BlueprintCorners } from "@/components/blueprint-corners";
+import { BlueprintCorners } from "@/components/decorative/blueprint-corners";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {

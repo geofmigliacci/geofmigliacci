@@ -1,7 +1,7 @@
 import { DraftingCompass } from "lucide-react";
 import type { Metadata } from "next";
 import { ArticleExplorer } from "@/app/articles/_components/article-explorer";
-import { BlueprintCorners } from "@/components/blueprint-corners";
+import { BlueprintCorners } from "@/components/decorative/blueprint-corners";
 import {
   Empty,
   EmptyDescription,

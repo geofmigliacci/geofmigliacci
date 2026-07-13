@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Hero } from "@/components/hero";
+import { Hero } from "@/app/_components/hero";
 import { JsonLd } from "@/components/json-ld";
 import { personJsonLd } from "@/lib/json-ld";
 import { openGraphBase } from "@/lib/site";

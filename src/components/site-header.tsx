@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { BlueprintCorners } from "@/components/blueprint-corners";
-import { Logo } from "@/components/logo";
+import { BlueprintCorners } from "@/components/decorative/blueprint-corners";
+import { Logo } from "@/components/decorative/logo";
 import { NavLink } from "@/components/nav-link";
 
 export function SiteHeader() {

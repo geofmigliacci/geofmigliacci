@@ -7,5 +7,20 @@ export default defineConfig({
   test: {
     environment: "node",
     exclude: [...defaultExclude, ".claude/**", ".next/**"],
+    coverage: {
+      provider: "v8",
+      reporter: ["text", "lcov"],
+      include: ["src/**"],
+      exclude: [
+        "src/components/ui/**",
+        "src/app/**/opengraph-image.tsx",
+        "src/lib/og-image.tsx",
+        "src/app/**/page.tsx",
+        "src/app/layout.tsx",
+        "src/app/**/loading.tsx",
+        "src/app/not-found.tsx",
+        "src/components/decorative/**",
+      ],
+    },
   },
 });

@@ -3,9 +3,9 @@
 import { Home } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
 import Link from "next/link";
-import { BlueprintArc } from "@/components/blueprint-arc";
-import { BlueprintCorners } from "@/components/blueprint-corners";
-import { EASE, StaggerText } from "@/components/stagger-text";
+import { BlueprintArc } from "@/components/decorative/blueprint-arc";
+import { BlueprintCorners } from "@/components/decorative/blueprint-corners";
+import { EASE, StaggerText } from "@/components/decorative/stagger-text";
 import { Button } from "@/components/ui/button";
 
 const LINES = ["404", "INTROUVABLE"] as const;
