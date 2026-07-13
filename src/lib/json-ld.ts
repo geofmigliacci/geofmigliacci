@@ -8,22 +8,22 @@ export function personJsonLd() {
   };
 }
 
-interface BlogPostingInput {
+interface ArticleJsonLdInput {
   title: string;
   description: string;
   date: string;
   slug: string;
 }
 
-export function blogPostingJsonLd({
+export function articleJsonLd({
   title,
   description,
   date,
   slug,
-}: BlogPostingInput) {
+}: ArticleJsonLdInput) {
   return {
     "@context": "https://schema.org",
-    "@type": "BlogPosting",
+    "@type": "Article",
     headline: title,
     description,
     datePublished: date,

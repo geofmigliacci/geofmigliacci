@@ -1,9 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-  blogPostingJsonLd,
-  breadcrumbJsonLd,
-  personJsonLd,
-} from "@/lib/json-ld";
+import { articleJsonLd, breadcrumbJsonLd, personJsonLd } from "@/lib/json-ld";
 
 describe("personJsonLd", () => {
   it("builds a schema.org Person matching the site's identity", () => {
@@ -17,9 +13,9 @@ describe("personJsonLd", () => {
   });
 });
 
-describe("blogPostingJsonLd", () => {
-  it("builds a schema.org BlogPosting with a resolved article URL", () => {
-    const data = blogPostingJsonLd({
+describe("articleJsonLd", () => {
+  it("builds a schema.org Article with a resolved article URL", () => {
+    const data = articleJsonLd({
       title: "Mon article",
       description: "Une description.",
       date: "2026-01-01",
@@ -27,7 +23,7 @@ describe("blogPostingJsonLd", () => {
     });
 
     expect(data["@context"]).toBe("https://schema.org");
-    expect(data["@type"]).toBe("BlogPosting");
+    expect(data["@type"]).toBe("Article");
     expect(data.headline).toBe("Mon article");
     expect(data.description).toBe("Une description.");
     expect(data.datePublished).toBe("2026-01-01");

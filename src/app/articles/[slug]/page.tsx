@@ -18,7 +18,7 @@ import {
   listSlugs,
 } from "@/lib/articles";
 import { formatDate } from "@/lib/format";
-import { blogPostingJsonLd, breadcrumbJsonLd } from "@/lib/json-ld";
+import { articleJsonLd, breadcrumbJsonLd } from "@/lib/json-ld";
 import { openGraphBase, person } from "@/lib/site";
 
 interface ArticleParams {
@@ -72,7 +72,7 @@ export default async function ArticlePage({ params }: ArticleParams) {
       ? articles[currentIndex + 1]
       : undefined;
 
-  const articleJsonLd = blogPostingJsonLd({
+  const articleData = articleJsonLd({
     title: metadata.title,
     description: metadata.description,
     date: metadata.date,
@@ -87,7 +87,7 @@ export default async function ArticlePage({ params }: ArticleParams) {
 
   return (
     <article className="mx-auto max-w-[60rem] px-6 py-16 md:py-24 2xl:max-w-[75rem]">
-      <JsonLd data={articleJsonLd} />
+      <JsonLd data={articleData} />
       <JsonLd data={breadcrumbData} />
       <ReadingProgressBar />
       <Button
