@@ -8,8 +8,8 @@ describe("personJsonLd", () => {
     expect(data["@context"]).toBe("https://schema.org");
     expect(data["@type"]).toBe("Person");
     expect(data.name).toBe("Geoffrey Migliacci");
-    expect(data.url).toBe("https://www.migliacci.fr/");
-    expect(data.image).toBe("https://www.migliacci.fr/geofmigliacci.jpg");
+    expect(data.url).toBe("https://www.geofmigliacci.dev/");
+    expect(data.image).toBe("https://www.geofmigliacci.dev/geofmigliacci.jpg");
   });
 });
 
@@ -27,11 +27,11 @@ describe("articleJsonLd", () => {
     expect(data.headline).toBe("Mon article");
     expect(data.description).toBe("Une description.");
     expect(data.datePublished).toBe("2026-01-01");
-    expect(data.url).toBe("https://www.migliacci.fr/articles/mon-article");
+    expect(data.url).toBe("https://www.geofmigliacci.dev/articles/mon-article");
     expect(data.author).toEqual({
       "@type": "Person",
       name: "Geoffrey Migliacci",
-      url: "https://www.migliacci.fr/",
+      url: "https://www.geofmigliacci.dev/",
     });
   });
 });
@@ -51,19 +51,19 @@ describe("breadcrumbJsonLd", () => {
         "@type": "ListItem",
         position: 1,
         name: "Accueil",
-        item: "https://www.migliacci.fr/",
+        item: "https://www.geofmigliacci.dev/",
       },
       {
         "@type": "ListItem",
         position: 2,
         name: "Articles",
-        item: "https://www.migliacci.fr/articles",
+        item: "https://www.geofmigliacci.dev/articles",
       },
       {
         "@type": "ListItem",
         position: 3,
         name: "Mon article",
-        item: "https://www.migliacci.fr/articles/mon-article",
+        item: "https://www.geofmigliacci.dev/articles/mon-article",
       },
     ]);
   });

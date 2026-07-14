@@ -55,7 +55,7 @@ export default async function Image() {
             color: OG_COLORS.mutedForeground,
           }}
         >
-          migliacci.fr/articles
+          geofmigliacci.dev/articles
         </div>
       </div>
     </OgFrame>,

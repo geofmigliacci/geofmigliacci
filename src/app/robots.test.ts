@@ -5,7 +5,7 @@ describe("robots", () => {
   it("allows every crawler and points to the sitemap", () => {
     expect(robots()).toEqual({
       rules: { userAgent: "*", allow: "/" },
-      sitemap: "https://www.migliacci.fr/sitemap.xml",
+      sitemap: "https://www.geofmigliacci.dev/sitemap.xml",
     });
   });
 });

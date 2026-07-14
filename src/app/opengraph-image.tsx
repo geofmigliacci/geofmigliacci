@@ -70,7 +70,7 @@ export default async function Image() {
             color: OG_COLORS.mutedForeground,
           }}
         >
-          migliacci.fr
+          geofmigliacci.dev
         </div>
       </div>
     </OgFrame>,

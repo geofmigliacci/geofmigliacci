@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const siteUrl = new URL(
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.migliacci.fr",
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.geofmigliacci.dev",
 );
 
 export const openGraphBase = {

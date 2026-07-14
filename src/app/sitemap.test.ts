@@ -34,25 +34,25 @@ describe("sitemap", () => {
     const result = await sitemap();
 
     expect(result[0]).toEqual({
-      url: "https://www.migliacci.fr/",
+      url: "https://www.geofmigliacci.dev/",
       changeFrequency: "monthly",
       priority: 1,
     });
     expect(result[1]).toEqual({
-      url: "https://www.migliacci.fr/articles",
+      url: "https://www.geofmigliacci.dev/articles",
       lastModified: "2026-05-01",
       changeFrequency: "weekly",
       priority: 0.8,
     });
     expect(result.slice(2)).toEqual([
       {
-        url: "https://www.migliacci.fr/articles/article-b",
+        url: "https://www.geofmigliacci.dev/articles/article-b",
         lastModified: "2026-05-01",
         changeFrequency: "yearly",
         priority: 0.6,
       },
       {
-        url: "https://www.migliacci.fr/articles/article-a",
+        url: "https://www.geofmigliacci.dev/articles/article-a",
         lastModified: "2026-02-01",
         changeFrequency: "yearly",
         priority: 0.6,
