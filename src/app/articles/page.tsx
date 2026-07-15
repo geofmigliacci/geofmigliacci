@@ -25,7 +25,7 @@ export default async function ArticlesPage() {
 
   return (
     <div className="mx-auto max-w-[60rem] px-6 py-16 md:py-24 2xl:max-w-[75rem]">
-      <section className="relative flex flex-col items-start gap-4 rounded-xl bg-card/60 p-6 ring-1 ring-foreground/10 backdrop-blur-[2px] md:p-10">
+      <section className="relative flex flex-col items-start gap-4 rounded-xl bg-card/60 p-6 ring-1 ring-foreground/10 backdrop-blur-[2px] animate-in fade-in slide-in-from-bottom-3 duration-600 ease-blueprint motion-reduce:animate-none md:p-10">
         <BlueprintCorners />
         <h1 className="text-4xl font-bold tracking-tight text-balance md:text-5xl">
           Articles
