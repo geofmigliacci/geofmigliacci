@@ -4,7 +4,7 @@ import path from "node:path";
 export const OG_SIZE = { width: 1200, height: 630 };
 
 export const OG_COLORS = {
-  background: "#0f0f0f",
+  background: "#090909",
   foreground: "#e5e5e5",
   primary: "#f59e0b",
   mutedForeground: "#a3a3a3",
