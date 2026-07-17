@@ -210,9 +210,12 @@
     linear-gradient(currentColor, currentColor) top left / 1.5px 7px no-repeat,
     linear-gradient(currentColor, currentColor) top right / 7px 1.5px no-repeat,
     linear-gradient(currentColor, currentColor) top right / 1.5px 7px no-repeat,
-    linear-gradient(currentColor, currentColor) bottom left / 7px 1.5px no-repeat,
-    linear-gradient(currentColor, currentColor) bottom left / 1.5px 7px no-repeat,
-    linear-gradient(currentColor, currentColor) bottom right / 7px 1.5px no-repeat,
-    linear-gradient(currentColor, currentColor) bottom right / 1.5px 7px no-repeat;
+    linear-gradient(currentColor, currentColor) bottom left / 7px 1.5px
+    no-repeat,
+    linear-gradient(currentColor, currentColor) bottom left / 1.5px 7px
+    no-repeat,
+    linear-gradient(currentColor, currentColor) bottom right / 7px 1.5px
+    no-repeat,
+    linear-gradient(currentColor, currentColor) bottom right / 1.5px 7px
+    no-repeat;
 }
-
