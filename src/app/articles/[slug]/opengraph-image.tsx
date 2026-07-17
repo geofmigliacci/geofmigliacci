@@ -59,6 +59,7 @@ export default async function Image({
             fontSize: 64,
             lineHeight: 1.15,
             letterSpacing: -1,
+            textWrap: "balance",
             color: OG_COLORS.foreground,
           }}
         >

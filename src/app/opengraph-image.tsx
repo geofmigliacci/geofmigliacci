@@ -55,6 +55,7 @@ export default async function Image() {
             fontWeight: 400,
             fontSize: 30,
             lineHeight: 1.35,
+            textWrap: "balance",
             color: OG_COLORS.mutedForeground,
           }}
         >
