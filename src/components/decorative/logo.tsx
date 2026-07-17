@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "motion/react";
+import { EASE } from "@/components/decorative/stagger-text";
 import { cn } from "@/lib/utils";
 
 // Same artwork as src/app/icon.svg (the favicon); colors come from the theme.
@@ -27,8 +28,8 @@ export function Logo({ className }: { className?: string }) {
         initial={reducedMotion ? false : { pathLength: 0, fillOpacity: 0 }}
         animate={{ pathLength: 1, fillOpacity: 1 }}
         transition={{
-          pathLength: { duration: 0.9, ease: "easeInOut" },
-          fillOpacity: { delay: 0.7, duration: 0.4 },
+          pathLength: { duration: 0.9, ease: EASE },
+          fillOpacity: { delay: 0.7, duration: 0.4, ease: EASE },
         }}
       />
       <motion.path
@@ -38,8 +39,8 @@ export function Logo({ className }: { className?: string }) {
         initial={reducedMotion ? false : { pathLength: 0, fillOpacity: 0 }}
         animate={{ pathLength: 1, fillOpacity: 1 }}
         transition={{
-          pathLength: { duration: 1.1, delay: 0.4, ease: "easeInOut" },
-          fillOpacity: { delay: 1.2, duration: 0.5 },
+          pathLength: { duration: 1.1, delay: 0.4, ease: EASE },
+          fillOpacity: { delay: 1.2, duration: 0.5, ease: EASE },
         }}
       />
     </svg>

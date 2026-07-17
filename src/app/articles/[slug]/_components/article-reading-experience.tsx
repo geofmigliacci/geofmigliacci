@@ -73,7 +73,7 @@ export function ArticleTableOfContents({
       {headings.length > 1 && (
         <nav
           aria-label="Sommaire"
-          className="mb-8 animate-in fade-in slide-in-from-bottom-3 rounded-lg border border-border p-4 duration-600 ease-blueprint motion-reduce:animate-none"
+          className="mb-8 animate-in fade-in slide-in-from-bottom-3 rounded-xl p-4 ring-1 ring-foreground/10 duration-600 ease-blueprint motion-reduce:animate-none"
         >
           <p className="mb-2 font-mono text-xs tracking-[0.2em] text-muted-foreground uppercase">
             Sommaire

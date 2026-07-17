@@ -4,6 +4,8 @@ import { motion, useReducedMotion } from "motion/react";
 import { cn } from "@/lib/utils";
 
 export const EASE = [0.22, 1, 0.36, 1] as const;
+export const LETTER_STAGGER = 0.04;
+export const REVEAL_DELAY = 0.15;
 
 interface StaggerTextProps {
   text: string;
@@ -23,7 +25,7 @@ interface StaggerTextProps {
 export function StaggerText({
   text,
   delay = 0,
-  stagger = 0.04,
+  stagger = LETTER_STAGGER,
   className,
   letterClassName,
 }: StaggerTextProps) {

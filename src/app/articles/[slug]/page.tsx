@@ -100,7 +100,7 @@ export default async function ArticlePage({ params }: ArticleParams) {
         <ArrowLeft />
         Retour aux articles
       </Button>
-      <div className="relative rounded-xl bg-card/60 p-6 ring-1 ring-foreground/10 backdrop-blur-[2px] md:p-10">
+      <div className="relative rounded-xl bg-card/60 p-6 ring-1 ring-foreground/10 backdrop-blur-[2px] animate-in fade-in slide-in-from-bottom-3 duration-600 ease-blueprint motion-reduce:animate-none md:p-10">
         <BlueprintCorners />
         <h1 className="text-3xl font-bold tracking-tight text-balance md:text-4xl">
           {metadata.title}

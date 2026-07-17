@@ -5,17 +5,20 @@ import { motion, useReducedMotion } from "motion/react";
 import Link from "next/link";
 import { BlueprintArc } from "@/components/decorative/blueprint-arc";
 import { BlueprintCorners } from "@/components/decorative/blueprint-corners";
-import { EASE, StaggerText } from "@/components/decorative/stagger-text";
+import {
+  EASE,
+  LETTER_STAGGER,
+  REVEAL_DELAY,
+  StaggerText,
+} from "@/components/decorative/stagger-text";
 import { Button } from "@/components/ui/button";
 
 const LINES = ["404", "INTROUVABLE"] as const;
-const LINE_DELAY = 0.15;
-const LETTER_STAGGER = 0.04;
 
 export default function NotFound() {
   const reducedMotion = useReducedMotion();
   const lettersDone =
-    LINE_DELAY + (LINES[0].length + LINES[1].length) * LETTER_STAGGER;
+    REVEAL_DELAY + (LINES[0].length + LINES[1].length) * LETTER_STAGGER;
 
   return (
     <section className="relative isolate flex min-h-[calc(100svh-4.5rem)] flex-col justify-center px-6 py-8 md:py-12">
@@ -38,7 +41,7 @@ export default function NotFound() {
           className="font-mono text-xs tracking-[0.35em] text-primary uppercase md:text-sm"
           initial={reducedMotion ? false : { opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: lettersDone, duration: 0.5, ease: EASE }}
+          transition={{ duration: 0.5, ease: EASE }}
         >
           Zone non cartographiée
           <span
@@ -50,17 +53,17 @@ export default function NotFound() {
         </motion.p>
         <h1
           aria-label="Erreur 404 — page introuvable"
-          className="mt-4 font-bold leading-[0.95] tracking-tight"
+          className="mt-2 font-bold leading-[0.95] tracking-tight"
         >
           <StaggerText
             text={LINES[0]}
-            delay={LINE_DELAY}
+            delay={REVEAL_DELAY}
             stagger={LETTER_STAGGER}
             className="text-[clamp(4rem,18vw,13rem)]"
           />
           <StaggerText
             text={LINES[1]}
-            delay={LINE_DELAY + LINES[0].length * LETTER_STAGGER}
+            delay={REVEAL_DELAY + LINES[0].length * LETTER_STAGGER}
             stagger={LETTER_STAGGER}
             className="text-[clamp(1.75rem,9vw,7.5rem)]"
             letterClassName="text-transparent [-webkit-text-stroke:2px_var(--color-foreground)]"

@@ -30,7 +30,7 @@ export default async function ArticlesPage() {
         <h1 className="text-4xl font-bold tracking-tight text-balance md:text-5xl">
           Articles
         </h1>
-        <p className="max-w-2xl text-lg text-muted-foreground">
+        <p className="max-w-2xl text-lg text-muted-foreground md:text-xl">
           J'écris sur ce qui me passionne : le développement et l'architecture
           logicielle, mais aussi la cuisine, les langues et la vie autour.
         </p>
@@ -48,7 +48,7 @@ function EmptyState() {
   return (
     <div className="relative mt-12 animate-in fade-in slide-in-from-bottom-3 duration-600 ease-blueprint motion-reduce:animate-none">
       <BlueprintCorners />
-      <Empty className="border py-16">
+      <Empty className="border border-foreground/10 py-16">
         <EmptyHeader>
           <EmptyMedia variant="icon">
             <DraftingCompass />

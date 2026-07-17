@@ -7,19 +7,23 @@ import Link from "next/link";
 import { FaEnvelope, FaGithub, FaLinkedinIn } from "react-icons/fa6";
 import { BlueprintArc } from "@/components/decorative/blueprint-arc";
 import { BlueprintCorners } from "@/components/decorative/blueprint-corners";
-import { EASE, StaggerText } from "@/components/decorative/stagger-text";
+import {
+  EASE,
+  LETTER_STAGGER,
+  REVEAL_DELAY,
+  StaggerText,
+} from "@/components/decorative/stagger-text";
 import { Button } from "@/components/ui/button";
 
 const NAME_LINES = ["GEOFFREY", "MIGLIACCI"] as const;
-const NAME_DELAY = 0.15;
-const LETTER_STAGGER = 0.04;
 const NAME_SIZE =
   "text-[clamp(2rem,7vw,4.5rem)] 2xl:text-[clamp(2rem,7vw,5rem)]";
 
 export function Hero() {
   const reducedMotion = useReducedMotion();
   const lettersDone =
-    NAME_DELAY + (NAME_LINES[0].length + NAME_LINES[1].length) * LETTER_STAGGER;
+    REVEAL_DELAY +
+    (NAME_LINES[0].length + NAME_LINES[1].length) * LETTER_STAGGER;
 
   return (
     <section className="relative isolate flex min-h-[calc(100svh-4.5rem)] flex-col justify-center px-6 py-8 md:py-12">
@@ -65,13 +69,13 @@ export function Hero() {
             >
               <StaggerText
                 text={NAME_LINES[0]}
-                delay={NAME_DELAY}
+                delay={REVEAL_DELAY}
                 stagger={LETTER_STAGGER}
                 className={NAME_SIZE}
               />
               <StaggerText
                 text={NAME_LINES[1]}
-                delay={NAME_DELAY + NAME_LINES[0].length * LETTER_STAGGER}
+                delay={REVEAL_DELAY + NAME_LINES[0].length * LETTER_STAGGER}
                 stagger={LETTER_STAGGER}
                 className={NAME_SIZE}
                 letterClassName="text-transparent [-webkit-text-stroke:2px_var(--color-foreground)]"

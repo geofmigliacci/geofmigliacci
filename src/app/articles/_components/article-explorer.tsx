@@ -92,7 +92,7 @@ function NoMatches({ onReset }: { onReset: () => void }) {
   return (
     <div className="relative mt-12 animate-in fade-in slide-in-from-bottom-3 duration-600 ease-blueprint motion-reduce:animate-none">
       <BlueprintCorners />
-      <Empty className="border py-16">
+      <Empty className="border border-foreground/10 py-16">
         <EmptyHeader>
           <EmptyTitle>Aucun article pour ces tags</EmptyTitle>
           <EmptyDescription>
