@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { Inter, JetBrains_Mono } from "next/font/google";
+import { CursorReticle } from "@/components/decorative/cursor-reticle";
 import { SiteHeader } from "@/components/site-header";
 import { openGraphBase, siteUrl } from "@/lib/site";
 import { cn } from "@/lib/utils";
@@ -42,6 +43,7 @@ export default function RootLayout({
           <SiteHeader />
           <main className="flex-1">{children}</main>
         </div>
+        <CursorReticle />
       </body>
     </html>
   );

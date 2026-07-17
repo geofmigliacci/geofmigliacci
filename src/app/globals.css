@@ -200,3 +200,19 @@
     linear-gradient(currentColor, currentColor) center / 1px 100% no-repeat,
     linear-gradient(currentColor, currentColor) center / 100% 1px no-repeat;
 }
+
+@utility blueprint-target {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(currentColor, currentColor) top left / 7px 1.5px no-repeat,
+    linear-gradient(currentColor, currentColor) top left / 1.5px 7px no-repeat,
+    linear-gradient(currentColor, currentColor) top right / 7px 1.5px no-repeat,
+    linear-gradient(currentColor, currentColor) top right / 1.5px 7px no-repeat,
+    linear-gradient(currentColor, currentColor) bottom left / 7px 1.5px no-repeat,
+    linear-gradient(currentColor, currentColor) bottom left / 1.5px 7px no-repeat,
+    linear-gradient(currentColor, currentColor) bottom right / 7px 1.5px no-repeat,
+    linear-gradient(currentColor, currentColor) bottom right / 1.5px 7px no-repeat;
+}
+
