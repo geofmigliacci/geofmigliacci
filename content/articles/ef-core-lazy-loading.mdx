@@ -1,0 +1,349 @@
+export const metadata = {
+  title: "Une ligne de code, 200 requêtes SQL",
+  description:
+    "L'histoire vraie d'un N+1 : une ligne raisonnable, quatorze mois d'incubation, une base de données à genoux. Autopsie du lazy loading d'EF Core, et garde-fous pour que ça ne revienne jamais.",
+  date: "2026-07-17",
+  tags: ["dotnet", "ef-core", "performance"],
+};
+
+*D'après une histoire vraie. Le domaine, les noms et le code ont été
+simplifiés ; les mécanismes, eux, viennent du terrain. Aucune base de
+données n'a été blessée durant l'écriture de cet article. En production, si.*
+
+Il est 9 h 47, un mardi. Dehors, le soleil brille et les oiseaux chantent.
+Sur le deuxième écran, le dashboard hurle : orange, puis rouge. Le canal
+support déborde de diagnostics d'une précision chirurgicale : "c'est lent",
+"toujours lent", "très lent". Les temps de réponse s'envolent, les timeouts
+tombent en cascade, et la base de données rampe pour sa survie. Personne n'a
+déployé depuis une semaine. La cause tient en une ligne de code, écrite
+quatorze mois plus tôt, relue en code review, approuvée, et parfaitement
+raisonnable.
+
+Rembobinons.
+
+## L'histoire
+
+### Sprint 1 : des choix raisonnables
+
+Un chaud jour d'été, quatorze mois avant le dashboard rouge. Nouvelle équipe,
+nouveau projet, backlog vierge : ce moment de la vie d'un logiciel où tout le
+monde s'aime encore. Une API de gestion de contrats, .NET, EF Core. Vous
+configurez le `DbContext`, la doc mentionne une option confortable, et
+franchement, elle vend du rêve :
+
+```csharp
+builder.Services.AddDbContext<ContratsContext>(options =>
+    options
+        .UseSqlServer(connectionString)
+        .UseLazyLoadingProxies());
+```
+
+```csharp
+public class Contrat
+{
+    public int Id { get; set; }
+    public string Reference { get; set; } = "";
+    public DateTime CreatedAt { get; set; }
+    public virtual ICollection<Document> Documents { get; set; } = [];
+}
+```
+
+Une ligne dans le `Program.cs`, un mot-clé `virtual`, et les navigations se
+chargent toutes seules au moment où on les touche. Plus jamais de navigation à
+`null`, plus jamais de `Include` oublié. À ce moment précis de l'histoire,
+c'est un choix défendable : personne dans cette équipe n'est incompétent, et
+c'est exactement ce qui rend la suite intéressante. Retenez juste cette
+option. Elle reviendra.
+
+### Sprint 3 : la boucle innocente
+
+L'écran "derniers contrats" arrive dans le sprint. L'endpoint est écrit en
+dix minutes, et il est propre : requête bornée, DTO de sortie, async partout.
+La liste affiche la référence de chaque contrat et le nombre de documents
+attachés au dossier.
+
+```csharp
+// Simplifié pour l'article. Le mécanisme, lui, est identique.
+app.MapGet("/contrats", async (ContratsContext db) =>
+{
+    var contrats = await db.Contrats
+        .OrderByDescending(c => c.CreatedAt)
+        .Take(200)
+        .ToListAsync();
+
+    return contrats.Select(c => new ContratSummary(
+        c.Id,
+        c.Reference,
+        c.Documents.Count,
+        c.CreatedAt));
+});
+```
+
+La code review dit LGTM, et elle a raison : il n'y a rien à signaler. En dev,
+la base contient 12 contrats et l'endpoint répond en 8 ms. Personne n'ouvre le
+log SQL d'un endpoint qui répond en 8 ms. Il faudrait pourtant. Le voici :
+
+```text
+SELECT TOP(200) [c].[Id], [c].[Reference], … FROM [Contrats] AS [c] ORDER BY …
+SELECT [d].[Id], [d].[Nom], [d].[Taille], … FROM [Documents] AS [d] WHERE [d].[ContratId] = @__p_0
+SELECT [d].[Id], [d].[Nom], [d].[Taille], … FROM [Documents] AS [d] WHERE [d].[ContratId] = @__p_0
+SELECT [d].[Id], [d].[Nom], [d].[Taille], … FROM [Documents] AS [d] WHERE [d].[ContratId] = @__p_0
+-- ... et neuf de plus
+```
+
+Chaque `c.Documents.Count` traverse un proxy qui charge la collection
+entière : pour afficher "34 documents", EF matérialise les 34 lignes
+(métadonnées comprises), puis les compte en mémoire. Un contrat, une requête.
+Treize requêtes pour afficher un tableau. Mais à 0,5 ms pièce sur un
+SQL Server local, ça ne se voit pas. La bombe est posée. Elle tique en
+silence.
+
+### Sprint 17 : la lenteur s'installe
+
+La base a grandi : 3 000 contrats, de vrais clients, de vrais avenants, et
+des documents qui s'accumulent sur chaque dossier, parce que c'est à ça que
+servent les dossiers. L'endpoint répond maintenant en 300 ms : assez lent
+pour agacer le PO, pas assez pour ouvrir une enquête. Quelqu'un prononce la
+phrase magique qui clôt toutes les conversations de performance : "c'est EF,
+c'est normal."
+
+On pose un cache de trente secondes "en attendant" (le provisoire étant le
+matériau le plus durable de l'informatique), et un ticket *Investiguer
+lenteurs /contrats* descend dans le backlog avec la flottabilité d'une enclume.
+
+Notez le détail qui compte : **le code n'a pas changé d'une ligne depuis le
+sprint 3.** Seules les données ont grandi. Le coût du lazy loading n'est pas
+indexé sur votre code, il est indexé sur votre production. C'est pour ça que
+personne ne le voit venir.
+
+### Sprint 30 : la base rampe pour sa survie
+
+Un grand compte signe et migre dix ans d'historique (le grand compte tient
+toujours ce rôle dans les post-mortems, c'est une convention du genre).
+40 000 contrats, des dizaines de documents par dossier, du trafic réel.
+L'arithmétique devient brutale : chaque affichage de l'écran coûte
+201 requêtes, qui matérialisent des dizaines de milliers de lignes pour
+afficher… des nombres. Sous charge, ces rafales occupent le pool de
+connexions (100 par défaut) comme un client qui commanderait 201 cafés
+d'un coup, à chaque fois, en heure de pointe.
+
+```text
+System.InvalidOperationException: Timeout expired. The timeout period elapsed
+prior to obtaining a connection from the pool.
+```
+
+Et voici le détail cruel : les endpoints voisins tombent aussi. Eux n'ont
+rien demandé. Ils attendent juste une connexion qu'une boucle innocente
+monopolise deux cents fois par affichage. Le N+1 n'affame pas que son
+appelant ; il affame l'immeuble entier.
+
+Il est 9 h 47, un mardi. Dehors, les oiseaux chantent toujours. Le dashboard
+est rouge. La ligne du sprint 3 n'a pas changé. Le monde autour d'elle, si.
+
+## L'autopsie
+
+L'incident est clos, les utilisateurs ont retrouvé leurs contrats. Penchons-nous
+sur le corps.
+
+Quand vous activez `UseLazyLoadingProxies()`, EF Core ne modifie pas vos
+entités : il en fabrique des sous-classes à la volée, via Castle DynamicProxy,
+la bibliothèque qui fabrique aussi vos mocks de tests. Votre entité de
+production partage sa technologie avec des objets payés pour faire semblant.
+D'où le `virtual` obligatoire : le proxy surcharge vos navigations pour en
+intercepter l'accès, et à chaque accès, il déroule ce petit algorithme :
+
+```csharp
+// Ce que le proxy génère, en substance.
+public override ICollection<Document> Documents
+{
+    get
+    {
+        if (!_loaded)                 // pas encore chargée ?
+        {
+            _lazyLoader.Load(this);   // alors : une requête SQL, ici
+            _loaded = true;
+        }
+        return base.Documents;        // sinon : déjà en mémoire, rien à payer
+    }
+}
+```
+
+Relisez lentement : il y a une requête SQL dans un getter. L'opération la
+plus coûteuse de votre système, habillée de la syntaxe la moins chère du
+langage. La signature ne prévient pas, le type ne prévient pas, l'IDE ne
+prévient pas. Le compilateur, lui, trouve ça très bien.
+
+Conséquence : le coût d'une requête ne dépend plus de la requête, mais du
+code qui se promène ensuite dans le graphe d'objets. Et ce code n'est pas
+toujours le vôtre : un sérialiseur JSON, un mapper consciencieux, un logger
+qui interpole, et chacun déclenche sa rafale de requêtes sans le savoir. Si
+le `DbContext` est déjà mort à ce moment-là, l'accès jette une exception, de
+préférence en pleine sérialisation de la réponse.
+
+Voilà pourquoi personne n'a rien vu dans notre histoire : en dev, le coût
+était minuscule, et en code review, `c.Documents.Count` se lit comme un accès
+de propriété, parce que c'en est un, syntaxiquement. Le lazy loading a
+honoré son contrat à la lettre, en silence, 201 fois par affichage.
+
+Une dernière pièce pour le dossier. EF6 activait le lazy loading par défaut ;
+EF Core, construit par la même équipe, l'a relégué dans un package séparé
+(`Microsoft.EntityFrameworkCore.Proxies`), désactivé par défaut, entouré
+d'avertissements dans la doc. Il ne manque que la décharge de responsabilité
+en deux exemplaires, ce qui, pour une application de gestion de contrats,
+aurait été raccord.
+
+L'équipe EF ne vous interdit rien : l'option existe, elle est documentée,
+elle fonctionne. Elle l'a simplement rangée tout en haut du placard, là où on
+met les produits d'entretien quand les enfants commencent à marcher. Affaire
+classée.
+
+## Réparer
+
+Un mot d'abord : personne ne lit un article de performance au sprint 1. Vous
+arrivez ici au sprint 30, et couper le lazy loading d'un coup est la fausse
+bonne idée du lundi matin : vous échangeriez un problème de lenteur contre un
+problème de données manquantes. Sevrage progressif, donc.
+
+Inutile de chercher les coupables avec grep : un lazy load ressemble trait
+pour trait à un accès de propriété. Il faut mesurer. Un APM si vous en avez
+un ; sinon, EF Core adore avouer, et un `DbCommandInterceptor` qui compte les
+requêtes par endpoint s'écrit en une après-midi. Le podium sera sans
+suspense : un ou deux écrans concentrent l'essentiel des dégâts. Commencez
+par le pire, mesurez, recommencez. Maintenant, l'arsenal.
+
+### Include / ThenInclude
+
+L'évidence : demander à EF de charger les documents en même temps que les
+contrats, en une seule requête.
+
+```csharp
+var contrats = await db.Contrats
+    .Include(c => c.Documents)
+    .OrderByDescending(c => c.CreatedAt)
+    .Take(200)
+    .ToListAsync();
+```
+
+201 requêtes deviennent 1, le progrès est réel. Mais regardez ce qu'elle
+rapporte : tous les documents de tous les contrats, pour afficher des
+comptes. Include répond à la question "combien ?" en livrant le carton
+entier. Et dès qu'on inclut plusieurs collections, le JOIN multiplie les
+lignes (cherchez "explosion cartésienne" ; EF fournit `AsSplitQuery()` en
+correctif). Mieux que le lazy loading, donc, mais on paie encore pour des
+données qu'on jette.
+
+### La projection vers un DTO
+
+La vraie réponse en lecture : ne pas charger des entités, demander un
+résultat.
+
+```csharp
+var contrats = await db.Contrats
+    .OrderByDescending(c => c.CreatedAt)
+    .Take(200)
+    .Select(c => new ContratSummary(
+        c.Id,
+        c.Reference,
+        c.Documents.Count,   // devient un COUNT(*) en SQL
+        c.CreatedAt))
+    .ToListAsync();
+```
+
+C'est la ligne du titre, au caractère près. Déplacée à l'intérieur du
+`Select`, donc à l'intérieur de la requête, elle cesse d'être un piège : EF
+la traduit en `COUNT(*)` et la base renvoie 200 lignes déjà comptées. Une
+requête, zéro document matérialisé, et le lazy loading devient hors sujet :
+il n'y a plus d'entité sur laquelle mentir. On demande un nombre, on reçoit
+un nombre ; le concept est d'une audace folle.
+
+*Ce réflexe de projeter toutes les lectures vers des DTO mène tout droit au
+CQRS. Personne ne m'avait prévenu non plus. Article pour un autre jour.*
+
+### Le chargement explicite
+
+Pour les rares cas où il faut vraiment la collection d'un seul contrat, une
+règle métier, un écran de détail :
+
+```csharp
+await db.Entry(contrat)
+    .Collection(c => c.Documents)
+    .LoadAsync();
+```
+
+Même requête que celle du proxy, mais à visage découvert : elle apparaît
+dans le code, dans la code review et dans les résultats de grep. C'est le
+lazy loading qui a arrêté de mentir. Le coût redevient une décision qu'on
+lit, pas un effet de bord qu'on subit.
+
+## Que ça ne revienne jamais
+
+Réparer l'écran, c'est la moitié du travail. L'autre moitié, c'est de faire
+en sorte que la prochaine boucle innocente ne survive pas jusqu'à la
+production. Trois garde-fous, du plus doux au plus autoritaire :
+
+- **La lucidité.** Savoir ce que coûte un lazy load et à quoi il ressemble.
+  Bonne nouvelle : vous venez de terminer cette étape. Transférez l'article à
+  l'équipe, ça comptera comme formation continue. Promis.
+- **Le défaut.** Sur un projet neuf, ne référencez simplement pas
+  `Microsoft.EntityFrameworkCore.Proxies`. On n'a jamais eu à désactiver ce
+  qu'on n'a pas activé.
+- **L'exception immédiate.** En dev et en test, transformez chaque lazy load
+  en erreur franche : la bombe explose au moment où on la pose, ce qui
+  simplifie considérablement le déminage.
+
+La dernière tient en une option :
+
+```csharp
+options.ConfigureWarnings(w => w.Throw(CoreEventId.NavigationLazyLoading));
+```
+
+Activée en dev et en test, elle fait du premier lazy load venu un test qui
+échoue, avec la stack trace qui pointe la ligne fautive. Une régression N+1
+devient un build rouge un jeudi après-midi. Pas un dashboard rouge un mardi
+à 9 h 47.
+
+## Ce qu'il faut retenir
+
+**Une requête SQL dans un getter**
+
+Le lazy loading habille l'opération la plus coûteuse du système de la
+syntaxe la plus discrète du langage.
+
+**Son coût est indexé sur votre production, pas sur votre code**
+
+Il grandit sans le moindre commit, et le succès est son carburant.
+
+**Un lazy load ne se grep pas, il se mesure**
+
+APM ou interceptor : trouvez le pire écran d'abord.
+
+**En lecture, projetez**
+
+Un `Select` vers un DTO, et la ligne coupable devient un `COUNT(*)`.
+
+**Une option suffit en test**
+
+`ConfigureWarnings` et `Throw` : la régression devient un build rouge.
+Sur un projet neuf, plus simple encore : n'installez pas le package.
+
+## Épilogue
+
+Soyons honnêtes jusqu'au bout : le lazy loading a un habitat naturel. Le
+prototype. Le proof of concept qui doit convaincre jeudi, la démo, le script
+interne qui vivra trois semaines. Là, il tient toutes ses promesses : zéro
+cérémonie, des navigations qui marchent toutes seules, un code jetable qui
+sera jeté avant que les données n'aient le temps de grandir.
+
+Le piège, c'est que la frontière est à sens unique. Posez-vous la seule
+question qui compte : est-ce que vous voulez que ce produit réussisse ? Si
+la réponse est oui, les contrats vont s'accumuler, les documents avec, et
+vous connaissez la suite : le coût du lazy loading est indexé sur le succès.
+Plus votre produit marche, plus il vous facture.
+
+Donc si votre "prototype" est en production depuis six mois et que de vrais
+clients s'en servent, créez le ticket aujourd'hui, et marquez-le urgent.
+Cette fois, ne le laissez pas couler.
+
+Comme ça, mardi prochain, à 9 h 47, le soleil brillera, les oiseaux chanteront,
+et le dashboard restera vert. Personne ne le remarquera, et c'est très bien
+comme ça : les bons mardis ne font pas d'histoires.
