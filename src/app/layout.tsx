@@ -36,7 +36,11 @@ export default function RootLayout({
   return (
     <html
       lang="fr"
-      className={cn("dark", fontSans.variable, fontMono.variable)}
+      className={cn(
+        "dark scroll-smooth motion-reduce:scroll-auto",
+        fontSans.variable,
+        fontMono.variable,
+      )}
     >
       <body className="blueprint-grid antialiased">
         <div className="flex min-h-svh flex-col">

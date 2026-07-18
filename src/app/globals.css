@@ -219,3 +219,42 @@
     linear-gradient(currentColor, currentColor) bottom right / 1.5px 7px
     no-repeat;
 }
+
+.prose figure[data-rehype-pretty-code-figure] {
+  position: relative;
+}
+
+.prose figure[data-rehype-pretty-code-figure]::before {
+  position: absolute;
+  top: --spacing(2.5);
+  right: --spacing(3);
+  font-family: var(--font-jetbrains-mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+
+.prose
+  figure[data-rehype-pretty-code-figure]:has(
+    pre[data-language="csharp"]
+  )::before {
+  content: "C#";
+}
+
+.prose
+  figure[data-rehype-pretty-code-figure]:has(pre[data-language="sql"])::before {
+  content: "SQL";
+}
+
+.prose code::before,
+.prose code::after {
+  content: none;
+}
+
+.prose :not(pre) > code {
+  padding: 0.15em 0.4em;
+  border-radius: 0.25rem;
+  background-color: color-mix(in oklab, var(--foreground) 8%, transparent);
+  font-weight: 500;
+}
