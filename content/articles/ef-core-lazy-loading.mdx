@@ -83,7 +83,7 @@ La code review dit LGTM, et elle a raison : il n'y a rien à signaler. En dev,
 la base contient 12 contrats et l'endpoint répond en 8 ms. Personne n'ouvre le
 log SQL d'un endpoint qui répond en 8 ms. Il faudrait pourtant. Le voici :
 
-```text
+```sql
 SELECT TOP(200) [c].[Id], [c].[Reference], … FROM [Contrats] AS [c] ORDER BY …
 SELECT [d].[Id], [d].[Nom], [d].[Taille], … FROM [Documents] AS [d] WHERE [d].[ContratId] = @__p_0
 SELECT [d].[Id], [d].[Nom], [d].[Taille], … FROM [Documents] AS [d] WHERE [d].[ContratId] = @__p_0
@@ -142,8 +142,10 @@ est rouge. La ligne du sprint 3 n'a pas changé. Le monde autour d'elle, si.
 
 ## L'autopsie
 
-L'incident est clos, les utilisateurs ont retrouvé leurs contrats. Penchons-nous
-sur le corps.
+La suite est moins intéressante : une cellule de crise, un cache d'urgence,
+et le réflexe du rollback, vite abandonné faute de déploiement à annuler.
+L'incident est clos, les utilisateurs ont retrouvé leurs contrats.
+Penchons-nous sur le corps.
 
 Quand vous activez `UseLazyLoadingProxies()`, EF Core ne modifie pas vos
 entités : il en fabrique des sous-classes à la volée, via Castle DynamicProxy,
@@ -197,7 +199,7 @@ elle fonctionne. Elle l'a simplement rangée tout en haut du placard, là où on
 met les produits d'entretien quand les enfants commencent à marcher. Affaire
 classée.
 
-## Réparer
+## Le sevrage
 
 Un mot d'abord : personne ne lit un article de performance au sprint 1. Vous
 arrivez ici au sprint 30, et couper le lazy loading d'un coup est la fausse
@@ -326,7 +328,7 @@ Un `Select` vers un DTO, et la ligne coupable devient un `COUNT(*)`.
 `ConfigureWarnings` et `Throw` : la régression devient un build rouge.
 Sur un projet neuf, plus simple encore : n'installez pas le package.
 
-## Épilogue
+<Epilogue>
 
 Soyons honnêtes jusqu'au bout : le lazy loading a un habitat naturel. Le
 prototype. Le proof of concept qui doit convaincre jeudi, la démo, le script
@@ -347,3 +349,5 @@ Cette fois, ne le laissez pas couler.
 Comme ça, mardi prochain, à 9 h 47, le soleil brillera, les oiseaux chanteront,
 et le dashboard restera vert. Personne ne le remarquera, et c'est très bien
 comme ça : les bons mardis ne font pas d'histoires.
+
+</Epilogue>
