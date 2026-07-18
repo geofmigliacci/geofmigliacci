@@ -36,6 +36,7 @@ export default function RootLayout({
   return (
     <html
       lang="fr"
+      data-scroll-behavior="smooth"
       className={cn(
         "dark scroll-smooth motion-reduce:scroll-auto",
         fontSans.variable,
