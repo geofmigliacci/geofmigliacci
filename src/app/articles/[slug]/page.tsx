@@ -117,7 +117,7 @@ export default async function ArticlePage({ params }: ArticleParams) {
         </div>
         <Separator className="my-8" />
         <ArticleTableOfContents>
-          <div className="prose prose-zinc dark:prose-invert max-w-none">
+          <div className="prose prose-zinc dark:prose-invert max-w-none prose-code:wrap-break-word">
             <Post />
           </div>
         </ArticleTableOfContents>
