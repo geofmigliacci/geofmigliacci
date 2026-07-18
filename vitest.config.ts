@@ -21,6 +21,7 @@ export default defineConfig({
         "src/app/**/loading.tsx",
         "src/app/not-found.tsx",
         "src/components/decorative/**",
+        "src/components/mdx/**",
       ],
     },
   },
