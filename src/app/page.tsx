@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { LatestArticle } from "@/app/_components/latest-article";
 import { Masthead } from "@/app/_components/masthead";
+import { JsonLd } from "@/components/json-ld";
 import { getArticles } from "@/lib/articles";
+import { personJsonLd } from "@/lib/json-ld";
 import { openGraphBase, rssAlternate } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -17,9 +19,12 @@ export default async function Home() {
   const latest = articles.at(0);
 
   return (
-    <div className="mx-auto max-w-240 px-6 py-16 md:py-24 2xl:max-w-300">
-      <Masthead />
-      {latest && <LatestArticle article={latest} />}
-    </div>
+    <>
+      <JsonLd data={personJsonLd()} />
+      <div className="mx-auto max-w-240 px-6 py-16 md:py-24 2xl:max-w-300">
+        <Masthead />
+        {latest && <LatestArticle article={latest} />}
+      </div>
+    </>
   );
 }
