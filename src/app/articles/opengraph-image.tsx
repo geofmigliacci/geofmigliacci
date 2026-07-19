@@ -49,7 +49,7 @@ export default async function Image() {
         <div
           style={{
             display: "flex",
-            marginTop: 32,
+            marginTop: 28,
             fontFamily: "JetBrains Mono",
             fontSize: 26,
             color: OG_COLORS.mutedForeground,

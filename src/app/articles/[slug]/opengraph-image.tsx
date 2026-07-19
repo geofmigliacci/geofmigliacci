@@ -4,12 +4,35 @@ import { listSlugs } from "@/lib/articles";
 import { formatDate } from "@/lib/format";
 import { loadOgFonts, OG_COLORS, OG_SIZE, OgFrame } from "@/lib/og-image";
 
-export const size = OG_SIZE;
-export const contentType = "image/png";
-
 export async function generateStaticParams() {
   const slugs = await listSlugs();
   return slugs.map((slug) => ({ slug }));
+}
+
+export async function generateImageMetadata({
+  params,
+}: {
+  params: Promise<{ slug?: string }>;
+}) {
+  // The image-serving pass calls this with empty params; only the
+  // page-metadata pass (which emits og:image:alt) receives the slug.
+  const { slug } = await params;
+  if (!slug) {
+    return [{ id: "og", size: OG_SIZE, contentType: "image/png" }];
+  }
+
+  const { metadata }: ArticleModule = await import(
+    `@/content/articles/${slug}.mdx`
+  );
+
+  return [
+    {
+      id: "og",
+      alt: `${metadata.title} — Geoffrey Migliacci`,
+      size: OG_SIZE,
+      contentType: "image/png",
+    },
+  ];
 }
 
 export default async function Image({
@@ -42,8 +65,8 @@ export default async function Image({
           style={{
             display: "flex",
             fontFamily: "JetBrains Mono",
-            fontSize: 24,
-            letterSpacing: 6,
+            fontSize: 28,
+            letterSpacing: 8,
             textTransform: "uppercase",
             color: OG_COLORS.primary,
           }}
@@ -53,7 +76,7 @@ export default async function Image({
         <div
           style={{
             display: "flex",
-            marginTop: 28,
+            marginTop: 24,
             fontFamily: "Inter",
             fontWeight: 700,
             fontSize: 64,
@@ -68,16 +91,13 @@ export default async function Image({
         <div
           style={{
             display: "flex",
-            alignItems: "center",
-            gap: 16,
-            marginTop: 40,
+            marginTop: 28,
             fontFamily: "JetBrains Mono",
             fontSize: 22,
+            color: OG_COLORS.mutedForeground,
           }}
         >
-          <div style={{ display: "flex", color: OG_COLORS.mutedForeground }}>
-            {formatDate(metadata.date)}
-          </div>
+          {`${formatDate(metadata.date)} · geofmigliacci.dev/articles/${slug}`}
         </div>
       </div>
     </OgFrame>,
