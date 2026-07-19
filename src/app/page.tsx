@@ -1,22 +1,25 @@
 import type { Metadata } from "next";
-import { Hero } from "@/app/_components/hero";
-import { JsonLd } from "@/components/json-ld";
-import { personJsonLd } from "@/lib/json-ld";
+import { LatestArticle } from "@/app/_components/latest-article";
+import { Masthead } from "@/app/_components/masthead";
+import { getArticles } from "@/lib/articles";
 import { openGraphBase } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Geoffrey Migliacci — Ingénieur logiciel",
+  title: "Geoffrey Migliacci — Ingénieur logiciel senior",
   description:
     "J'écris sur le code, la cuisine, les langues, la philosophie — tout ce qui nourrit ma curiosité et la vie autour.",
   alternates: { canonical: "/" },
   openGraph: { ...openGraphBase, type: "website", url: "/" },
 };
 
-export default function Home() {
+export default async function Home() {
+  const articles = await getArticles();
+  const latest = articles.at(0);
+
   return (
-    <>
-      <JsonLd data={personJsonLd()} />
-      <Hero />
-    </>
+    <div className="mx-auto max-w-240 px-6 py-16 md:py-24 2xl:max-w-300">
+      <Masthead />
+      {latest && <LatestArticle article={latest} />}
+    </div>
   );
 }
