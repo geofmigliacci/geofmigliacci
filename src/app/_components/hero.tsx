@@ -24,7 +24,7 @@ export function Hero() {
     (NAME_LINES[0].length + NAME_LINES[1].length) * LETTER_STAGGER;
 
   return (
-    <section className="relative isolate mx-auto w-full max-w-240 px-6 pt-16 pb-8 md:pt-24 2xl:max-w-300">
+    <section className="relative isolate mx-auto w-full max-w-240 px-6 pt-4 pb-8 2xl:max-w-300">
       <BlueprintArc
         corner="bottom-right"
         delay={lettersDone + 0.2}

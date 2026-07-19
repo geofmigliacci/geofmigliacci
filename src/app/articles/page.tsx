@@ -2,7 +2,9 @@ import { DraftingCompass } from "lucide-react";
 import type { Metadata } from "next";
 import { FaRss } from "react-icons/fa6";
 import { ArticleExplorer } from "@/app/articles/_components/article-explorer";
+import { Breadcrumb } from "@/components/breadcrumb";
 import { BlueprintCorners } from "@/components/decorative/blueprint-corners";
+import { JsonLd } from "@/components/json-ld";
 import { Button } from "@/components/ui/button";
 import {
   Empty,
@@ -12,6 +14,7 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 import { getArticles } from "@/lib/articles";
+import { breadcrumbJsonLd } from "@/lib/json-ld";
 import { openGraphBase, rssAlternate } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -22,11 +25,18 @@ export const metadata: Metadata = {
   openGraph: { ...openGraphBase, type: "website", url: "/articles" },
 };
 
+const BREADCRUMB_TRAIL = [
+  { name: "Accueil", path: "/" },
+  { name: "Articles", path: "/articles" },
+];
+
 export default async function ArticlesPage() {
   const articles = await getArticles();
 
   return (
     <div className="mx-auto max-w-240 px-6 py-16 md:py-24 2xl:max-w-300">
+      <JsonLd data={breadcrumbJsonLd(BREADCRUMB_TRAIL)} />
+      <Breadcrumb items={BREADCRUMB_TRAIL} className="mb-6" />
       <section className="relative flex flex-col gap-6 rounded-xl bg-card/60 p-6 ring-1 ring-foreground/10 backdrop-blur-[2px] animate-in fade-in slide-in-from-bottom-3 duration-600 ease-blueprint motion-reduce:animate-none md:flex-row md:items-center md:justify-between md:p-10">
         <BlueprintCorners />
         <div className="flex flex-col items-start gap-4">

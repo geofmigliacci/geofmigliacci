@@ -1,15 +1,13 @@
-import { ArrowLeft } from "lucide-react";
 import type { Metadata } from "next";
-import Link from "next/link";
 import { AdjacentArticlesNav } from "@/app/articles/[slug]/_components/adjacent-articles-nav";
 import {
   ArticleTableOfContents,
   ReadingProgressBar,
 } from "@/app/articles/[slug]/_components/article-reading-experience";
+import { Breadcrumb } from "@/components/breadcrumb";
 import { BlueprintCorners } from "@/components/decorative/blueprint-corners";
 import { JsonLd } from "@/components/json-ld";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import {
   type ArticleMeta,
@@ -79,27 +77,19 @@ export default async function ArticlePage({ params }: ArticleParams) {
     slug,
   });
 
-  const breadcrumbData = breadcrumbJsonLd([
+  const breadcrumbItems = [
     { name: "Accueil", path: "/" },
     { name: "Articles", path: "/articles" },
     { name: metadata.title, path: `/articles/${slug}` },
-  ]);
+  ];
+  const breadcrumbData = breadcrumbJsonLd(breadcrumbItems);
 
   return (
     <article className="mx-auto max-w-240 px-6 py-16 md:py-24 2xl:max-w-300">
       <JsonLd data={articleData} />
       <JsonLd data={breadcrumbData} />
       <ReadingProgressBar />
-      <Button
-        variant="outline"
-        size="sm"
-        className="mb-6"
-        nativeButton={false}
-        render={<Link href="/articles" />}
-      >
-        <ArrowLeft />
-        Retour aux articles
-      </Button>
+      <Breadcrumb items={breadcrumbItems} className="mb-6" />
       <div className="relative rounded-xl bg-card/60 p-6 ring-1 ring-foreground/10 backdrop-blur-[2px] animate-in fade-in slide-in-from-bottom-3 duration-600 ease-blueprint motion-reduce:animate-none md:p-10">
         <BlueprintCorners />
         <h1 className="text-3xl font-bold tracking-tight text-balance md:text-4xl">

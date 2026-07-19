@@ -5,6 +5,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 export default function ArticlesLoading() {
   return (
     <div className="mx-auto max-w-240 px-6 py-16 md:py-24 2xl:max-w-300">
+      <Skeleton className="mb-6 h-4 w-40" />
       <div className="relative rounded-xl bg-card/60 p-6 ring-1 ring-foreground/10 backdrop-blur-[2px] md:p-10">
         <BlueprintCorners />
         <Skeleton className="h-9 w-48 md:h-10" />
