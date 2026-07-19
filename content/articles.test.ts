@@ -17,10 +17,10 @@ describe("article descriptions", () => {
       const raw = await fs.readFile(path.join(ARTICLES_DIR, entry), "utf8");
       const description = raw.match(/description:\s*"([^"]+)"/)?.[1] ?? "";
 
-      expect(description, `${entry} : description manquante`).not.toBe("");
+      expect(description, `${entry}: missing description`).not.toBe("");
       expect(
         description.length,
-        `${entry} : ${description.length} caractères (max ${MAX_DESCRIPTION_LENGTH})`,
+        `${entry}: ${description.length} characters (max ${MAX_DESCRIPTION_LENGTH})`,
       ).toBeLessThanOrEqual(MAX_DESCRIPTION_LENGTH);
     }
   });

@@ -11,7 +11,7 @@ const mockedGetArticles = vi.mocked(getArticles);
 
 const article: ArticleMeta = {
   slug: "article-a",
-  title: "Article A & <balises>",
+  title: "Article A & <tags>",
   description: "Description A",
   date: "2026-05-01",
   tags: ["dev"],
@@ -56,7 +56,7 @@ describe("GET /feed.xml", () => {
     const response = await GET();
     const xml = await response.text();
 
-    expect(xml).toContain("<title><![CDATA[Article A & <balises>]]></title>");
+    expect(xml).toContain("<title><![CDATA[Article A & <tags>]]></title>");
   });
 
   it("renders an empty channel when there are no articles", async () => {
