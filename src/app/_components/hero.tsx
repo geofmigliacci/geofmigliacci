@@ -1,9 +1,7 @@
 "use client";
 
-import { ArrowRight } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
 import Image from "next/image";
-import Link from "next/link";
 import { FaEnvelope, FaGithub, FaLinkedinIn } from "react-icons/fa6";
 import { BlueprintArc } from "@/components/decorative/blueprint-arc";
 import { BlueprintCorners } from "@/components/decorative/blueprint-corners";
@@ -26,13 +24,13 @@ export function Hero() {
     (NAME_LINES[0].length + NAME_LINES[1].length) * LETTER_STAGGER;
 
   return (
-    <section className="relative isolate flex min-h-[calc(100svh-4.5rem)] flex-col justify-center px-6 py-8 md:py-12">
+    <section className="relative isolate mx-auto w-full max-w-240 px-6 pt-16 pb-8 md:pt-24 2xl:max-w-300">
       <BlueprintArc
         corner="bottom-right"
         delay={lettersDone + 0.2}
-        className="size-[clamp(20rem,45vw,34rem)]"
+        className="fixed size-[clamp(20rem,45vw,34rem)]"
       />
-      <div className="relative mx-auto w-full max-w-[60rem] p-6 2xl:max-w-[75rem]">
+      <div className="relative w-full p-6">
         <motion.div
           aria-hidden
           className="pointer-events-none absolute inset-0"
@@ -61,7 +59,7 @@ export function Hero() {
           </div>
           <div className="flex flex-col gap-2">
             <p className="font-mono text-xs tracking-[0.35em] text-primary uppercase md:text-sm">
-              Ingénieur logiciel
+              Ingénieur logiciel senior
             </p>
             <h1
               aria-label="Geoffrey Migliacci"
@@ -82,7 +80,7 @@ export function Hero() {
               />
             </h1>
             <p className="font-mono text-xs text-muted-foreground md:text-sm">
-              Performance · CQRS · Clean Architecture
+              +7 ans d'expérience · Performance · CQRS · Clean Architecture
             </p>
           </div>
         </motion.div>
@@ -100,61 +98,51 @@ export function Hero() {
             J'écris sur le code, la cuisine, les langues, la philosophie — tout
             ce qui nourrit ma curiosité et la vie autour.
           </p>
-          <div className="flex flex-wrap gap-3">
+          <div className="flex gap-2">
             <Button
-              size="lg"
+              size="icon-lg"
+              variant="outline"
+              aria-label="Me contacter par email"
               nativeButton={false}
-              render={<Link href="/articles" />}
+              render={
+                // biome-ignore lint/a11y/useAnchorContent: Base UI merges the Button children into the rendered anchor
+                <a href="mailto:geoffrey.migliacci@gmail.com" />
+              }
             >
-              Lire les articles
-              <ArrowRight />
+              <FaEnvelope aria-hidden />
             </Button>
-            <div className="flex gap-2">
-              <Button
-                size="icon-lg"
-                variant="outline"
-                aria-label="Me contacter par email"
-                nativeButton={false}
-                render={
-                  // biome-ignore lint/a11y/useAnchorContent: Base UI merges the Button children into the rendered anchor
-                  <a href="mailto:geoffrey.migliacci@gmail.com" />
-                }
-              >
-                <FaEnvelope aria-hidden />
-              </Button>
-              <Button
-                size="icon-lg"
-                variant="outline"
-                aria-label="GitHub"
-                nativeButton={false}
-                render={
-                  // biome-ignore lint/a11y/useAnchorContent: Base UI merges the Button children into the rendered anchor
-                  <a
-                    href="https://github.com/geofmigliacci"
-                    target="_blank"
-                    rel="noreferrer"
-                  />
-                }
-              >
-                <FaGithub aria-hidden />
-              </Button>
-              <Button
-                size="icon-lg"
-                variant="outline"
-                aria-label="LinkedIn"
-                nativeButton={false}
-                render={
-                  // biome-ignore lint/a11y/useAnchorContent: Base UI merges the Button children into the rendered anchor
-                  <a
-                    href="https://www.linkedin.com/in/geofmigliacci/"
-                    target="_blank"
-                    rel="noreferrer"
-                  />
-                }
-              >
-                <FaLinkedinIn aria-hidden />
-              </Button>
-            </div>
+            <Button
+              size="icon-lg"
+              variant="outline"
+              aria-label="GitHub"
+              nativeButton={false}
+              render={
+                // biome-ignore lint/a11y/useAnchorContent: Base UI merges the Button children into the rendered anchor
+                <a
+                  href="https://github.com/geofmigliacci"
+                  target="_blank"
+                  rel="noreferrer"
+                />
+              }
+            >
+              <FaGithub aria-hidden />
+            </Button>
+            <Button
+              size="icon-lg"
+              variant="outline"
+              aria-label="LinkedIn"
+              nativeButton={false}
+              render={
+                // biome-ignore lint/a11y/useAnchorContent: Base UI merges the Button children into the rendered anchor
+                <a
+                  href="https://www.linkedin.com/in/geofmigliacci/"
+                  target="_blank"
+                  rel="noreferrer"
+                />
+              }
+            >
+              <FaLinkedinIn aria-hidden />
+            </Button>
           </div>
         </motion.div>
       </div>

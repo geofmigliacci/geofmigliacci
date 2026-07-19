@@ -19,7 +19,7 @@ describe("Hero", () => {
   it("applies the initial motion offset by default", () => {
     render(<Hero />);
     const identityRow =
-      screen.getByText("Ingénieur logiciel").parentElement?.parentElement;
+      screen.getByText("Ingénieur logiciel senior").parentElement?.parentElement;
     expect(identityRow).toHaveStyle({ opacity: 0 });
   });
 
@@ -27,7 +27,7 @@ describe("Hero", () => {
     mockedUseReducedMotion.mockReturnValue(true);
     render(<Hero />);
     const identityRow =
-      screen.getByText("Ingénieur logiciel").parentElement?.parentElement;
+      screen.getByText("Ingénieur logiciel senior").parentElement?.parentElement;
     expect(identityRow).toHaveStyle({ opacity: 1 });
   });
 
@@ -37,7 +37,9 @@ describe("Hero", () => {
       screen.getByAltText("Portrait de Geoffrey Migliacci"),
     ).toBeInTheDocument();
     expect(
-      screen.getByText("Performance · CQRS · Clean Architecture"),
+      screen.getByText(
+        "+7 ans d'expérience · Performance · CQRS · Clean Architecture",
+      ),
     ).toBeInTheDocument();
   });
 
@@ -50,7 +52,7 @@ describe("Hero", () => {
 
   it("renders the job title, technical positioning, and personal tagline", () => {
     render(<Hero />);
-    expect(screen.getByText("Ingénieur logiciel")).toBeInTheDocument();
+    expect(screen.getByText("Ingénieur logiciel senior")).toBeInTheDocument();
     expect(
       screen.getByText(/je conçois des systèmes \.net/i),
     ).toBeInTheDocument();
@@ -59,11 +61,11 @@ describe("Hero", () => {
     ).toBeInTheDocument();
   });
 
-  it("links the CTA to the articles page", () => {
+  it("does not render an articles CTA", () => {
     render(<Hero />);
     expect(
-      screen.getByRole("button", { name: /lire les articles/i }),
-    ).toHaveAttribute("href", "/articles");
+      screen.queryByRole("button", { name: /lire les articles/i }),
+    ).not.toBeInTheDocument();
   });
 
   it("links each contact icon to the right destination", () => {
