@@ -24,10 +24,10 @@ export default async function ArticlesPage() {
   const articles = await getArticles();
 
   return (
-    <div className="mx-auto max-w-[60rem] px-6 py-16 md:py-24 2xl:max-w-[75rem]">
+    <div className="mx-auto max-w-240 px-6 py-16 md:py-24 2xl:max-w-300">
       <section className="relative flex flex-col items-start gap-4 rounded-xl bg-card/60 p-6 ring-1 ring-foreground/10 backdrop-blur-[2px] animate-in fade-in slide-in-from-bottom-3 duration-600 ease-blueprint motion-reduce:animate-none md:p-10">
         <BlueprintCorners />
-        <h1 className="text-4xl font-bold tracking-tight text-balance md:text-5xl">
+        <h1 className="text-3xl font-bold tracking-tight text-balance md:text-4xl">
           Articles
         </h1>
         <p className="max-w-2xl text-lg text-muted-foreground md:text-xl">
@@ -48,7 +48,7 @@ function EmptyState() {
   return (
     <div className="relative mt-12 animate-in fade-in slide-in-from-bottom-3 duration-600 ease-blueprint motion-reduce:animate-none">
       <BlueprintCorners />
-      <Empty className="border border-foreground/10 py-16">
+      <Empty className="py-16 ring-1 ring-foreground/10">
         <EmptyHeader>
           <EmptyMedia variant="icon">
             <DraftingCompass />

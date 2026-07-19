@@ -1,6 +1,6 @@
 "use client";
 
-import { X } from "lucide-react";
+import { ArrowRight, X } from "lucide-react";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { BlueprintCorners } from "@/components/decorative/blueprint-corners";
@@ -46,37 +46,42 @@ export function ArticleExplorer({ articles }: { articles: ArticleMeta[] }) {
   return (
     <>
       {allTags.length > 1 && (
-        <div className="mt-8 flex flex-wrap items-center gap-3">
-          <span className="font-mono text-xs tracking-[0.2em] text-muted-foreground uppercase">
-            Filtrer
-          </span>
-          <ToggleGroup
-            multiple
-            value={selectedTags}
-            onValueChange={setSelectedTags}
-            aria-label="Filtrer les articles par tag"
-          >
-            {allTags.map((tag) => (
-              <ToggleGroupItem
-                key={tag}
-                value={tag}
-                variant="outline"
-                className="rounded-4xl data-[state=on]:border-primary data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
-              >
-                {tag}
-              </ToggleGroupItem>
-            ))}
-          </ToggleGroup>
-          {selectedTags.length > 0 && (
-            <Button
-              variant="ghost"
-              size="icon"
-              aria-label="Réinitialiser les filtres"
-              onClick={() => setSelectedTags([])}
+        <div className="mt-8">
+          <div className="flex items-center gap-4">
+            <span className="font-mono text-xs tracking-[0.25em] text-primary uppercase">
+              Filtrer
+            </span>
+            <span aria-hidden className="h-px min-w-6 flex-1 bg-primary/20" />
+          </div>
+          <div className="mt-3 flex flex-wrap items-center gap-3">
+            <ToggleGroup
+              multiple
+              value={selectedTags}
+              onValueChange={setSelectedTags}
+              aria-label="Filtrer les articles par tag"
             >
-              <X className="size-3.5" />
-            </Button>
-          )}
+              {allTags.map((tag) => (
+                <ToggleGroupItem
+                  key={tag}
+                  value={tag}
+                  variant="outline"
+                  className="rounded-4xl data-[state=on]:border-primary data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+                >
+                  {tag}
+                </ToggleGroupItem>
+              ))}
+            </ToggleGroup>
+            {selectedTags.length > 0 && (
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label="Réinitialiser les filtres"
+                onClick={() => setSelectedTags([])}
+              >
+                <X />
+              </Button>
+            )}
+          </div>
         </div>
       )}
       {filteredArticles.length === 0 ? (
@@ -92,7 +97,7 @@ function NoMatches({ onReset }: { onReset: () => void }) {
   return (
     <div className="relative mt-12 animate-in fade-in slide-in-from-bottom-3 duration-600 ease-blueprint motion-reduce:animate-none">
       <BlueprintCorners />
-      <Empty className="border border-foreground/10 py-16">
+      <Empty className="py-16 ring-1 ring-foreground/10">
         <EmptyHeader>
           <EmptyTitle>Aucun article pour ces tags</EmptyTitle>
           <EmptyDescription>
@@ -112,7 +117,7 @@ function NoMatches({ onReset }: { onReset: () => void }) {
 
 function ArticleGrid({ articles }: { articles: ArticleMeta[] }) {
   return (
-    <div className="mt-12 grid gap-6 sm:grid-cols-2">
+    <div className="mt-12 grid gap-6">
       {articles.map((article, index) => (
         <Link
           key={article.slug}
@@ -129,10 +134,12 @@ function ArticleGrid({ articles }: { articles: ArticleMeta[] }) {
                 {formatDate(article.date)} · {article.readingTime} min de
                 lecture
               </CardDescription>
-              <CardTitle className="text-xl">{article.title}</CardTitle>
+              <CardTitle className="text-2xl text-balance md:text-3xl">
+                {article.title}
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-muted-foreground">
+              <p className="max-w-2xl text-muted-foreground">
                 {article.description}
               </p>
               <div className="mt-4 flex flex-wrap gap-2">
@@ -142,6 +149,10 @@ function ArticleGrid({ articles }: { articles: ArticleMeta[] }) {
                   </Badge>
                 ))}
               </div>
+              <p className="mt-6 inline-flex items-center gap-2 font-medium text-primary">
+                Lire l'article
+                <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
+              </p>
             </CardContent>
           </Card>
         </Link>

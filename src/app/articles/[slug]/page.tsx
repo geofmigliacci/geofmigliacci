@@ -86,7 +86,7 @@ export default async function ArticlePage({ params }: ArticleParams) {
   ]);
 
   return (
-    <article className="mx-auto max-w-[60rem] px-6 py-16 md:py-24 2xl:max-w-[75rem]">
+    <article className="mx-auto max-w-240 px-6 py-16 md:py-24 2xl:max-w-300">
       <JsonLd data={articleData} />
       <JsonLd data={breadcrumbData} />
       <ReadingProgressBar />

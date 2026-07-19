@@ -18,7 +18,7 @@ export function ReadingProgressBar() {
       aria-hidden="true"
       className="pointer-events-none fixed inset-x-0 top-[4.5rem] z-40 px-6"
     >
-      <div className="mx-auto h-0.5 max-w-[60rem] overflow-hidden bg-foreground/10 2xl:max-w-[75rem]">
+      <div className="mx-auto h-0.5 max-w-240 overflow-hidden bg-foreground/10 2xl:max-w-300">
         <motion.div
           className="h-full origin-left bg-primary"
           style={{ scaleX: scrollYProgress }}

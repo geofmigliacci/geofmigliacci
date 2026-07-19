@@ -21,13 +21,13 @@ export default function NotFound() {
     REVEAL_DELAY + (LINES[0].length + LINES[1].length) * LETTER_STAGGER;
 
   return (
-    <section className="relative isolate flex min-h-[calc(100svh-4.5rem)] flex-col justify-center px-6 py-8 md:py-12">
+    <section className="relative isolate mx-auto w-full max-w-240 px-6 py-16 md:py-24 2xl:max-w-300">
       <BlueprintArc
         corner="bottom-left"
         delay={lettersDone + 0.2}
-        className="size-[clamp(18rem,40vw,28rem)]"
+        className="fixed size-[clamp(18rem,40vw,28rem)]"
       />
-      <div className="relative mx-auto flex w-full max-w-[60rem] flex-col items-center p-6 text-center 2xl:max-w-[75rem]">
+      <div className="relative flex w-full flex-col items-center p-6 text-center">
         <motion.div
           aria-hidden
           className="pointer-events-none absolute inset-0"
