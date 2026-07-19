@@ -19,7 +19,7 @@ import {
 } from "@/lib/articles";
 import { formatDate } from "@/lib/format";
 import { articleJsonLd, breadcrumbJsonLd } from "@/lib/json-ld";
-import { openGraphBase, person } from "@/lib/site";
+import { openGraphBase, person, rssAlternate } from "@/lib/site";
 
 interface ArticleParams {
   params: Promise<{ slug: string }>;
@@ -42,7 +42,7 @@ export async function generateMetadata({
   return {
     title: metadata.title,
     description: metadata.description,
-    alternates: { canonical: `/articles/${slug}` },
+    alternates: { canonical: `/articles/${slug}`, types: rssAlternate },
     openGraph: {
       ...openGraphBase,
       type: "article",

@@ -2,13 +2,13 @@ import type { Metadata } from "next";
 import { LatestArticle } from "@/app/_components/latest-article";
 import { Masthead } from "@/app/_components/masthead";
 import { getArticles } from "@/lib/articles";
-import { openGraphBase } from "@/lib/site";
+import { openGraphBase, rssAlternate } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Geoffrey Migliacci — Ingénieur logiciel senior",
   description:
     "J'écris sur le code, la cuisine, les langues, la philosophie — tout ce qui nourrit ma curiosité et la vie autour.",
-  alternates: { canonical: "/" },
+  alternates: { canonical: "/", types: rssAlternate },
   openGraph: { ...openGraphBase, type: "website", url: "/" },
 };
 

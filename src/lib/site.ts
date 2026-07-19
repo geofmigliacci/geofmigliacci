@@ -9,6 +9,10 @@ export const openGraphBase = {
   locale: "fr_FR",
 } satisfies Metadata["openGraph"];
 
+export const rssAlternate = {
+  "application/rss+xml": "/feed.xml",
+} satisfies NonNullable<Metadata["alternates"]>["types"];
+
 export const person = {
   name: "Geoffrey Migliacci",
   url: siteUrl.href,
