@@ -18,16 +18,16 @@ afterEach(() => {
 describe("Hero", () => {
   it("applies the initial motion offset by default", () => {
     render(<Hero />);
-    const identityRow =
-      screen.getByText("Ingénieur logiciel senior").parentElement?.parentElement;
+    const identityRow = screen.getByText("Ingénieur logiciel senior")
+      .parentElement?.parentElement;
     expect(identityRow).toHaveStyle({ opacity: 0 });
   });
 
   it("skips the initial motion offset when the user prefers reduced motion", () => {
     mockedUseReducedMotion.mockReturnValue(true);
     render(<Hero />);
-    const identityRow =
-      screen.getByText("Ingénieur logiciel senior").parentElement?.parentElement;
+    const identityRow = screen.getByText("Ingénieur logiciel senior")
+      .parentElement?.parentElement;
     expect(identityRow).toHaveStyle({ opacity: 1 });
   });
 
