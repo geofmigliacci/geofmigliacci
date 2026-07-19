@@ -23,7 +23,7 @@ Rembobinons.
 
 ## L'histoire
 
-### Sprint 1 : des choix raisonnables
+<Chapter marker="Sprint 1" title="Des choix raisonnables" />
 
 Un chaud jour d'été, quatorze mois avant le dashboard rouge. Nouvelle équipe,
 nouveau projet, backlog vierge : ce moment de la vie d'un logiciel où tout le
@@ -55,7 +55,7 @@ c'est un choix défendable : personne dans cette équipe n'est incompétent, et
 c'est exactement ce qui rend la suite intéressante. Retenez juste cette
 option. Elle reviendra.
 
-### Sprint 3 : la boucle innocente
+<Chapter marker="Sprint 3" title="La boucle innocente" />
 
 L'écran "derniers contrats" arrive dans le sprint. L'endpoint est écrit en
 dix minutes, et il est propre : requête bornée, DTO de sortie, async partout.
@@ -98,7 +98,7 @@ Treize requêtes pour afficher un tableau. Mais à 0,5 ms pièce sur un
 SQL Server local, ça ne se voit pas. La bombe est posée. Elle tique en
 silence.
 
-### Sprint 17 : la lenteur s'installe
+<Chapter marker="Sprint 17" title="La lenteur s'installe" />
 
 La base a grandi : 3 000 contrats, de vrais clients, de vrais avenants, et
 des documents qui s'accumulent sur chaque dossier, parce que c'est à ça que
@@ -116,7 +116,7 @@ sprint 3.** Seules les données ont grandi. Le coût du lazy loading n'est pas
 indexé sur votre code, il est indexé sur votre production. C'est pour ça que
 personne ne le voit venir.
 
-### Sprint 30 : la base rampe pour sa survie
+<Chapter marker="Sprint 30" title="La base rampe pour sa survie" />
 
 Un grand compte signe et migre dix ans d'historique (le grand compte tient
 toujours ce rôle dans les post-mortems, c'est une convention du genre).
@@ -306,27 +306,41 @@ devient un build rouge un jeudi après-midi. Pas un dashboard rouge un mardi
 
 ## Ce qu'il faut retenir
 
-**Une requête SQL dans un getter**
+<Takeaways>
+
+<Takeaway title="Une requête SQL dans un getter">
 
 Le lazy loading habille l'opération la plus coûteuse du système de la
 syntaxe la plus discrète du langage.
 
-**Son coût est indexé sur votre production, pas sur votre code**
+</Takeaway>
+
+<Takeaway title="Son coût est indexé sur votre production, pas sur votre code">
 
 Il grandit sans le moindre commit, et le succès est son carburant.
 
-**Un lazy load ne se grep pas, il se mesure**
+</Takeaway>
+
+<Takeaway title="Un lazy load ne se grep pas, il se mesure">
 
 APM ou interceptor : trouvez le pire écran d'abord.
 
-**En lecture, projetez**
+</Takeaway>
+
+<Takeaway title="En lecture, projetez">
 
 Un `Select` vers un DTO, et la ligne coupable devient un `COUNT(*)`.
 
-**Une option suffit en test**
+</Takeaway>
+
+<Takeaway title="Une option suffit en test">
 
 `ConfigureWarnings` et `Throw` : la régression devient un build rouge.
 Sur un projet neuf, plus simple encore : n'installez pas le package.
+
+</Takeaway>
+
+</Takeaways>
 
 <Epilogue>
 
