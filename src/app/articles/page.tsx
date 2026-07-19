@@ -34,9 +34,8 @@ export default async function ArticlesPage() {
             Articles
           </h1>
           <p className="max-w-2xl text-lg text-muted-foreground md:text-xl">
-            J'écris sur ce qui me passionne : le développement et
-            l'architecture logicielle, mais aussi la cuisine, les langues et la
-            vie autour.
+            J'écris sur ce qui me passionne : le développement et l'architecture
+            logicielle, mais aussi la cuisine, les langues et la vie autour.
           </p>
         </div>
         <Button
