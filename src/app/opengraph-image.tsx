@@ -3,7 +3,7 @@ import { loadOgFonts, OG_COLORS, OG_SIZE, OgFrame } from "@/lib/og-image";
 
 export const size = OG_SIZE;
 export const contentType = "image/png";
-export const alt = "Geoffrey Migliacci — Ingénieur logiciel";
+export const alt = "Geoffrey Migliacci — Ingénieur logiciel senior";
 
 export default async function Image() {
   const fonts = await loadOgFonts();
@@ -30,7 +30,7 @@ export default async function Image() {
             color: OG_COLORS.primary,
           }}
         >
-          Ingénieur logiciel
+          Ingénieur logiciel senior
         </div>
         <div
           style={{
