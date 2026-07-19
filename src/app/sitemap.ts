@@ -12,6 +12,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 1,
     },
     {
+      url: new URL("/about", siteUrl).href,
+      changeFrequency: "monthly",
+      priority: 0.7,
+    },
+    {
       // Articles are sorted by date desc, so the newest one dates the index.
       url: new URL("/articles", siteUrl).href,
       lastModified: articles[0]?.date,

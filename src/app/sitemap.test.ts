@@ -28,7 +28,7 @@ const articleB: ArticleMeta = {
 };
 
 describe("sitemap", () => {
-  it("includes the home and articles index, plus one entry per article", async () => {
+  it("includes the home, about, and articles index, plus one entry per article", async () => {
     mockedGetArticles.mockResolvedValue([articleB, articleA]);
 
     const result = await sitemap();
@@ -39,12 +39,17 @@ describe("sitemap", () => {
       priority: 1,
     });
     expect(result[1]).toEqual({
+      url: "https://www.geofmigliacci.dev/about",
+      changeFrequency: "monthly",
+      priority: 0.7,
+    });
+    expect(result[2]).toEqual({
       url: "https://www.geofmigliacci.dev/articles",
       lastModified: "2026-05-01",
       changeFrequency: "weekly",
       priority: 0.8,
     });
-    expect(result.slice(2)).toEqual([
+    expect(result.slice(3)).toEqual([
       {
         url: "https://www.geofmigliacci.dev/articles/article-b",
         lastModified: "2026-05-01",
@@ -65,7 +70,7 @@ describe("sitemap", () => {
 
     const result = await sitemap();
 
-    expect(result).toHaveLength(2);
-    expect(result[1].lastModified).toBeUndefined();
+    expect(result).toHaveLength(3);
+    expect(result[2].lastModified).toBeUndefined();
   });
 });
