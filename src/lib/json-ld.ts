@@ -27,6 +27,8 @@ export function articleJsonLd({
     headline: title,
     description,
     datePublished: date,
+    dateModified: date,
+    image: new URL(`/articles/${slug}/opengraph-image/og`, siteUrl).href,
     url: new URL(`/articles/${slug}`, siteUrl).href,
     author: {
       "@type": "Person",

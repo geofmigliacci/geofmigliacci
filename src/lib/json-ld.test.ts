@@ -27,6 +27,10 @@ describe("articleJsonLd", () => {
     expect(data.headline).toBe("Mon article");
     expect(data.description).toBe("Une description.");
     expect(data.datePublished).toBe("2026-01-01");
+    expect(data.dateModified).toBe("2026-01-01");
+    expect(data.image).toBe(
+      "https://www.geofmigliacci.dev/articles/mon-article/opengraph-image/og",
+    );
     expect(data.url).toBe("https://www.geofmigliacci.dev/articles/mon-article");
     expect(data.author).toEqual({
       "@type": "Person",
