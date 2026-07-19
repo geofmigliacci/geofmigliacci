@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   metadataBase: siteUrl,
   title: {
     default: "Geoffrey Migliacci",
-    template: "Geoffrey Migliacci — %s",
+    template: "%s — Geoffrey Migliacci",
   },
   description:
     "J'écris sur le code, la cuisine, les langues, la philosophie — tout ce qui nourrit ma curiosité et la vie autour.",
