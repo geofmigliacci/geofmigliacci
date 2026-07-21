@@ -43,3 +43,6 @@ next-env.d.ts
 
 # graphify
 /graphify-out
+
+# article drafts (still rendered locally at /articles/<nom>.draft)
+content/**/*.draft.mdx
