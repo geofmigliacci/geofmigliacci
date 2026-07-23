@@ -35,3 +35,62 @@ export function cpuFor(activeRequests: number): number {
   if (activeRequests === 0) return IDLE_CPU;
   return Math.min(100, 24 + activeRequests * 13);
 }
+
+export interface Rect {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+export function rectFromCenter(
+  cx: number,
+  cy: number,
+  width: number,
+  height: number,
+): Rect {
+  return { x: cx - width / 2, y: cy - height / 2, width, height };
+}
+
+export const center = (rect: Rect): Point => ({
+  x: rect.x + rect.width / 2,
+  y: rect.y + rect.height / 2,
+});
+export const leftMid = (rect: Rect): Point => ({
+  x: rect.x,
+  y: rect.y + rect.height / 2,
+});
+export const rightMid = (rect: Rect): Point => ({
+  x: rect.x + rect.width,
+  y: rect.y + rect.height / 2,
+});
+export const topMid = (rect: Rect): Point => ({
+  x: rect.x + rect.width / 2,
+  y: rect.y,
+});
+export const bottomMid = (rect: Rect): Point => ({
+  x: rect.x + rect.width / 2,
+  y: rect.y + rect.height,
+});
+
+export function elbow(from: Point, to: Point, turnX?: number): Point[] {
+  const x = turnX ?? (from.x + to.x) / 2;
+  return [from, { x, y: from.y }, { x, y: to.y }, to];
+}
+
+export function stackVertically(
+  count: number,
+  size: { width: number; height: number },
+  cx: number,
+  cy: number,
+  gap: number,
+): Rect[] {
+  const span = count * size.height + (count - 1) * gap;
+  const startY = cy - span / 2;
+  return Array.from({ length: count }, (_, index) => ({
+    x: cx - size.width / 2,
+    y: startY + index * (size.height + gap),
+    width: size.width,
+    height: size.height,
+  }));
+}

@@ -5,8 +5,10 @@ import type { ReactNode } from "react";
 import { BlueprintCorners } from "@/components/decorative/blueprint-corners";
 import { EASE } from "@/components/decorative/stagger-text";
 import {
+  center,
   type Point,
   progressAlong,
+  type Rect,
   withoutRepeats,
 } from "@/components/diagram/geometry";
 import { cn } from "@/lib/utils";
@@ -14,7 +16,10 @@ import { cn } from "@/lib/utils";
 export type DiagramTone = "default" | "active" | "muted" | "alert";
 export type FlowTone = "active" | "ghost";
 
-export type { Point };
+export type { Point, Rect };
+
+const NODE_SUBLABEL_DY = 8;
+const NODE_LABEL_SHIFT = 4;
 
 const NODE_STROKE: Record<DiagramTone, string> = {
   default: "stroke-foreground/20",
@@ -146,34 +151,28 @@ export function Readout({ label, value }: { label: string; value: number }) {
 }
 
 export function SvgNode({
-  x,
-  y,
-  width,
-  height,
+  rect,
   label,
   sublabel,
   tone = "default",
   badge,
 }: {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
+  rect: Rect;
   label: string;
   sublabel?: string;
   tone?: DiagramTone;
   badge?: string;
 }) {
-  const cx = x + width / 2;
-  const cy = y + height / 2;
+  const { x, y, width } = rect;
+  const c = center(rect);
 
   return (
     <g>
       <rect
-        x={x}
-        y={y}
-        width={width}
-        height={height}
+        x={rect.x}
+        y={rect.y}
+        width={rect.width}
+        height={rect.height}
         strokeWidth={1}
         className={cn(
           "fill-card transition-colors duration-500",
@@ -181,8 +180,8 @@ export function SvgNode({
         )}
       />
       <text
-        x={cx}
-        y={sublabel ? cy - 4 : cy}
+        x={c.x}
+        y={sublabel ? c.y - NODE_LABEL_SHIFT : c.y}
         textAnchor="middle"
         dominantBaseline="central"
         className={cn(
@@ -194,8 +193,8 @@ export function SvgNode({
       </text>
       {sublabel ? (
         <text
-          x={cx}
-          y={cy + 8}
+          x={c.x}
+          y={c.y + NODE_SUBLABEL_DY}
           textAnchor="middle"
           dominantBaseline="central"
           className="fill-muted-foreground font-mono text-[7px]"

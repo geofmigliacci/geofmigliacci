@@ -13,7 +13,16 @@ import {
   SvgPacket,
   SvgStack,
 } from "@/components/diagram/diagram";
-import { cpuFor } from "@/components/diagram/geometry";
+import {
+  bottomMid,
+  center,
+  cpuFor,
+  elbow,
+  leftMid,
+  rectFromCenter,
+  rightMid,
+  stackVertically,
+} from "@/components/diagram/geometry";
 
 type Mode = "without" | "with";
 
@@ -27,40 +36,37 @@ const MODE_OPTIONS = [
   { value: "with", label: "Avec token" },
 ] as const satisfies readonly { value: Mode; label: string }[];
 
-const VIEW = { w: 320, h: 210 };
-const CLIENT = { x: 8, width: 58, height: 34 };
-const CLIENT_TOPS = [8, 78, 148];
+const VIEW = { width: 340, height: 210 };
+const NODE = { width: 60, height: 34 };
+const HUB = { width: 74, height: 44 };
+const RAIL_Y = 96;
+const COLUMN = { client: 40, server: 168, sql: 292 };
+const CLIENT_GAP = 36;
+const STACK_GAP = 8;
 const CLIENT_BURSTS = [3, 2, 1];
-const SERVER = { x: 128, y: 72, width: 64, height: 46 };
-const SQL = { x: 248, y: 75, width: 64, height: 40 };
-const STACK = { x: 248, top: 123, width: 64 };
 
-const RAIL_Y = 95;
-const TRUNK_X = 100;
-const SERVER_LEFT: Point = { x: SERVER.x, y: RAIL_Y };
-const SERVER_CENTER: Point = { x: SERVER.x + SERVER.width / 2, y: RAIL_Y };
-const SERVER_RIGHT: Point = { x: SERVER.x + SERVER.width, y: RAIL_Y };
-const SQL_LEFT: Point = { x: SQL.x, y: RAIL_Y };
-const SQL_CENTER: Point = { x: SQL.x + SQL.width / 2, y: RAIL_Y };
+const clientRects = stackVertically(
+  CLIENT_BURSTS.length,
+  NODE,
+  COLUMN.client,
+  RAIL_Y,
+  CLIENT_GAP,
+);
+const serverRect = rectFromCenter(COLUMN.server, RAIL_Y, HUB.width, HUB.height);
+const sqlRect = rectFromCenter(COLUMN.sql, RAIL_Y, HUB.width, HUB.height - 4);
+const stackRegion = {
+  x: sqlRect.x,
+  top: bottomMid(sqlRect).y + STACK_GAP,
+  width: sqlRect.width,
+};
 
-const clientRight = (index: number): Point => ({
-  x: CLIENT.x + CLIENT.width,
-  y: CLIENT_TOPS[index] + CLIENT.height / 2,
-});
-
-const clientEdge = (index: number): Point[] => [
-  clientRight(index),
-  { x: TRUNK_X, y: clientRight(index).y },
-  { x: TRUNK_X, y: RAIL_Y },
-  SERVER_LEFT,
-];
+const clientEdge = (index: number): Point[] =>
+  elbow(rightMid(clientRects[index]), leftMid(serverRect));
 
 const packetPath = (index: number): Point[] => [
-  clientRight(index),
-  { x: TRUNK_X, y: clientRight(index).y },
-  { x: TRUNK_X, y: RAIL_Y },
-  SERVER_CENTER,
-  SQL_CENTER,
+  ...elbow(rightMid(clientRects[index]), leftMid(serverRect)),
+  center(serverRect),
+  center(sqlRect),
 ];
 
 const STACK_CAP = CLIENT_BURSTS.reduce((sum, burst) => sum + burst, 0);
@@ -181,19 +187,19 @@ export function RequestStorm() {
       caption="Chaque client rafraîchit, puis ferme l'onglet. Sans jeton d'annulation, ses requêtes continuent de tourner côté base et s'empilent. Avec le jeton, elles s'arrêtent quand il part, et la charge reste bornée."
     >
       <svg
-        viewBox={`0 0 ${VIEW.w} ${VIEW.h}`}
+        viewBox={`0 0 ${VIEW.width} ${VIEW.height}`}
         className="h-auto w-full"
         role="img"
         aria-label="Trois clients envoient des requêtes à un serveur ASP.NET Core, qui les relaie à SQL Server. Quand un client se déconnecte, ses requêtes s'empilent côté base sans jeton d'annulation, et s'annulent avec."
       >
-        {CLIENT_TOPS.map((top, index) => (
+        {clientRects.map((rect, index) => (
           <SvgEdge
-            key={`edge-${top}`}
+            key={`edge-${rect.y}`}
             points={clientEdge(index)}
             cut={shownCut[index]}
           />
         ))}
-        <SvgEdge points={[SERVER_RIGHT, SQL_LEFT]} />
+        <SvgEdge points={[rightMid(serverRect), leftMid(sqlRect)]} />
 
         {shownFlying.map((request) => (
           <SvgPacket
@@ -205,32 +211,19 @@ export function RequestStorm() {
           />
         ))}
 
-        {CLIENT_TOPS.map((top, index) => (
+        {clientRects.map((rect, index) => (
           <SvgNode
-            key={`client-${top}`}
-            x={CLIENT.x}
-            y={top}
-            width={CLIENT.width}
-            height={CLIENT.height}
+            key={`client-${rect.y}`}
+            rect={rect}
             label="Client"
             sublabel={shownCut[index] ? "parti" : "connecté"}
             tone={shownCut[index] ? "muted" : "active"}
             badge={shownCut[index] ? "×" : undefined}
           />
         ))}
+        <SvgNode rect={serverRect} label="Serveur" sublabel="ASP.NET Core" />
         <SvgNode
-          x={SERVER.x}
-          y={SERVER.y}
-          width={SERVER.width}
-          height={SERVER.height}
-          label="Serveur"
-          sublabel="ASP.NET Core"
-        />
-        <SvgNode
-          x={SQL.x}
-          y={SQL.y}
-          width={SQL.width}
-          height={SQL.height}
+          rect={sqlRect}
           label="SQL Server"
           sublabel="requêtes"
           tone={sqlTone}
@@ -238,9 +231,9 @@ export function RequestStorm() {
 
         <SvgStack
           items={stackItems}
-          x={STACK.x}
-          top={STACK.top}
-          width={STACK.width}
+          x={stackRegion.x}
+          top={stackRegion.top}
+          width={stackRegion.width}
         />
       </svg>
 
