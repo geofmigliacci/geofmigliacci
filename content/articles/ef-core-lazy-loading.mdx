@@ -1,5 +1,5 @@
 export const metadata = {
-  title: "Une ligne de code, 200 requêtes SQL",
+  title: "Une ligne de code, 201 requêtes SQL",
   description:
     "L'histoire vraie d'un N+1 : une ligne raisonnable, quatorze mois d'incubation, une base de données à genoux. Autopsie du lazy loading d'EF Core, et garde-fous.",
   date: "2026-07-17",
@@ -32,14 +32,14 @@ configurez le `DbContext`, la doc mentionne une option confortable, et
 franchement, elle vend du rêve :
 
 ```csharp
-builder.Services.AddDbContext<ContratsContext>(options =>
+builder.Services.AddDbContext<ContractsContext>(options =>
     options
         .UseSqlServer(connectionString)
         .UseLazyLoadingProxies());
 ```
 
 ```csharp
-public class Contrat
+public class Contract
 {
     public int Id { get; set; }
     public string Reference { get; set; } = "";
@@ -64,14 +64,14 @@ attachés au dossier.
 
 ```csharp
 // Simplifié pour l'article. Le mécanisme, lui, est identique.
-app.MapGet("/contrats", async (ContratsContext db) =>
+app.MapGet("/contrats", async (ContractsContext db) =>
 {
     var contrats = await db.Contrats
         .OrderByDescending(c => c.CreatedAt)
         .Take(200)
         .ToListAsync();
 
-    return contrats.Select(c => new ContratSummary(
+    return contrats.Select(c => new ContractSummary(
         c.Id,
         c.Reference,
         c.Documents.Count,
@@ -84,17 +84,17 @@ la base contient 12 contrats et l'endpoint répond en 8 ms. Personne n'ouvre le
 log SQL d'un endpoint qui répond en 8 ms. Il faudrait pourtant. Le voici :
 
 ```sql
-SELECT TOP(200) [c].[Id], [c].[Reference], … FROM [Contrats] AS [c] ORDER BY …
-SELECT [d].[Id], [d].[Nom], [d].[Taille], … FROM [Documents] AS [d] WHERE [d].[ContratId] = @__p_0
-SELECT [d].[Id], [d].[Nom], [d].[Taille], … FROM [Documents] AS [d] WHERE [d].[ContratId] = @__p_0
-SELECT [d].[Id], [d].[Nom], [d].[Taille], … FROM [Documents] AS [d] WHERE [d].[ContratId] = @__p_0
+SELECT TOP(200) [c].[Id], [c].[Reference], … FROM [Contrats] AS [c] ORDER BY ...
+SELECT [d].[Id], [d].[Nom], [d].[Taille], … FROM [Documents] AS [d] WHERE [d].[ContratId] = @__p_0  -- contrat 1
+SELECT [d].[Id], [d].[Nom], [d].[Taille], … FROM [Documents] AS [d] WHERE [d].[ContratId] = @__p_0  -- contrat 2
+SELECT [d].[Id], [d].[Nom], [d].[Taille], … FROM [Documents] AS [d] WHERE [d].[ContratId] = @__p_0  -- contrat 3
 -- ... et neuf de plus
 ```
 
 Chaque `c.Documents.Count` traverse un proxy qui charge la collection
 entière : pour afficher "34 documents", EF matérialise les 34 lignes
 (métadonnées comprises), puis les compte en mémoire. Un contrat, une requête.
-Treize requêtes pour afficher un tableau. Mais à 0,5 ms pièce sur un
+13 requêtes pour afficher un tableau. Mais à 0,5 ms pièce sur un
 SQL Server local, ça ne se voit pas. La bombe est posée. Elle tique en
 silence.
 
@@ -116,6 +116,12 @@ sprint 3.** Seules les données ont grandi. Le coût du lazy loading n'est pas
 indexé sur votre code, il est indexé sur votre production. C'est pour ça que
 personne ne le voit venir.
 
+Attention : depuis le sprint 3, l'endpoint plafonne à `Take(200)`, donc à
+201 requêtes. Le compteur ne bouge plus. Ce qui grimpe, c'est le volume de
+lignes matérialisées et la concurrence qui noie le pool. Le N+1 est passé de
+"trop de requêtes" à "trop de chaos" : la bombe du sprint 3 ne tique plus,
+elle chauffe.
+
 <Chapter marker="Sprint 30" title="La base rampe pour sa survie" />
 
 Un grand compte signe et migre dix ans d'historique (le grand compte tient
@@ -134,7 +140,7 @@ prior to obtaining a connection from the pool.
 
 Et voici le détail cruel : les endpoints voisins tombent aussi. Eux n'ont
 rien demandé. Ils attendent juste une connexion qu'une boucle innocente
-monopolise deux cents fois par affichage. Le N+1 n'affame pas que son
+monopolise 201 fois par affichage. Le N+1 n'affame pas que son
 appelant ; il affame l'immeuble entier.
 
 Il est 9 h 47, un mardi. Dehors, les oiseaux chantent toujours. Le dashboard
@@ -243,7 +249,7 @@ résultat.
 var contrats = await db.Contrats
     .OrderByDescending(c => c.CreatedAt)
     .Take(200)
-    .Select(c => new ContratSummary(
+    .Select(c => new ContractSummary(
         c.Id,
         c.Reference,
         c.Documents.Count,   // devient un COUNT(*) en SQL
