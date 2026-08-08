@@ -1,0 +1,288 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@plugin "@tailwindcss/typography";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  color-scheme: light;
+
+  --background: oklch(0.99 0.002 285);
+  --foreground: oklch(0.22 0.01 285);
+  /* Not unused: `diagram.tsx` reads both as `fill-*`, and an unresolved fill paints black. */
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.22 0.01 285);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.22 0.01 285);
+  --primary: oklch(0.47 0.145 280);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.96 0.005 285);
+  --secondary-foreground: oklch(0.3 0.012 285);
+  --muted: oklch(0.965 0.004 285);
+  --muted-foreground: oklch(0.45 0.015 285);
+  --accent: oklch(0.955 0.013 285);
+  --accent-foreground: oklch(0.42 0.13 280);
+  --destructive: oklch(0.55 0.21 27);
+  --destructive-foreground: oklch(1 0 0);
+  --border: oklch(0.89 0.006 286);
+  --input: oklch(0.64 0.008 286);
+  --ring: oklch(0.47 0.145 280);
+
+  /* `scripts/generate-icons.mjs` reads these same stops. */
+  --brand-gradient-from: #333987;
+  --brand-gradient-to: #a8539f;
+
+  --radius: 0.375rem;
+}
+
+/* Opt-in: the layout's boot script adds `.dark` and nothing else does. */
+.dark {
+  color-scheme: dark;
+
+  --background: oklch(0.16 0.008 285);
+  --foreground: oklch(0.95 0.005 285);
+  --card: oklch(0.19 0.008 285);
+  --card-foreground: oklch(0.95 0.005 285);
+  --popover: oklch(0.19 0.008 285);
+  --popover-foreground: oklch(0.95 0.005 285);
+  --primary: oklch(0.7 0.115 285);
+  --primary-foreground: oklch(0.16 0.008 285);
+  --secondary: oklch(0.24 0.008 285);
+  --secondary-foreground: oklch(0.95 0.005 285);
+  --muted: oklch(0.22 0.008 285);
+  --muted-foreground: oklch(0.7 0.015 285);
+  --accent: oklch(0.26 0.022 285);
+  --accent-foreground: oklch(0.8 0.095 285);
+  --destructive: oklch(0.65 0.19 27);
+  --destructive-foreground: oklch(0.16 0.008 285);
+  --border: oklch(0.3 0.01 285);
+  --input: oklch(0.51 0.012 285);
+  --ring: oklch(0.7 0.115 285);
+
+  --brand-gradient-from: #6572c4;
+  --brand-gradient-to: #d279c8;
+}
+
+@theme {
+  --ease-site: cubic-bezier(0.22, 1, 0.36, 1);
+  --tracking-eyebrow: 0.25em;
+  --tracking-diagram: 0.1em;
+}
+
+/* Named distinctly: overriding Tailwind's `container` leaves two rules decided by source order. */
+@utility site-container {
+  margin-inline: auto;
+  max-width: 75rem;
+  padding-inline: --spacing(6);
+}
+
+@utility page-shell {
+  @apply site-container py-16 md:py-24;
+}
+
+@utility panel {
+  @apply rounded-lg border border-border p-6 md:p-8;
+}
+
+/* `--container-3xl` is only emitted while a utility references it: `max-w-3xl` on the prose does. */
+@utility post-columns {
+  @apply lg:grid lg:grid-cols-[minmax(0,var(--container-3xl))_minmax(14rem,1fr)] lg:gap-12;
+}
+
+/* What base-nova applies to its own titles, so `shadcn add` lands components unedited. */
+@utility cn-font-heading {
+  font-family: var(--font-heading);
+}
+
+@utility enter-rise {
+  @apply animate-in fade-in slide-in-from-bottom-3 duration-600 ease-site motion-reduce:animate-none;
+}
+
+/* Requires `group` and `overflow-hidden` on an ancestor, or the zoom escapes its frame. */
+@utility photo-lift {
+  @apply transition-[scale,filter] duration-500 ease-site group-hover:scale-[1.03] group-hover:saturate-[1.12] group-hover:contrast-[1.10] group-hover:brightness-[1.04] motion-reduce:transition-none motion-reduce:group-hover:scale-100;
+}
+
+@theme inline {
+  --font-sans: var(--font-geist), system-ui, sans-serif;
+  --font-heading: var(--font-space-grotesk), system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), monospace;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* All seven steps, including the ones nothing here reaches yet. base-nova
+     components span `rounded-sm` (tooltip) to `rounded-xl` (card, dialog), and
+     the style ships `cssVars: {}` while its registry items carry none, so the
+     CLI writes this scale once at `init` and never backfills it. Drop a step and
+     the component that wants it silently takes Tailwind's own default: without
+     `--radius-xl`, a card rounds at 0.75rem instead of 0.525rem. */
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  /* Spelled out: `outline-ring/50` emits a colour with no width, so it draws nothing. */
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+  /* Base loses to utilities, which is what lets a mono eyebrow that is an `h2` keep `font-mono`. */
+  :is(h1, h2, h3, h4) {
+    font-family: var(--font-heading);
+  }
+}
+
+/* On `body::after`: a `filter` on any ancestor would capture the progress bar's `position: fixed`. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  pointer-events: none;
+  opacity: 0.028;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.dark body::after {
+  opacity: 0.05;
+}
+
+/* Timing only: the UA keyframes are what keep the two snapshots summing to one opaque page. */
+/* biome-ignore lint/correctness/noUnknownTypeSelector: `root` names a view-transition group, not an element type */
+::view-transition-old(root) {
+  animation-duration: 300ms;
+}
+
+/* biome-ignore lint/correctness/noUnknownTypeSelector: `root` names a view-transition group, not an element type */
+::view-transition-new(root) {
+  animation-duration: 300ms;
+}
+
+/* The swap still happens unanimated, which is why the toggle needs no reduced-motion branch. */
+@media (prefers-reduced-motion: reduce) {
+  /* biome-ignore lint/correctness/noUnknownTypeSelector: `root` names a view-transition group, not an element type */
+  ::view-transition-old(root) {
+    animation: none;
+  }
+
+  /* biome-ignore lint/correctness/noUnknownTypeSelector: `root` names a view-transition group, not an element type */
+  ::view-transition-new(root) {
+    animation: none;
+  }
+}
+
+/* Two shiki themes emit custom properties instead of `color`; plaintext spans emit neither. */
+.prose pre[data-theme] span {
+  color: var(--shiki-light, currentColor);
+}
+
+.dark .prose pre[data-theme] span {
+  color: var(--shiki-dark, currentColor);
+}
+
+.prose figure[data-rehype-pretty-code-figure] {
+  position: relative;
+}
+
+.prose figure[data-rehype-pretty-code-figure]::before {
+  position: absolute;
+  top: --spacing(2.5);
+  right: --spacing(3);
+  font-family: var(--font-jetbrains-mono);
+  font-size: 10px;
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+
+.prose
+  figure[data-rehype-pretty-code-figure]:has(
+    pre[data-language="csharp"]
+  )::before {
+  content: "C#";
+}
+
+.prose
+  figure[data-rehype-pretty-code-figure]:has(pre[data-language="sql"])::before {
+  content: "SQL";
+}
+
+/* The plugin sets a backtick on both. */
+.prose code::before,
+.prose code::after {
+  content: none;
+}
+
+.prose :not(pre) > code {
+  padding: 0.15em 0.4em;
+  border-radius: 0.25rem;
+  background-color: color-mix(in oklab, var(--foreground) 8%, transparent);
+  font-weight: 500;
+}
+
+.prose blockquote {
+  /* French guillemets, read by the plugin's own `p:first-of-type::before`. */
+  quotes: "«\00a0" "\00a0»" "\201c" "\201d";
+  border-inline-start-width: 2px;
+  border-inline-start-color: color-mix(
+    in oklab,
+    var(--primary) 20%,
+    transparent
+  );
+  padding-inline-start: --spacing(6);
+  font-size: 1.125em;
+  font-style: normal;
+  font-weight: 400;
+  color: var(--foreground);
+}
+
+.prose figure > blockquote + figcaption {
+  padding-inline-start: --spacing(6);
+  font-family: var(--font-jetbrains-mono);
+  font-size: 12px;
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+
+/* Targets the browser's italic default, not the plugin. */
+.prose figcaption cite {
+  font-style: normal;
+}
+
+/* The plugin colours links; a caption should not read as one. */
+.prose figcaption a {
+  color: inherit;
+}

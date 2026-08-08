@@ -1,0 +1,44 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm check)",
+      "PowerShell(pnpm check)",
+      "Bash(pnpm lint)",
+      "PowerShell(pnpm lint)",
+      "Bash(pnpm typecheck)",
+      "PowerShell(pnpm typecheck)",
+      "Bash(pnpm test)",
+      "PowerShell(pnpm test)",
+      "Bash(pnpm test:coverage)",
+      "PowerShell(pnpm test:coverage)",
+      "Bash(git status *)",
+      "PowerShell(git status *)",
+      "Bash(git diff *)",
+      "PowerShell(git diff *)",
+      "Bash(git log *)",
+      "PowerShell(git log *)",
+      "Bash(git show *)",
+      "PowerShell(git show *)",
+      "Bash(npx skills find *)",
+      "PowerShell(npx skills find *)"
+    ],
+    "ask": ["Bash(pnpm build)", "PowerShell(pnpm build)"],
+    "deny": ["Read(./.env)", "Read(./.env.local)"]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "shell": "bash",
+            "statusMessage": "Formatting with Biome",
+            "timeout": 30,
+            "command": "node -e \"let s='';process.stdin.on('data',d=>s+=d).on('end',()=>{const p=JSON.parse(s);process.stdout.write((p.tool_response&&p.tool_response.filePath)||(p.tool_input&&p.tool_input.file_path)||'')})\" | { read -r f; [ -n \"$f\" ] && ./node_modules/.bin/biome check --write --no-errors-on-unmatched --files-ignore-unknown=true \"$f\"; } 2>/dev/null || true"
+          }
+        ]
+      }
+    ]
+  }
+}

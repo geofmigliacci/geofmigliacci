@@ -1,0 +1,53 @@
+{/* Image de couverture, obligatoire : la placer à côté du .mdx. Elle est
+    recadrée en bandeau (2:1, puis 3:1 à partir de md). La liste des billets
+    l'affiche sur toute la largeur : un billet sans couverture y ferait un trou.
+
+    Le bandeau 3:1 ne garde qu'environ 60 % de la hauteur d'une photo 1.8:1 :
+    vérifier le recadrage sur un écran large, pas seulement sur téléphone, où il
+    coupe beaucoup moins. Par défaut l'ancrage est en bas, ce qui convient à un
+    paysage dont le haut du cadre est du ciel ; pour un sujet situé dans la
+    moitié haute, passer coverPosition: "center", sinon le recadrage le décapite.
+
+    Les deux lignes ci-dessous restent en commentaire tant que le fichier
+    s'appelle _template : l'import dynamique des billets compile aussi ce
+    modèle, et il échouerait sur une image qui n'existe pas. Les décommenter en
+    même temps qu'on le renomme. */}
+{/* import cover from "./mon-billet.jpg"; */}
+
+export const metadata = {
+  title: "Lorem ipsum dolor sit amet",
+  description: "Consectetur adipiscing elit, sed do eiusmod tempor incididunt.",
+  date: "2026-01-01",
+  tags: ["exemple", "tag"],
+  // updated: "2026-02-01", // seulement si le fond change, pas pour une coquille
+  // cover,
+  // coverAlt: "Ce que montre l'image, pour qui ne la voit pas.",
+  // coverCaption: "Lieu, mois année",
+  // coverPosition: "center", // seulement si le sujet est dans la moitié haute
+};
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+
+Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+
+## Lorem ipsum dolor
+
+Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.
+
+- Nemo enim ipsam voluptatem quia voluptas sit aspernatur.
+- Neque porro quisquam est qui dolorem ipsum quia dolor sit amet.
+- Ut enim ad minima veniam, quis nostrum exercitationem ullam.
+
+### Consectetur adipiscing
+
+At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti. Un exemple de `code en ligne` pour vérifier le rendu typographique.
+
+```text
+lorem ipsum dolor sit amet
+consectetur adipiscing elit
+sed do eiusmod tempor incididunt
+```
+
+## Sed ut perspiciatis
+
+Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est omnis dolor repellendus.
