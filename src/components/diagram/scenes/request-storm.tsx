@@ -1,6 +1,5 @@
 "use client";
 
-import { useReducedMotion } from "motion/react";
 import { useEffect, useState } from "react";
 import {
   DiagramFrame,
@@ -75,7 +74,6 @@ const packetPath = (index: number): Point[] => [
   center(sqlRect),
 ];
 
-const STACK_CAP = CLIENT_BURSTS.reduce((sum, burst) => sum + burst, 0);
 const SEND_GAP_MS = 320;
 const TRAVEL_MS = 680;
 const CLIENT_STAGGER_MS = 820;
@@ -83,7 +81,6 @@ const LINGER_MS = 1000;
 const HOLD_MS = 1500;
 const RESET_GAP_MS = 600;
 
-// Not dead code: the only caller is a gitignored `.draft.mdx`.
 export function RequestStorm({
   mode,
   height,
@@ -91,7 +88,6 @@ export function RequestStorm({
   mode: Mode;
   height?: number;
 }) {
-  const reducedMotion = useReducedMotion();
   const [flying, setFlying] = useState<Request[]>([]);
   const [stacked, setStacked] = useState<Request[]>([]);
   const [cut, setCut] = useState<boolean[]>([
@@ -103,8 +99,6 @@ export function RequestStorm({
   ]);
 
   useEffect(() => {
-    if (reducedMotion) return;
-
     let cancelled = false;
     let nextId = 0;
     const timers: ReturnType<typeof setTimeout>[] = [];
@@ -169,23 +163,13 @@ export function RequestStorm({
       cancelled = true;
       for (const timer of timers) clearTimeout(timer);
     };
-  }, [reducedMotion, mode]);
+  }, [mode]);
 
-  const staticCut = [true, true, true, true, true];
-  const staticStacked: Request[] =
-    mode === "without"
-      ? Array.from({ length: STACK_CAP }, (_, i) => ({ id: i, client: 0 }))
-      : [];
-
-  const shownCut = reducedMotion ? staticCut : cut;
-  const shownStacked = reducedMotion ? staticStacked : stacked;
-  const shownFlying = reducedMotion ? [] : flying;
-
-  const cpu = cpuFor(shownStacked.length);
+  const cpu = cpuFor(stacked.length);
   const sqlTone =
-    cpu >= 90 ? "alert" : shownStacked.length > 0 ? "active" : "default";
-  const connectedCount = shownCut.filter((gone) => !gone).length;
-  const stackItems = shownStacked.map((request) => ({ key: request.id }));
+    cpu >= 90 ? "alert" : stacked.length > 0 ? "active" : "default";
+  const connectedCount = cut.filter((gone) => !gone).length;
+  const stackItems = stacked.map((request) => ({ key: request.id }));
   const width =
     height == null
       ? undefined
@@ -208,12 +192,12 @@ export function RequestStorm({
           <SvgEdge
             key={`edge-${rect.y}`}
             points={clientEdge(index)}
-            cut={shownCut[index]}
+            cut={cut[index]}
           />
         ))}
         <SvgEdge points={[rightMid(serverRect), leftMid(sqlRect)]} />
 
-        {shownFlying.map((request) => (
+        {flying.map((request) => (
           <SvgPacket
             key={request.id}
             points={packetPath(request.client)}
@@ -228,8 +212,8 @@ export function RequestStorm({
             key={`client-${rect.y}`}
             rect={rect}
             label="Client"
-            tone={shownCut[index] ? "muted" : "active"}
-            badge={shownCut[index] ? "×" : undefined}
+            tone={cut[index] ? "muted" : "active"}
+            badge={cut[index] ? "×" : undefined}
           />
         ))}
         <SvgNode rect={serverRect} label="Serveur" sublabel="ASP.NET Core" />
@@ -250,7 +234,7 @@ export function RequestStorm({
 
       <div className="mt-6 flex items-end justify-between border-border border-t pt-6">
         <div className="flex gap-8">
-          <Readout label="Requêtes actives" value={shownStacked.length} />
+          <Readout label="Requêtes actives" value={stacked.length} />
           <Readout label="Clients connectés" value={connectedCount} />
         </div>
         <div className="w-36">

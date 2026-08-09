@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import type { ReactNode } from "react";
 import {
   center,
@@ -72,7 +72,6 @@ export function Meter({
   value: number;
   tone?: FlowTone;
 }) {
-  const reducedMotion = useReducedMotion();
   const clamped = Math.max(0, Math.min(100, value));
   const fill = tone === "active" ? "bg-primary" : "bg-foreground/30";
 
@@ -85,7 +84,7 @@ export function Meter({
       <div className="h-1.5 w-full bg-foreground/10">
         <motion.div
           className={cn("h-full", fill)}
-          initial={reducedMotion ? false : { width: 0 }}
+          initial={{ width: 0 }}
           animate={{ width: `${clamped}%` }}
           transition={{ duration: 0.5, ease: EASE }}
         />
@@ -257,25 +256,7 @@ export function SvgStack({
   barHeight?: number;
   gap?: number;
 }) {
-  const reducedMotion = useReducedMotion();
   const barY = (index: number) => top + index * (barHeight + gap);
-
-  if (reducedMotion) {
-    return (
-      <>
-        {items.map((item, index) => (
-          <rect
-            key={item.key}
-            x={x}
-            y={barY(index)}
-            width={width}
-            height={barHeight}
-            className={FLOW_FILL[item.tone ?? "active"]}
-          />
-        ))}
-      </>
-    );
-  }
 
   return (
     <AnimatePresence initial={false}>
