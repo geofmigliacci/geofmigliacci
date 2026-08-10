@@ -223,3 +223,34 @@ its own job, and only then deploys to Vercel on `main`. Break any of the five an
 nothing ships.
 
 Run `pnpm lint && pnpm typecheck && pnpm test` before handing work back.
+
+## Git hooks
+
+Husky, installed by the `prepare` script on every `pnpm install`. The hooks add
+no guarantee CI does not already give: they shorten the feedback loop from a CI
+round trip to seconds. The split follows what each check costs.
+
+| Hook | Runs | Cost |
+| --- | --- | --- |
+| `pre-commit` | `biome check --staged` | under a second |
+| `commit-msg` | `commitlint --edit` | instant |
+| `pre-push` | `pnpm check` (lint, typecheck, test) | about 14s |
+
+- **`build` and `e2e` are barred from hooks.** Not for their runtime: a build
+  while `pnpm dev` holds :3000 corrupts Turbopack's CSS state, per the warning at
+  the top of this file. `e2e` runs a build of its own. Both stay in CI.
+- **No lint-staged.** Biome 2.2 has `--staged` natively, so it would be a
+  dependency duplicating a flag already in the CLI.
+- **`pre-commit` has no `--write`.** It prints the diff and aborts rather than
+  fixing, because `--staged --write` can sweep unstaged hunks of a partially
+  staged file into the commit. Run `pnpm format` and re-stage.
+- **`pre-push` calls `pnpm check`** rather than restating the three commands, so
+  the hook cannot drift from the line above.
+- `content` is a custom `type-enum` entry in
+  [commitlint.config.mjs](commitlint.config.mjs): `config-conventional` does not
+  ship it, and the rule replaces the list rather than extending it, so the other
+  eleven types are restated there. Inherited defaults that bind: a 100 character
+  header, and a subject that is not sentence, start, pascal or upper case.
+- `HUSKY: 0` at workflow level in [ci.yml](.github/workflows/ci.yml) keeps the
+  hooks out of CI, which runs the same checks as explicit steps.
+

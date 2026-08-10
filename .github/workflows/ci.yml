@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [main]
 
+# The hooks exist for local latency. CI runs the same checks as explicit steps, so installing them here would only slow every `pnpm install` down.
+env:
+  HUSKY: 0
+
 jobs:
   ci:
     name: Lint, typecheck, test & build
