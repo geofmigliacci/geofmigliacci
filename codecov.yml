@@ -1,22 +1,15 @@
 coverage:
   status:
-    # `auto` compares against the base commit rather than a fixed number, so the bar
-    # cannot drift out of date. The threshold absorbs the noise a hard 0% turns into
-    # a failed check: v8 counts branches that jsdom can never reach.
     project:
       default:
         target: auto
         threshold: 1%
 
-    # Not the 100% the recipe suggests. A new scroll-driven component is verified in a
-    # browser, not jsdom, so its branches land uncovered by design.
     patch:
       default:
         target: 80%
         threshold: 0%
 
-# The lcov already has `src/**` minus the excludes in vitest.config.ts applied, so
-# repeating them here would only let the two lists drift.
 comment:
   layout: diff, flags, files
   require_changes: true
