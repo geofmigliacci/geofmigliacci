@@ -11,7 +11,7 @@ vi.mock("node:fs/promises", () => ({
   },
 }));
 
-vi.mock("@/content/blog/post-a.mdx", () => ({
+vi.mock("@/content/blog/fr/post-a.mdx", () => ({
   metadata: {
     title: "Post A",
     description: "Description A",
@@ -20,7 +20,7 @@ vi.mock("@/content/blog/post-a.mdx", () => ({
   },
 }));
 
-vi.mock("@/content/blog/post-b.mdx", () => ({
+vi.mock("@/content/blog/fr/post-b.mdx", () => ({
   metadata: {
     title: "Post B",
     description: "Description B",
@@ -46,7 +46,7 @@ const DIR_WITH_DRAFT = [
 const freshGetPosts = async () => {
   vi.resetModules();
   const { getBlogPosts: fresh } = await import("@/lib/blog");
-  return fresh();
+  return fresh("fr");
 };
 
 const listSlugsUnderNodeEnv = async (nodeEnv: string) => {
@@ -54,7 +54,7 @@ const listSlugsUnderNodeEnv = async (nodeEnv: string) => {
   vi.stubEnv("NODE_ENV", nodeEnv);
   vi.resetModules();
   const { listSlugs: freshListSlugs } = await import("@/lib/blog");
-  const slugs = await freshListSlugs();
+  const slugs = await freshListSlugs("fr");
   vi.stubEnv("NODE_ENV", original ?? "test");
   return slugs;
 };
@@ -63,7 +63,7 @@ describe("listSlugs", () => {
   it("keeps only .mdx files and excludes underscore-prefixed ones", async () => {
     mockedReaddir.mockResolvedValue(DIR_WITH_DRAFT);
 
-    await expect(listSlugs()).resolves.toEqual([
+    await expect(listSlugs("fr")).resolves.toEqual([
       "post-a",
       "post-b",
       "work-in-progress.draft",
@@ -86,6 +86,15 @@ describe("listSlugs", () => {
       "post-b",
     ]);
   });
+
+  // A locale nobody has written for yet has no directory, and must not fail the build.
+  it("reads a missing locale directory as an empty blog", async () => {
+    mockedReaddir.mockRejectedValue(
+      Object.assign(new Error("ENOENT"), { code: "ENOENT" }),
+    );
+
+    await expect(listSlugs("en")).resolves.toEqual([]);
+  });
 });
 
 describe("getBlogPosts", () => {
@@ -97,7 +106,7 @@ describe("getBlogPosts", () => {
       return `export const metadata = {\n  title: "x",\n};\n\n${body}`;
     });
 
-    const posts = await getBlogPosts();
+    const posts = await getBlogPosts("fr");
 
     expect(posts).toEqual([
       {
@@ -124,7 +133,7 @@ describe("getBlogPosts", () => {
     mockedReaddir.mockResolvedValue(["post-a.mdx"] as never);
     mockedReadFile.mockResolvedValue(
       [
-        'import cover from "./post-a.jpg";',
+        'import cover from "../covers/post-a.jpg";',
         "",
         "export const metadata = {",
         '  title: "x",',

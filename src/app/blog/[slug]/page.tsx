@@ -16,7 +16,7 @@ interface PostParams {
 }
 
 export async function generateStaticParams() {
-  const slugs = await listSlugs();
+  const slugs = await listSlugs("fr");
   return slugs.map((slug) => ({ slug }));
 }
 
@@ -26,7 +26,7 @@ export async function generateMetadata({
   params,
 }: PostParams): Promise<Metadata> {
   const { slug } = await params;
-  const { metadata } = await getPost(slug);
+  const { metadata } = await getPost("fr", slug);
   return {
     title: metadata.title,
     description: metadata.description,
@@ -47,8 +47,8 @@ export async function generateMetadata({
 export default async function PostPage({ params }: PostParams) {
   const { slug } = await params;
   const [{ default: Post, metadata, toc }, posts] = await Promise.all([
-    getPost(slug),
-    getBlogPosts(),
+    getPost("fr", slug),
+    getBlogPosts("fr"),
   ]);
 
   const currentIndex = posts.findIndex((post) => post.slug === slug);

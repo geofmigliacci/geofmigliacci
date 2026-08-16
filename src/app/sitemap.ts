@@ -3,7 +3,7 @@ import { getBlogPosts } from "@/lib/blog";
 import { siteUrl } from "@/lib/site";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const posts = await getBlogPosts();
+  const posts = await getBlogPosts("fr");
 
   return [
     {

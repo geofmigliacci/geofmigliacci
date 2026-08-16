@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 };
 
 export default async function PostsPage() {
-  const posts = await getBlogPosts();
+  const posts = await getBlogPosts("fr");
 
   return (
     <div className="page-shell">

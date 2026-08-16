@@ -5,7 +5,7 @@ import { person, siteUrl, tagline } from "@/lib/site";
 export const dynamic = "force-static";
 
 export async function GET() {
-  const posts = await getBlogPosts();
+  const posts = await getBlogPosts("fr");
 
   const feed = new Feed({
     title: person.name,

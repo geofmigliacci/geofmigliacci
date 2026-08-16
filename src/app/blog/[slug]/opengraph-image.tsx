@@ -4,7 +4,7 @@ import { formatDate } from "@/lib/format";
 import { loadOgFonts, OG_SIZE, OgCard, ogHost } from "@/lib/og-image";
 
 export async function generateStaticParams() {
-  const slugs = await listSlugs();
+  const slugs = await listSlugs("fr");
   return slugs.map((slug) => ({ slug }));
 }
 
@@ -19,7 +19,7 @@ export async function generateImageMetadata({
     return [{ id: "og", size: OG_SIZE, contentType: "image/png" }];
   }
 
-  const { metadata } = await getPost(slug);
+  const { metadata } = await getPost("fr", slug);
 
   return [
     {
@@ -38,7 +38,7 @@ export default async function Image({
 }) {
   const { slug } = await params;
   const [{ metadata }, fonts] = await Promise.all([
-    getPost(slug),
+    getPost("fr", slug),
     loadOgFonts(),
   ]);
 

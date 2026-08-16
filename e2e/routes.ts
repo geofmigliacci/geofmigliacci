@@ -46,9 +46,9 @@ const BLOG_DIR = path.join(process.cwd(), "content", "blog");
  * Mirrors `listSlugs`, which is `server-only` and throws on import here. Drafts
  * are dropped unconditionally: the server under test is always a production build.
  */
-export function publishedSlugs(): string[] {
+export function publishedSlugs(locale = "fr"): string[] {
   return fs
-    .readdirSync(BLOG_DIR)
+    .readdirSync(path.join(BLOG_DIR, locale))
     .filter((entry) => entry.endsWith(".mdx") && !entry.startsWith("_"))
     .map((entry) => entry.replace(/\.mdx$/, ""))
     .filter((slug) => !slug.endsWith(".draft"));
