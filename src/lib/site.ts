@@ -41,7 +41,7 @@ export const blogDescription =
 export const pitch =
   "Je conçois des systèmes .NET capables d'absorber la charge sans broncher : de l'architecture backend jusqu'à l'interface.";
 
-export const repoUrl = "https://github.com/geofmigliacci/geofmigliacci";
+export const repoUrl = "https://github.com/geofmigliacci/geofmigliacci.dev";
 
 export const social = {
   github: "https://github.com/geofmigliacci",

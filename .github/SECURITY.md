@@ -16,7 +16,7 @@ pipeline, or content injection through the MDX post pipeline.
 ## Reporting
 
 Email <geoffrey.migliacci@gmail.com>, or open a
-[private security advisory](https://github.com/geofmigliacci/geofmigliacci/security/advisories/new)
+[private security advisory](https://github.com/geofmigliacci/geofmigliacci.dev/security/advisories/new)
 if you would rather keep it on GitHub. Please do not open a public issue for
 something exploitable.
 
