@@ -1,8 +1,9 @@
 // @vitest-environment jsdom
-import { fireEvent, render, screen } from "@testing-library/react";
+
 import { ArrowLeft, RotateCcw } from "lucide-react";
 import { describe, expect, it, vi } from "vitest";
 import { RecoveryAction } from "@/components/recovery-action";
+import { fireEvent, render, screen } from "@/test-utils";
 
 describe("RecoveryAction", () => {
   it("renders a link when given an href", () => {
@@ -14,7 +15,7 @@ describe("RecoveryAction", () => {
 
     expect(
       screen.getByRole("link", { name: "Retour à l'accueil" }),
-    ).toHaveAttribute("href", "/");
+    ).toHaveAttribute("href", "/fr");
   });
 
   it("renders a real button when given a handler, so Space activates it too", () => {

@@ -4,6 +4,9 @@ import createNextIntlPlugin from "next-intl/plugin";
 
 const nextConfig: NextConfig = {
   pageExtensions: ["ts", "tsx", "md", "mdx"],
+  // The root layout sits under `[locale]`, which the docs name as the case
+  // `not-found.tsx` alone cannot compose a 404 for.
+  experimental: { globalNotFound: true },
   async redirects() {
     return [
       { source: "/articles", destination: "/blog", permanent: true },
@@ -12,6 +15,9 @@ const nextConfig: NextConfig = {
         destination: "/blog/:slug",
         permanent: true,
       },
+      // Permanent, unlike anything the proxy emits: this destination is fixed
+      // rather than negotiated, and every existing subscriber is French.
+      { source: "/feed.xml", destination: "/fr/feed.xml", permanent: true },
     ];
   },
 };

@@ -1,7 +1,8 @@
 // @vitest-environment jsdom
-import { act, render, screen } from "@testing-library/react";
+
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { RequestStorm } from "@/components/diagram/scenes/request-storm";
+import { act, render, screen } from "@/test-utils";
 
 const activeRequests = () => screen.getByText("Requêtes actives").parentElement;
 const connectedClients = () =>

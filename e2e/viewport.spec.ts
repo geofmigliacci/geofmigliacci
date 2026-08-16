@@ -6,7 +6,7 @@ test.use(devices["Galaxy S9+"]);
 
 // `/legal` carries the longest crumb in `SECTIONS`, which is what `min-w-0` guards.
 test("a long crumb does not push the page sideways", async ({ page }) => {
-  await page.goto("/legal");
+  await page.goto("/fr/legal");
 
   // The crumb mounts on the client: measuring early sizes a header it is not in yet.
   await expect(

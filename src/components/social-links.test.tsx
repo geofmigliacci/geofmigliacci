@@ -1,7 +1,8 @@
 // @vitest-environment jsdom
-import { render, screen } from "@testing-library/react";
+
 import { describe, expect, it } from "vitest";
 import { SocialLinks } from "@/components/social-links";
+import { render, screen } from "@/test-utils";
 
 /** The URLs stay literal: asserting against `site.ts` would pass whatever it contained. */
 describe("SocialLinks", () => {

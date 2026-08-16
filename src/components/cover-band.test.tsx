@@ -1,8 +1,9 @@
 // @vitest-environment jsdom
-import { render, screen } from "@testing-library/react";
+
 import { describe, expect, it } from "vitest";
 import { CoverBand } from "@/components/cover-band";
 import { testCover } from "@/lib/blog.fixtures";
+import { render, screen } from "@/test-utils";
 
 const ALT = "Vue sur un lac et des montagnes depuis une fenêtre ouverte.";
 

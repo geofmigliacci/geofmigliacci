@@ -9,24 +9,29 @@ import type {
   Thing,
   WebSite,
 } from "schema-dts";
+import { LANGUAGE_TAG, type Locale, localePath } from "@/i18n/locales";
 import {
   blogDescription,
   home,
   person,
-  profileUrl,
   sections,
-  siteLanguage,
   siteName,
   siteUrl,
   tagline,
 } from "@/lib/site";
 
+const absolute = (locale: Locale, path: string) =>
+  new URL(localePath(locale, path), siteUrl).href;
+
 /** Fragment-anchored so an identifier never collides with the URL of a page. */
 const PERSON_ID = new URL("/#person", siteUrl).href;
 const WEBSITE_ID = new URL("/#website", siteUrl).href;
-const BLOG_ID = new URL("/blog#blog", siteUrl).href;
-const PROFILE_ID = profileUrl;
-const postId = (slug: string) => new URL(`/blog/${slug}#post`, siteUrl).href;
+
+/** These are page URLs, unlike the two above, so they carry the locale. */
+const blogId = (locale: Locale) => `${absolute(locale, "/blog")}#blog`;
+const profileId = (locale: Locale) => absolute(locale, "/about");
+const postId = (locale: Locale, slug: string) =>
+  `${absolute(locale, `/blog/${slug}`)}#post`;
 
 /** The only place `@context` is added: every builder below returns a bare node. */
 export function graph(...nodes: Thing[]): Graph {
@@ -34,62 +39,65 @@ export function graph(...nodes: Thing[]): Graph {
 }
 
 /** Self-describing: nothing resolves a bare `@id` from the page that defines it. */
-const personRef = {
-  "@type": "Person",
-  "@id": PERSON_ID,
-  name: person.name,
-  url: PROFILE_ID,
-} satisfies Person;
+const personRef = (locale: Locale) =>
+  ({
+    "@type": "Person",
+    "@id": PERSON_ID,
+    name: person.name,
+    url: profileId(locale),
+  }) satisfies Person;
 
-const blogRef = {
-  "@type": "Blog",
-  "@id": BLOG_ID,
-  name: sections.blog.name,
-} satisfies Blog;
+const blogRef = (locale: Locale) =>
+  ({
+    "@type": "Blog",
+    "@id": blogId(locale),
+    name: sections.blog.name,
+  }) satisfies Blog;
 
 /** Mapped, not spread: a field added to `person` must not reach the graph unasked. */
-export function personJsonLd() {
+export function personJsonLd(locale: Locale) {
   return {
     "@type": "Person",
     "@id": PERSON_ID,
     name: person.name,
     alternateName: person.alternateName,
-    url: PROFILE_ID,
+    url: profileId(locale),
     image: person.image,
     jobTitle: person.jobTitle,
     description: person.description,
     email: person.email,
     knowsAbout: person.knowsAbout,
     sameAs: person.sameAs,
-    mainEntityOfPage: { "@type": "ProfilePage", "@id": PROFILE_ID },
+    mainEntityOfPage: { "@type": "ProfilePage", "@id": profileId(locale) },
   } satisfies Person;
 }
 
 /** Google reads the site name from `name` and `url`, and only on the home page. */
-export function websiteJsonLd() {
+export function websiteJsonLd(locale: Locale) {
   return {
     "@type": "WebSite",
     "@id": WEBSITE_ID,
     name: siteName,
-    url: siteUrl.href,
+    url: absolute(locale, "/"),
     description: tagline,
-    inLanguage: siteLanguage,
-    publisher: personRef,
+    inLanguage: LANGUAGE_TAG[locale],
+    publisher: personRef(locale),
   } satisfies WebSite;
 }
 
-export function profilePageJsonLd() {
+export function profilePageJsonLd(locale: Locale) {
   return {
     "@type": "ProfilePage",
-    "@id": PROFILE_ID,
+    "@id": profileId(locale),
     name: person.name,
-    url: PROFILE_ID,
-    inLanguage: siteLanguage,
-    mainEntity: personJsonLd(),
+    url: profileId(locale),
+    inLanguage: LANGUAGE_TAG[locale],
+    mainEntity: personJsonLd(locale),
   } satisfies ProfilePage;
 }
 
 interface BlogPostJsonLdInput {
+  locale: Locale;
   title: string;
   description: string;
   date: string;
@@ -102,6 +110,7 @@ interface BlogPostJsonLdInput {
 }
 
 export function blogPostingJsonLd({
+  locale,
   title,
   description,
   date,
@@ -113,7 +122,7 @@ export function blogPostingJsonLd({
 }: BlogPostJsonLdInput) {
   return {
     "@type": "BlogPosting",
-    "@id": postId(slug),
+    "@id": postId(locale, slug),
     headline: title,
     description,
     datePublished: new Date(date).toISOString(),
@@ -121,25 +130,25 @@ export function blogPostingJsonLd({
     image: new URL(cover.src, siteUrl).href,
     mainEntityOfPage: {
       "@type": "WebPage",
-      "@id": new URL(`/blog/${slug}`, siteUrl).href,
+      "@id": absolute(locale, `/blog/${slug}`),
     },
-    isPartOf: blogRef,
-    inLanguage: siteLanguage,
+    isPartOf: blogRef(locale),
+    inLanguage: LANGUAGE_TAG[locale],
     keywords: tags,
     ...(readingTime && { timeRequired: `PT${readingTime}M` }),
-    author: personRef,
+    author: personRef(locale),
   } satisfies BlogPosting;
 }
 
-export function blogJsonLd() {
+export function blogJsonLd(locale: Locale) {
   return {
     "@type": "Blog",
-    "@id": BLOG_ID,
-    name: blogRef.name,
+    "@id": blogId(locale),
+    name: sections.blog.name,
     description: blogDescription,
-    url: new URL("/blog", siteUrl).href,
-    inLanguage: siteLanguage,
-    author: personRef,
+    url: absolute(locale, "/blog"),
+    inLanguage: LANGUAGE_TAG[locale],
+    author: personRef(locale),
   } satisfies Blog;
 }
 
@@ -152,18 +161,19 @@ const ROUTES = {
   [sections.privacyPolicy.path]: sections.privacyPolicy.name,
 } as const;
 
-type StaticPath = keyof typeof ROUTES;
+interface BreadcrumbInput {
+  locale: Locale;
+  /** Locale-less: the prefix is added when building each URL, never looked up. */
+  path: string;
+  leafName?: string;
+}
 
 /** The home step stays: two `ListItem`s is Google's floor for showing a trail. */
-export function breadcrumbJsonLd(path: StaticPath): BreadcrumbList;
-export function breadcrumbJsonLd(
-  path: string,
-  leafName: string,
-): BreadcrumbList;
-export function breadcrumbJsonLd(
-  path: string,
-  leafName?: string,
-): BreadcrumbList {
+export function breadcrumbJsonLd({
+  locale,
+  path,
+  leafName,
+}: BreadcrumbInput): BreadcrumbList {
   const segments = path.split("/").filter(Boolean);
   const trail = [
     "/",
@@ -174,7 +184,8 @@ export function breadcrumbJsonLd(
     "@type": "BreadcrumbList",
     itemListElement: trail.map((step, index) => {
       const name =
-        ROUTES[step as StaticPath] ?? (step === path ? leafName : undefined);
+        ROUTES[step as keyof typeof ROUTES] ??
+        (step === path ? leafName : undefined);
       if (!name) {
         throw new Error(
           `Breadcrumb step "${step}" has no name: add it to ROUTES.`,
@@ -185,7 +196,7 @@ export function breadcrumbJsonLd(
         "@type": "ListItem" as const,
         position: index + 1,
         name,
-        item: new URL(step, siteUrl).href,
+        item: absolute(locale, step),
       };
     }),
   } satisfies BreadcrumbList;

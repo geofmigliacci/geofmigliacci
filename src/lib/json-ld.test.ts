@@ -14,6 +14,7 @@ type BlogPostInput = Parameters<typeof blogPostingJsonLd>[0];
 
 const post = (overrides: Partial<BlogPostInput> = {}) =>
   blogPostingJsonLd({
+    locale: "fr",
     title: "Mon post",
     description: "Une description.",
     date: "2026-01-01",
@@ -25,7 +26,7 @@ const post = (overrides: Partial<BlogPostInput> = {}) =>
 
 describe("graph", () => {
   it("wraps nodes in a single contexted document", () => {
-    const data = graph(personJsonLd(), websiteJsonLd());
+    const data = graph(personJsonLd("fr"), websiteJsonLd("fr"));
 
     expect(data["@context"]).toBe("https://schema.org");
     expect(data["@graph"]).toHaveLength(2);
@@ -34,7 +35,7 @@ describe("graph", () => {
 
 describe("personJsonLd", () => {
   it("builds a schema.org Person matching the site's identity", () => {
-    const data = personJsonLd();
+    const data = personJsonLd("fr");
 
     expect(data["@type"]).toBe("Person");
     expect(data.name).toBe("Geoffrey Migliacci");
@@ -42,7 +43,7 @@ describe("personJsonLd", () => {
   });
 
   it("carries the expertise the posts demonstrate", () => {
-    const data = personJsonLd();
+    const data = personJsonLd("fr");
 
     expect(data.knowsAbout).toContain(".NET");
     expect(data.description).toBeTruthy();
@@ -51,29 +52,33 @@ describe("personJsonLd", () => {
 
   // Emitted standalone here and nested in the ProfilePage on /about.
   it("uses the same identifier as the profile page's main entity", () => {
-    expect(personJsonLd()["@id"]).toBe(profilePageJsonLd().mainEntity["@id"]);
+    expect(personJsonLd("fr")["@id"]).toBe(
+      profilePageJsonLd("fr").mainEntity["@id"],
+    );
   });
 
   // The same URL the post pages hand to `authors`, so one page names one author.
   it("points at the page that identifies the person", () => {
-    expect(personJsonLd().url).toBe("https://www.geofmigliacci.dev/about");
+    expect(personJsonLd("fr").url).toBe(
+      "https://www.geofmigliacci.dev/fr/about",
+    );
   });
 
   // Two nodes under one `@id` do not pick a winner: they merge, holding both.
   it("agrees with the reference a post carries as its author", () => {
     const { author } = post();
 
-    expect(author["@id"]).toBe(personJsonLd()["@id"]);
-    expect(author.url).toBe(personJsonLd().url);
+    expect(author["@id"]).toBe(personJsonLd("fr")["@id"]);
+    expect(author.url).toBe(personJsonLd("fr").url);
   });
 });
 
 describe("profilePageJsonLd", () => {
   it("wraps the person as the page's main entity", () => {
-    const data = profilePageJsonLd();
+    const data = profilePageJsonLd("fr");
 
     expect(data["@type"]).toBe("ProfilePage");
-    expect(data.url).toBe("https://www.geofmigliacci.dev/about");
+    expect(data.url).toBe("https://www.geofmigliacci.dev/fr/about");
     expect(data.inLanguage).toBe("fr-FR");
     expect(data.mainEntity).toMatchObject({
       "@type": "Person",
@@ -88,13 +93,13 @@ describe("blogPostingJsonLd", () => {
 
     expect(data["@type"]).toBe("BlogPosting");
     expect(data["@id"]).toBe(
-      "https://www.geofmigliacci.dev/blog/mon-post#post",
+      "https://www.geofmigliacci.dev/fr/blog/mon-post#post",
     );
     expect(data.inLanguage).toBe("fr-FR");
     expect(data.keywords).toEqual(["dotnet", "performance"]);
     expect(data.mainEntityOfPage).toEqual({
       "@type": "WebPage",
-      "@id": "https://www.geofmigliacci.dev/blog/mon-post",
+      "@id": "https://www.geofmigliacci.dev/fr/blog/mon-post",
     });
     expect(data.headline).toBe("Mon post");
     expect(data.description).toBe("Une description.");
@@ -104,10 +109,10 @@ describe("blogPostingJsonLd", () => {
       "@type": "Person",
       "@id": "https://www.geofmigliacci.dev/#person",
       name: "Geoffrey Migliacci",
-      url: "https://www.geofmigliacci.dev/about",
+      url: "https://www.geofmigliacci.dev/fr/about",
     });
     expect(data.isPartOf).toMatchObject({
-      "@id": "https://www.geofmigliacci.dev/blog#blog",
+      "@id": "https://www.geofmigliacci.dev/fr/blog#blog",
     });
   });
 
@@ -145,7 +150,7 @@ describe("blogPostingJsonLd", () => {
 
 describe("blogJsonLd", () => {
   it("identifies the blog the posts declare themselves part of", () => {
-    const data = blogJsonLd();
+    const data = blogJsonLd("fr");
 
     expect(data["@type"]).toBe("Blog");
     expect(data["@id"]).toBe(post().isPartOf["@id"]);
@@ -154,35 +159,37 @@ describe("blogJsonLd", () => {
 
   // Google runs no list feature on Article, and each post describes itself.
   it("lists no posts", () => {
-    expect(blogJsonLd()).not.toHaveProperty("blogPost");
+    expect(blogJsonLd("fr")).not.toHaveProperty("blogPost");
   });
 });
 
 describe("websiteJsonLd", () => {
   // `name` and `url` are the two Google reads to decide the site name it prints.
   it("names the site and its canonical home page", () => {
-    const data = websiteJsonLd();
+    const data = websiteJsonLd("fr");
 
     expect(data["@type"]).toBe("WebSite");
     expect(data["@id"]).toBe("https://www.geofmigliacci.dev/#website");
     expect(data.name).toBe("Geoffrey Migliacci");
-    expect(data.url).toBe("https://www.geofmigliacci.dev/");
+    expect(data.url).toBe("https://www.geofmigliacci.dev/fr");
   });
 
   // The only thing tying the site to its author on a page carrying no standalone Person.
   it("reaches the person through its publisher", () => {
-    expect(websiteJsonLd().publisher["@id"]).toBe(personJsonLd()["@id"]);
+    expect(websiteJsonLd("fr").publisher["@id"]).toBe(
+      personJsonLd("fr")["@id"],
+    );
   });
 
   // The sitelinks search box it fed was removed from Search in November 2024.
   it("offers no search action", () => {
-    expect(websiteJsonLd()).not.toHaveProperty("potentialAction");
+    expect(websiteJsonLd("fr")).not.toHaveProperty("potentialAction");
   });
 });
 
 describe("breadcrumbJsonLd", () => {
   it("derives the trail from a static path's own segments", () => {
-    const data = breadcrumbJsonLd("/about");
+    const data = breadcrumbJsonLd({ locale: "fr", path: "/about" });
 
     expect(data["@type"]).toBe("BreadcrumbList");
     expect(data.itemListElement).toEqual([
@@ -190,46 +197,73 @@ describe("breadcrumbJsonLd", () => {
         "@type": "ListItem",
         position: 1,
         name: "Accueil",
-        item: "https://www.geofmigliacci.dev/",
+        item: "https://www.geofmigliacci.dev/fr",
       },
       {
         "@type": "ListItem",
         position: 2,
         name: "À propos",
-        item: "https://www.geofmigliacci.dev/about",
+        item: "https://www.geofmigliacci.dev/fr/about",
       },
     ]);
   });
 
-  it("names a dynamic leaf from the caller and its ancestors from the table", () => {
-    const data = breadcrumbJsonLd("/blog/mon-post", "Mon post");
+  // The lookup key is the locale-less path: prefixing it would throw on "/en".
+  it("prefixes every URL with the locale without consulting it", () => {
+    const data = breadcrumbJsonLd({ locale: "en", path: "/legal" });
 
     expect(data.itemListElement).toEqual([
       {
         "@type": "ListItem",
         position: 1,
         name: "Accueil",
-        item: "https://www.geofmigliacci.dev/",
+        item: "https://www.geofmigliacci.dev/en",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Mentions légales",
+        item: "https://www.geofmigliacci.dev/en/legal",
+      },
+    ]);
+  });
+
+  it("names a dynamic leaf from the caller and its ancestors from the table", () => {
+    const data = breadcrumbJsonLd({
+      locale: "fr",
+      path: "/blog/mon-post",
+      leafName: "Mon post",
+    });
+
+    expect(data.itemListElement).toEqual([
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Accueil",
+        item: "https://www.geofmigliacci.dev/fr",
       },
       {
         "@type": "ListItem",
         position: 2,
         name: "Blog",
-        item: "https://www.geofmigliacci.dev/blog",
+        item: "https://www.geofmigliacci.dev/fr/blog",
       },
       {
         "@type": "ListItem",
         position: 3,
         name: "Mon post",
-        item: "https://www.geofmigliacci.dev/blog/mon-post",
+        item: "https://www.geofmigliacci.dev/fr/blog/mon-post",
       },
     ]);
   });
 
-  // The overloads catch the static case; this covers the one they cannot see.
   it("refuses a path whose ancestor is not in the table", () => {
-    expect(() => breadcrumbJsonLd("/notes/mon-note", "Ma note")).toThrow(
-      /\/notes/,
-    );
+    expect(() =>
+      breadcrumbJsonLd({
+        locale: "fr",
+        path: "/notes/mon-note",
+        leafName: "Ma note",
+      }),
+    ).toThrow(/\/notes/);
   });
 });

@@ -1,8 +1,9 @@
 // @vitest-environment jsdom
-import { render, screen, within } from "@testing-library/react";
+
 import { usePathname } from "next/navigation";
 import { describe, expect, it, vi } from "vitest";
 import { HeaderBreadcrumb } from "@/components/header-breadcrumb";
+import { render, screen, within } from "@/test-utils";
 
 vi.mock("next/navigation", async (importOriginal) => {
   const actual = await importOriginal<typeof import("next/navigation")>();
@@ -24,7 +25,7 @@ describe("HeaderBreadcrumb", () => {
 
     expect(
       screen.getByRole("link", { name: "Geoffrey Migliacci · accueil" }),
-    ).toHaveAttribute("href", "/");
+    ).toHaveAttribute("href", "/fr");
   });
 
   it("shows no section crumb on the homepage, since the logo is the home crumb", () => {
@@ -37,7 +38,7 @@ describe("HeaderBreadcrumb", () => {
     at("/blog/mon-post");
 
     const link = within(crumb()).getByRole("link", { name: "Blog" });
-    expect(link).toHaveAttribute("href", "/blog");
+    expect(link).toHaveAttribute("href", "/fr/blog");
     // The crumb points at the section, which is not the current document.
     expect(link).not.toHaveAttribute("aria-current");
   });
@@ -56,7 +57,7 @@ describe("HeaderBreadcrumb", () => {
 
     expect(
       within(crumb()).getByRole("link", { name: "À propos" }),
-    ).toHaveAttribute("href", "/about");
+    ).toHaveAttribute("href", "/fr/about");
   });
 
   // Reachable only from the footer, so this crumb is the reader's only way back up.
@@ -67,7 +68,7 @@ describe("HeaderBreadcrumb", () => {
     at(pathname);
 
     const link = within(crumb()).getByRole("link", { name: label });
-    expect(link).toHaveAttribute("href", pathname);
+    expect(link).toHaveAttribute("href", `/fr${pathname}`);
     expect(link).toHaveAttribute("aria-current", "page");
   });
 

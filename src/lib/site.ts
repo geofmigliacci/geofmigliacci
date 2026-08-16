@@ -1,22 +1,8 @@
-import type { Metadata } from "next";
-
 export const siteUrl = new URL(
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.geofmigliacci.dev",
 );
 
 export const siteName = "Geoffrey Migliacci";
-
-export const openGraphBase = {
-  siteName,
-  locale: "fr_FR",
-} satisfies Metadata["openGraph"];
-
-/** Schema.org wants BCP 47, so the `fr_FR` above cannot stand in. */
-export const siteLanguage = "fr-FR";
-
-export const rssAlternate = {
-  "application/rss+xml": "/feed.xml",
-} satisfies NonNullable<Metadata["alternates"]>["types"];
 
 export interface Section {
   path: string;
@@ -70,12 +56,9 @@ export const social = {
   linkedin: "https://www.linkedin.com/in/geofmigliacci/",
 };
 
-export const profileUrl = new URL("/about", siteUrl).href;
-
 export const person = {
   name: "Geoffrey Migliacci",
   alternateName: "geofmigliacci",
-  url: profileUrl,
   image: new URL(portraitPath, siteUrl).href,
   jobTitle: "Ingénieur logiciel senior",
   description: pitch,

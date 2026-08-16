@@ -12,6 +12,16 @@ export const LANGUAGE_TAG: Record<Locale, string> = {
   fr: "fr-FR",
 };
 
+/** Drops any locale prefix, whichever locale it names. */
+export const stripLocale = (pathname: string): string => {
+  const [, first, ...rest] = pathname.split("/");
+  return LOCALES.includes(first as Locale) ? `/${rest.join("/")}` : pathname;
+};
+
+/** Prefixes a locale-less path. `/` would otherwise give `/en/`, which redirects. */
+export const localePath = (locale: Locale, path: string): string =>
+  path === "/" ? `/${locale}` : `/${locale}${path}`;
+
 /** Open Graph wants the underscored form, which is why it cannot reuse the above. */
 export const OG_LOCALE: Record<Locale, string> = {
   en: "en_GB",

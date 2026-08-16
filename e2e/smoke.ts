@@ -1,4 +1,5 @@
 import { test as base, expect, type Page } from "@playwright/test";
+import type { Locale } from "./routes";
 
 export interface PageProblems {
   console: string[];
@@ -83,8 +84,11 @@ export async function expectStructuredData(page: Page): Promise<void> {
   }
 }
 
-export async function expectSiteShell(page: Page): Promise<void> {
-  await expect(page.locator("html")).toHaveAttribute("lang", "fr");
+export async function expectSiteShell(
+  page: Page,
+  locale: Locale = "fr",
+): Promise<void> {
+  await expect(page.locator("html")).toHaveAttribute("lang", locale);
   // Attached rather than visible: it is `sr-only` until focused.
   await expect(
     page.getByRole("link", { name: "Aller au contenu" }),

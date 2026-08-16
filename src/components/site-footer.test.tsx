@@ -1,7 +1,8 @@
 // @vitest-environment jsdom
-import { render, screen, within } from "@testing-library/react";
+
 import { describe, expect, it } from "vitest";
 import { SiteFooter } from "@/components/site-footer";
+import { render, screen, within } from "@/test-utils";
 
 const colophon = () =>
   screen.getByRole("navigation", { name: "Informations légales" });
@@ -12,10 +13,10 @@ describe("SiteFooter", () => {
 
     expect(
       within(colophon()).getByRole("link", { name: "Mentions légales" }),
-    ).toHaveAttribute("href", "/legal");
+    ).toHaveAttribute("href", "/fr/legal");
     expect(
       within(colophon()).getByRole("link", { name: "Confidentialité" }),
-    ).toHaveAttribute("href", "/privacy-policy");
+    ).toHaveAttribute("href", "/fr/privacy-policy");
   });
 
   it("keeps the feed reachable from every page, not just the posts index", () => {
@@ -23,7 +24,7 @@ describe("SiteFooter", () => {
 
     expect(
       within(colophon()).getByRole("link", { name: "RSS" }),
-    ).toHaveAttribute("href", "/feed.xml");
+    ).toHaveAttribute("href", "/fr/feed.xml");
   });
 
   it("credits the author for the current year", () => {

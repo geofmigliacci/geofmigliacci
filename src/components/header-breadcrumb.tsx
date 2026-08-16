@@ -1,8 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { Logo } from "@/components/decorative/logo";
 import { useMountedPathname } from "@/components/use-mounted-pathname";
+import { Link } from "@/i18n/navigation";
 import { type Section, sections } from "@/lib/site";
 
 const SECTIONS: Section[] = [

@@ -1,7 +1,8 @@
 // @vitest-environment jsdom
-import { fireEvent, render, screen } from "@testing-library/react";
+
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { fireEvent, render, screen } from "@/test-utils";
 
 const toggle = () => screen.getByRole("button", { name: "Changer de thème" });
 

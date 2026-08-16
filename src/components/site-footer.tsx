@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { person, sections } from "@/lib/site";
 
 // Build time, not the visitor's clock: a rebuild is what rolls it over.

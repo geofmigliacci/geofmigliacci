@@ -1,14 +1,15 @@
 // @vitest-environment jsdom
-import { render } from "@testing-library/react";
+
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { JsonLd } from "@/components/json-ld";
 import { testCover } from "@/lib/blog.fixtures";
 import { blogPostingJsonLd, graph, personJsonLd } from "@/lib/json-ld";
+import { render } from "@/test-utils";
 
 describe("JsonLd", () => {
   it("renders the graph as a JSON-LD script tag", () => {
-    const data = graph(personJsonLd());
+    const data = graph(personJsonLd("fr"));
     const { container } = render(<JsonLd data={data} />);
 
     const script = container.querySelector(
@@ -24,6 +25,7 @@ describe("JsonLd", () => {
       <JsonLd
         data={graph(
           blogPostingJsonLd({
+            locale: "fr",
             title: "Échapper une balise </script> en MDX",
             description: "Une description.",
             date: "2026-01-01",
@@ -44,6 +46,7 @@ describe("JsonLd", () => {
       <JsonLd
         data={graph(
           blogPostingJsonLd({
+            locale: "fr",
             title,
             description: "Une description.",
             date: "2026-01-01",
