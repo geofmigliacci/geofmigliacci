@@ -1,15 +1,19 @@
 <!-- BEGIN:nextjs-agent-rules -->
+
 # This is NOT the Next.js you know
 
-This version has breaking changes: APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
 <!-- END:nextjs-agent-rules -->
 
-<!-- Everything below is hand-written. The block above is managed by a skill
-     installer: add nothing inside its markers. -->
+<!-- Everything below is hand-written. `next dev` rewrites the block above verbatim
+     on every start, so edits inside its markers do not survive: change nothing there. -->
 
 ## Commands
 
-`pnpm` only, pinned to `pnpm@10.28.2` via `packageManager`. Never npm or yarn.
+`pnpm` only, pinned to `pnpm@11.22.0` via `packageManager`. Never npm or yarn.
 
 | Command | What it runs |
 | --- | --- |
@@ -31,10 +35,10 @@ the port was never what collided.
 
 ## Stack facts that contradict training data
 
-- **Next 16.2**, App Router. See the banner above: read `node_modules/next/dist/docs/` rather than recalling.
+- **Next 16.3**, App Router. See the banner above: read `node_modules/next/dist/docs/` rather than recalling.
 - **React 19.2**. Server Components by default; 20 files opt into `"use client"`.
 - **Tailwind v4**, CSS-first. There is no `tailwind.config.js` and adding one is wrong. Tokens live in `@theme` / `@theme inline` in [src/app/globals.css](src/app/globals.css).
-- **Biome 2.2**, not ESLint and not Prettier.
+- **Biome 2.5**, not ESLint and not Prettier.
 - **Vitest 4**, not Jest.
 - **shadcn/ui** on the `base-nova` style over **Base UI** (`@base-ui/react`), not Radix. Config in [components.json](components.json).
 - The animation package is **`motion`**, imported from `motion/react`. Not `framer-motion`.
@@ -209,7 +213,7 @@ that use them.
 
 ## Prose and typography
 
-- **No em dash or en dash anywhere, including titles, labels and code comments.** `·` separates a title or label from its context, as in `"%s · Geoffrey Migliacci"` and the byline. In prose use a colon, a comma, or parentheses, remembering that French takes a space before the colon and English does not. The vendored skills under `.agents/` are upstream copies and are left as they are, [.agents/NOTICE.md](.agents/NOTICE.md) excepted: it is ours, and follows this rule.
+- **No em dash or en dash anywhere, including titles, labels and code comments.** `·` separates a title or label from its context, as in `"%s · Geoffrey Migliacci"` and the byline. In prose use a colon, a comma, or parentheses, remembering that French takes a space before the colon and English does not. The vendored skills under `.agents/` are upstream copies and are left as they are, [.agents/NOTICE.md](.agents/NOTICE.md) excepted: it is ours, and follows this rule. The `nextjs-agent-rules` block at the top of this file is upstream too, and carries two em dashes: `next dev` rewrites it verbatim on every start, so editing them out only dirties the tree.
 - Space Grotesk 700 for headings, Geist for body, JetBrains Mono for code. No serifs: two were tried and rejected.
 - `@tailwindcss/typography` rules beat margin utilities inside `.prose`. MDX components rendered there need the important form (`my-0!`, `m-0!`, `p-0!`), as in [src/components/mdx/](src/components/mdx/).
 - `@theme inline` bakes resolved values into the utilities that use them, so those tokens cannot be repointed at runtime. Theme switching goes through the `.dark` class and the CSS variables it overrides, never through reassigning a `@theme` token.
@@ -239,7 +243,7 @@ round trip to seconds. The split follows what each check costs.
 - **`build` and `e2e` are barred from hooks.** Not for their runtime: a build
   while `pnpm dev` holds :3000 corrupts Turbopack's CSS state, per the warning at
   the top of this file. `e2e` runs a build of its own. Both stay in CI.
-- **No lint-staged.** Biome 2.2 has `--staged` natively, so it would be a
+- **No lint-staged.** Biome 2.5 has `--staged` natively, so it would be a
   dependency duplicating a flag already in the CLI.
 - **`pre-commit` has no `--write`.** It prints the diff and aborts rather than
   fixing, because `--staged --write` can sweep unstaged hunks of a partially
