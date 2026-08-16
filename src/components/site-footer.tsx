@@ -1,12 +1,12 @@
 import Link from "next/link";
-import { person } from "@/lib/site";
+import { person, sections } from "@/lib/site";
 
 // Build time, not the visitor's clock: a rebuild is what rolls it over.
 const currentYear = new Date().getFullYear();
 
 const COLOPHON_LINKS = [
-  { href: "/legal", label: "Mentions légales" },
-  { href: "/privacy-policy", label: "Confidentialité" },
+  { href: sections.legal.path, label: sections.legal.name },
+  { href: sections.privacyPolicy.path, label: sections.privacyPolicy.short },
   { href: "/feed.xml", label: "RSS" },
 ] as const;
 

@@ -18,6 +18,28 @@ export const rssAlternate = {
   "application/rss+xml": "/feed.xml",
 } satisfies NonNullable<Metadata["alternates"]>["types"];
 
+export interface Section {
+  path: string;
+  /** Full name, for a breadcrumb trail and a page title. */
+  name: string;
+  /** Compact form, where the full name would crowd the chrome. */
+  short?: string;
+}
+
+export const home = { path: "/", name: "Accueil" } as const satisfies Section;
+
+/** The one table behind the header nav, the colophon, the crumb and the JSON-LD trail. */
+export const sections = {
+  blog: { path: "/blog", name: "Blog" },
+  about: { path: "/about", name: "À propos" },
+  legal: { path: "/legal", name: "Mentions légales" },
+  privacyPolicy: {
+    path: "/privacy-policy",
+    name: "Politique de confidentialité",
+    short: "Confidentialité",
+  },
+} as const satisfies Record<string, Section>;
+
 /** Bare address, for display. `person.email` needs the `mailto:` schema.org form. */
 export const contactEmail = "geoffrey.migliacci@gmail.com";
 

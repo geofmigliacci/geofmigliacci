@@ -1,6 +1,7 @@
 import { HeaderBreadcrumb } from "@/components/header-breadcrumb";
 import { NavLink } from "@/components/nav-link";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { sections } from "@/lib/site";
 
 export function SiteHeader() {
   return (
@@ -13,8 +14,8 @@ export function SiteHeader() {
             aria-label="Navigation principale"
             className="flex items-center gap-2"
           >
-            <NavLink href="/blog">Blog</NavLink>
-            <NavLink href="/about">À propos</NavLink>
+            <NavLink href={sections.blog.path}>{sections.blog.name}</NavLink>
+            <NavLink href={sections.about.path}>{sections.about.name}</NavLink>
           </nav>
           <ThemeToggle />
         </div>

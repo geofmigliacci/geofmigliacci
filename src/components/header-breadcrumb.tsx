@@ -3,18 +3,14 @@
 import Link from "next/link";
 import { Logo } from "@/components/decorative/logo";
 import { useMountedPathname } from "@/components/use-mounted-pathname";
-
-interface Section {
-  name: string;
-  path: string;
-}
+import { type Section, sections } from "@/lib/site";
 
 const SECTIONS: Section[] = [
-  { name: "Blog", path: "/blog" },
-  { name: "À propos", path: "/about" },
+  sections.blog,
+  sections.about,
   // Reachable only from the footer, so the crumb is the sole way back up.
-  { name: "Mentions légales", path: "/legal" },
-  { name: "Confidentialité", path: "/privacy-policy" },
+  sections.legal,
+  sections.privacyPolicy,
 ];
 
 export function HeaderBreadcrumb() {
@@ -46,7 +42,7 @@ export function HeaderBreadcrumb() {
               aria-current={pathname === section.path ? "page" : undefined}
               className="truncate rounded-md bg-muted px-2 py-1 text-foreground transition-colors hover:text-primary"
             >
-              {section.name}
+              {section.short ?? section.name}
             </Link>
           </li>
         )}

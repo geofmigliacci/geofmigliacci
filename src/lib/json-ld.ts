@@ -11,8 +11,10 @@ import type {
 } from "schema-dts";
 import {
   blogDescription,
+  home,
   person,
   profileUrl,
+  sections,
   siteLanguage,
   siteName,
   siteUrl,
@@ -42,7 +44,7 @@ const personRef = {
 const blogRef = {
   "@type": "Blog",
   "@id": BLOG_ID,
-  name: "Blog",
+  name: sections.blog.name,
 } satisfies Blog;
 
 /** Mapped, not spread: a field added to `person` must not reach the graph unasked. */
@@ -143,11 +145,11 @@ export function blogJsonLd() {
 
 /** A page in a trail needs a row here, and so does every ancestor, or this throws. */
 const ROUTES = {
-  "/": "Accueil",
-  "/blog": "Blog",
-  "/about": "À propos",
-  "/legal": "Mentions légales",
-  "/privacy-policy": "Politique de confidentialité",
+  [home.path]: home.name,
+  [sections.blog.path]: sections.blog.name,
+  [sections.about.path]: sections.about.name,
+  [sections.legal.path]: sections.legal.name,
+  [sections.privacyPolicy.path]: sections.privacyPolicy.name,
 } as const;
 
 type StaticPath = keyof typeof ROUTES;
