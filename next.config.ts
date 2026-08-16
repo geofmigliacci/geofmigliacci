@@ -2,6 +2,8 @@ import createMDX from "@next/mdx";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // `next dev` would otherwise prepend a managed block to AGENTS.md, restating its opening paragraph.
+  agentRules: false,
   pageExtensions: ["ts", "tsx", "md", "mdx"],
   async redirects() {
     return [
