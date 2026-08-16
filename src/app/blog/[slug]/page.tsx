@@ -7,12 +7,7 @@ import { BlogPostToc } from "@/app/blog/[slug]/_components/blog-post-toc";
 import { ReadingProgressBar } from "@/app/blog/[slug]/_components/reading-progress-bar";
 import { JsonLd } from "@/components/json-ld";
 import { Badge } from "@/components/ui/badge";
-import {
-  type BlogPostMeta,
-  type BlogPostModule,
-  getBlogPosts,
-  listSlugs,
-} from "@/lib/blog";
+import { getBlogPosts, getPost, listSlugs } from "@/lib/blog";
 import { blogPostingJsonLd, breadcrumbJsonLd, graph } from "@/lib/json-ld";
 import { openGraphBase, person, rssAlternate } from "@/lib/site";
 
@@ -31,9 +26,7 @@ export async function generateMetadata({
   params,
 }: PostParams): Promise<Metadata> {
   const { slug } = await params;
-  const { metadata }: BlogPostModule = await import(
-    `@/content/blog/${slug}.mdx`
-  );
+  const { metadata } = await getPost(slug);
   return {
     title: metadata.title,
     description: metadata.description,
@@ -53,10 +46,10 @@ export async function generateMetadata({
 
 export default async function PostPage({ params }: PostParams) {
   const { slug } = await params;
-  const [{ default: Post, metadata, toc }, posts]: [
-    BlogPostModule,
-    BlogPostMeta[],
-  ] = await Promise.all([import(`@/content/blog/${slug}.mdx`), getBlogPosts()]);
+  const [{ default: Post, metadata, toc }, posts] = await Promise.all([
+    getPost(slug),
+    getBlogPosts(),
+  ]);
 
   const currentIndex = posts.findIndex((post) => post.slug === slug);
   const newerPost = currentIndex > 0 ? posts[currentIndex - 1] : undefined;

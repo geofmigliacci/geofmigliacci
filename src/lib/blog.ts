@@ -50,6 +50,10 @@ export const listSlugs = cache(async (): Promise<string[]> => {
     .filter((slug) => includeDrafts || !isDraft(slug));
 });
 
+/** The one interpolation site: the bundler builds its context module from this literal. */
+export const getPost = (slug: string): Promise<BlogPostModule> =>
+  import(`@/content/blog/${slug}.mdx`);
+
 const readingTime = async (slug: string): Promise<number> => {
   const raw = await fs.readFile(path.join(BLOG_DIR, `${slug}.mdx`), "utf8");
   const body = raw.replace(METADATA_EXPORT, "");
@@ -62,9 +66,7 @@ export const getBlogPosts = cache(async (): Promise<BlogPostMeta[]> => {
 
   const posts = await Promise.all(
     slugs.map(async (slug): Promise<BlogPostMeta> => {
-      const { metadata }: BlogPostModule = await import(
-        `@/content/blog/${slug}.mdx`
-      );
+      const { metadata } = await getPost(slug);
       return { slug, readingTime: await readingTime(slug), ...metadata };
     }),
   );

@@ -1,6 +1,5 @@
 import { ImageResponse } from "next/og";
-import type { BlogPostModule } from "@/lib/blog";
-import { listSlugs } from "@/lib/blog";
+import { getPost, listSlugs } from "@/lib/blog";
 import { formatDate } from "@/lib/format";
 import { loadOgFonts, OG_SIZE, OgCard, ogHost } from "@/lib/og-image";
 
@@ -20,9 +19,7 @@ export async function generateImageMetadata({
     return [{ id: "og", size: OG_SIZE, contentType: "image/png" }];
   }
 
-  const { metadata }: BlogPostModule = await import(
-    `@/content/blog/${slug}.mdx`
-  );
+  const { metadata } = await getPost(slug);
 
   return [
     {
@@ -40,10 +37,10 @@ export default async function Image({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const [{ metadata }, fonts]: [
-    BlogPostModule,
-    Awaited<ReturnType<typeof loadOgFonts>>,
-  ] = await Promise.all([import(`@/content/blog/${slug}.mdx`), loadOgFonts()]);
+  const [{ metadata }, fonts] = await Promise.all([
+    getPost(slug),
+    loadOgFonts(),
+  ]);
 
   return new ImageResponse(
     <OgCard
