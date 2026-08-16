@@ -18,8 +18,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # `pnpm/action-setup` installs pnpm through npm and tops out at v10. v11 ships a
-      # self-contained binary, which only `pnpm/setup` knows how to fetch.
       - name: Setup pnpm
         uses: pnpm/setup@v2
         with:
@@ -59,8 +57,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # `pnpm/action-setup` installs pnpm through npm and tops out at v10. v11 ships a
-      # self-contained binary, which only `pnpm/setup` knows how to fetch.
       - name: Setup pnpm
         uses: pnpm/setup@v2
         with:
@@ -75,12 +71,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      # Chromium alone, matching the single project in playwright.config.ts.
-      # `--with-deps` is what pulls the system libraries the runner lacks.
       - name: Install Chromium
         run: pnpm exec playwright install --with-deps chromium
 
-      # Builds and serves the production output itself, through `webServer`.
       - name: Smoke test
         run: pnpm e2e
 
@@ -107,8 +100,6 @@ jobs:
         with:
           install: false
 
-      # `vercel build` runs the real production build, so it gets the same Node the
-      # checks ran on rather than whatever the runner defaults to.
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
