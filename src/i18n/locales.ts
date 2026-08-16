@@ -6,12 +6,12 @@ export type Locale = (typeof LOCALES)[number];
 export const LOCALE_COOKIE = "NEXT_LOCALE";
 
 /**
- * BCP 47, for `Intl` and schema.org `inLanguage`. The URL segment cannot stand
- * in: bare `en` formats a long date the US way, so the byline would read
- * "July 17, 2026" against the French "17 juillet 2026" and lose its rhythm.
+ * BCP 47, for `Intl` and schema.org `inLanguage`, which both reject the bare
+ * subtag the URL carries. Regional here only: `hreflang` stays `en`, so the
+ * English pages are offered to every English speaker rather than to the US.
  */
 export const LANGUAGE_TAG: Record<Locale, string> = {
-  en: "en-GB",
+  en: "en-US",
   fr: "fr-FR",
 };
 
@@ -27,6 +27,6 @@ export const localePath = (locale: Locale, path: string): string =>
 
 /** Open Graph wants the underscored form, which is why it cannot reuse the above. */
 export const OG_LOCALE: Record<Locale, string> = {
-  en: "en_GB",
+  en: "en_US",
   fr: "fr_FR",
 };

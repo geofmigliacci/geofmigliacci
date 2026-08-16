@@ -74,11 +74,14 @@ comments inside `content/blog/` are French.
   [language-switcher.tsx](src/components/language-switcher.tsx), which needs the
   full document load the next section explains.
 - Dates go through [src/lib/format.ts](src/lib/format.ts), not next-intl's
-  formatter, and the locale argument is required. The routing locale is the URL
-  segment, and `Intl` reads a bare `en` as US English: the byline would read
-  "July 17, 2026" against the French "17 juillet 2026" and lose the shape the
-  layout is built around. `LANGUAGE_TAG` maps the segment to BCP 47, which
-  schema.org's `inLanguage` needs in that form anyway.
+  formatter, and the locale argument is required. It pins `timeZone: "UTC"`,
+  without which a reader west of it dates a post the day before; the two
+  timezone cases in [format.test.ts](src/lib/format.test.ts) are that guard.
+- **`LANGUAGE_TAG` is regional, `hreflang` is not.** English formats and cards
+  as `en-US`, which is what `Intl` and schema.org's `inLanguage` want, but the
+  URL segment and every `hreflang` stay a bare `en`: a regional annotation would
+  offer the English pages to the US alone and drop a British or Indian searcher
+  through to `x-default`.
 
 The easiest thing to break silently is still the copy itself: a French label
 left in `en.json` fails no test and breaks no build, it just reads wrong.

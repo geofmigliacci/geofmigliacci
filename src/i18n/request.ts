@@ -12,8 +12,8 @@ export default getRequestConfig(async ({ requestLocale, locale: explicit }) => {
 
   // Returning `locale` is required since v4: omitting it is the "Unable to
   // find next-intl locale" error, which names neither this file nor the cause.
-  // Dates go through `lib/format` rather than `useFormatter`: routing on `en`
-  // would format them the US way, and `en-GB` does not belong in a URL.
+  // Dates go through `lib/format` rather than `useFormatter`, which pins the
+  // time zone to UTC: a viewer west of it would otherwise read the day before.
   return {
     locale,
     messages: (await import(`@/messages/${locale}.json`)).default,

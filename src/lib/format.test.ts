@@ -25,10 +25,9 @@ describe("formatDate", () => {
     expect(formatDate("2026-07-13", "fr")).toBe("13 juillet 2026");
   });
 
-  // `en-GB`, not `en`: a bare `en` would date the byline "July 13, 2026".
-  it("formats an English date day first, as the French one is", () => {
-    expect(formatDate("2026-01-01", "en")).toBe("1 January 2026");
-    expect(formatDate("2026-07-13", "en")).toBe("13 July 2026");
+  it("formats an English date the US way", () => {
+    expect(formatDate("2026-01-01", "en")).toBe("January 1, 2026");
+    expect(formatDate("2026-07-13", "en")).toBe("July 13, 2026");
   });
 
   it("keeps one formatter per locale rather than building one per call", () => {
