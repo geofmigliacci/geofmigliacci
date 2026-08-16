@@ -49,6 +49,19 @@ export async function generateMetadata({
     description: t("tagline"),
     openGraph: { ...openGraphBase(locale), type: "website" },
     twitter: { card: "summary_large_image" },
+    // Every post opens on a full-width cover, and `max-image-preview` is what
+    // lets a result carry it rather than a thumbnail.
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+        "max-video-preview": -1,
+      },
+    },
   };
 }
 
