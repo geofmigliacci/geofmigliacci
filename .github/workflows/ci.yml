@@ -18,14 +18,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # `pnpm/action-setup` installs pnpm through npm and tops out at v10. v11 ships a
+      # self-contained binary, which only `pnpm/setup` knows how to fetch.
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/setup@v2
+        with:
+          cache: true
+          install: false
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
-          cache: pnpm
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -55,14 +59,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # `pnpm/action-setup` installs pnpm through npm and tops out at v10. v11 ships a
+      # self-contained binary, which only `pnpm/setup` knows how to fetch.
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/setup@v2
+        with:
+          cache: true
+          install: false
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
-          cache: pnpm
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -95,7 +103,16 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/setup@v2
+        with:
+          install: false
+
+      # `vercel build` runs the real production build, so it gets the same Node the
+      # checks ran on rather than whatever the runner defaults to.
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
 
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
