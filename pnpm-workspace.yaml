@@ -1,3 +1,7 @@
 allowBuilds:
+  # Both arrive with next-intl and ship prebuilt binaries, so the script is a
+  # node-gyp fallback, the same reason sharp is off below.
+  '@parcel/watcher': false
+  '@swc/core': false
   sharp: false
   unrs-resolver: false

@@ -1,0 +1,16 @@
+{
+  "nav": {
+    "sections": {
+      "blog": { "name": "Blog" },
+      "about": { "name": "About" },
+      "legal": { "name": "Legal notice" },
+      "privacyPolicy": { "name": "Privacy policy", "short": "Privacy" }
+    },
+    "home": { "name": "Home" },
+    "language": {
+      "label": "Language",
+      "en": "English",
+      "fr": "Français"
+    }
+  }
+}
