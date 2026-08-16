@@ -1,14 +1,16 @@
 import { describe, expect, it, vi } from "vitest";
 import sitemap from "@/app/sitemap";
 import type { BlogPostMeta } from "@/lib/blog";
-import { getBlogPosts } from "@/lib/blog";
+import { getBlogPosts, postLocales } from "@/lib/blog";
 import { testCover, testCoverAlt } from "@/lib/blog.fixtures";
 
 vi.mock("@/lib/blog", () => ({
   getBlogPosts: vi.fn(),
+  postLocales: vi.fn(),
 }));
 
 const mockedGetPosts = vi.mocked(getBlogPosts);
+const mockedPostLocales = vi.mocked(postLocales);
 
 const postA: BlogPostMeta = {
   slug: "post-a",
@@ -40,14 +42,19 @@ const HOST = "https://www.geofmigliacci.dev";
 const languagesFor = (path: string) => ({
   en: `${HOST}/en${path}`,
   fr: `${HOST}/fr${path}`,
+  "x-default": `${HOST}/en${path}`,
 });
 
-/** A post's alternates name only the locales that wrote it. */
-const frenchOnlyLanguages = (path: string) => ({ fr: `${HOST}/fr${path}` });
+/** A post's alternates name only the locales that wrote it, x-default included. */
+const frenchOnlyLanguages = (path: string) => ({
+  fr: `${HOST}/fr${path}`,
+  "x-default": `${HOST}/fr${path}`,
+});
 
 /** Both posts are written in French, so `/en` may list neither. */
 const frenchOnly = () => {
   mockedGetPosts.mockResolvedValue([postB, postA]);
+  mockedPostLocales.mockResolvedValue(["fr"]);
 };
 
 describe("sitemap", () => {
@@ -60,7 +67,13 @@ describe("sitemap", () => {
       url: `${HOST}/en`,
       changeFrequency: "monthly",
       priority: 1,
-      alternates: { languages: { en: `${HOST}/en`, fr: `${HOST}/fr` } },
+      alternates: {
+        languages: {
+          en: `${HOST}/en`,
+          fr: `${HOST}/fr`,
+          "x-default": `${HOST}/en`,
+        },
+      },
     });
     expect(result[1]).toEqual({
       url: `${HOST}/en/about`,
@@ -110,6 +123,18 @@ describe("sitemap", () => {
 
     expect(result.map(({ url }) => url)).not.toContain(
       `${HOST}/en/blog/post-a`,
+    );
+  });
+
+  // The declaration Google reads off the page has to agree with this one.
+  it("sends x-default to the locale that wrote a post, not to the default one", async () => {
+    frenchOnly();
+
+    const result = await sitemap();
+    const post = result.find(({ url }) => url.endsWith("/blog/post-a"));
+
+    expect(post?.alternates?.languages?.["x-default"]).toBe(
+      `${HOST}/fr/blog/post-a`,
     );
   });
 

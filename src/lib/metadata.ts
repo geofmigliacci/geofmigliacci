@@ -9,18 +9,32 @@ export const rssAlternate = (locale: Locale) =>
   }) satisfies NonNullable<Metadata["alternates"]>["types"];
 
 export const openGraphBase = (locale: Locale) =>
-  ({ siteName, locale: OG_LOCALE[locale] }) satisfies Metadata["openGraph"];
+  ({
+    siteName,
+    locale: OG_LOCALE[locale],
+    alternateLocale: LOCALES.filter((other) => other !== locale).map(
+      (other) => OG_LOCALE[other],
+    ),
+  }) satisfies Metadata["openGraph"];
 
-/** Relative throughout: `metadataBase` on the layout is what makes these absolute. */
+/** Where `x-default` sends an unmatched language: the default locale, or the only one written. */
+export const defaultAmong = (locales: readonly Locale[]): Locale =>
+  locales.includes(routing.defaultLocale) ? routing.defaultLocale : locales[0];
+
+/**
+ * Relative throughout: `metadataBase` on the layout is what makes these absolute.
+ * `locales` narrows the set for a page that does not exist in all of them.
+ */
 export function alternatesFor(
   path: string,
   locale: Locale,
+  locales: readonly Locale[] = LOCALES,
 ): Metadata["alternates"] {
   return {
     canonical: localePath(locale, path),
     languages: {
-      ...Object.fromEntries(LOCALES.map((l) => [l, localePath(l, path)])),
-      "x-default": localePath(routing.defaultLocale, path),
+      ...Object.fromEntries(locales.map((l) => [l, localePath(l, path)])),
+      "x-default": localePath(defaultAmong(locales), path),
     },
     types: rssAlternate(locale),
   };

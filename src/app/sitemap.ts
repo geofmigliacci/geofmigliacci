@@ -1,14 +1,19 @@
 import type { MetadataRoute } from "next";
 import { LOCALES, type Locale, localePath } from "@/i18n/locales";
-import { getBlogPosts } from "@/lib/blog";
+import { getBlogPosts, postLocales } from "@/lib/blog";
+import { defaultAmong } from "@/lib/metadata";
 import { siteUrl } from "@/lib/site";
 
 const absolute = (locale: Locale, path: string) =>
   new URL(localePath(locale, path), siteUrl).href;
 
 /** `MetadataRoute.Sitemap` has no `metadataBase`, so these have to be absolute. */
-const languagesFor = (path: string, locales: readonly Locale[]) =>
-  Object.fromEntries(locales.map((locale) => [locale, absolute(locale, path)]));
+const languagesFor = (path: string, locales: readonly Locale[]) => ({
+  ...Object.fromEntries(
+    locales.map((locale) => [locale, absolute(locale, path)]),
+  ),
+  "x-default": absolute(defaultAmong(locales), path),
+});
 
 const STATIC_ROUTES = [
   { path: "/", changeFrequency: "monthly", priority: 1 },
@@ -24,15 +29,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       posts: await getBlogPosts(locale),
     })),
   );
-
-  /** Which locales actually wrote a given slug, rather than falling back to it. */
-  const authors = new Map<string, Locale[]>();
-  for (const { locale, posts } of byLocale) {
-    for (const post of posts) {
-      if (post.contentLocale !== locale) continue;
-      authors.set(post.slug, [...(authors.get(post.slug) ?? []), locale]);
-    }
-  }
 
   const entries: MetadataRoute.Sitemap = [];
 
@@ -65,7 +61,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         changeFrequency: "yearly",
         priority: 0.6,
         alternates: {
-          languages: languagesFor(path, authors.get(post.slug) ?? [locale]),
+          languages: languagesFor(path, await postLocales(post.slug)),
         },
       });
     }

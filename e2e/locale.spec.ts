@@ -97,6 +97,24 @@ test("an untranslated post serves the original inside the other locale", async (
   );
 });
 
+/**
+ * Google reads an `hreflang` set only off canonical URLs, and drops the whole
+ * set over one target that canonicalises elsewhere. A post nobody translated has
+ * exactly one canonical URL, so it may name exactly one locale.
+ */
+test("an untranslated post claims no alternate it cannot back", async ({
+  page,
+}) => {
+  await page.goto("/fr/blog/ef-core-lazy-loading");
+
+  await expect(
+    page.locator('link[rel="alternate"][hreflang="en"]'),
+  ).toHaveCount(0);
+  await expect(
+    page.locator('link[rel="alternate"][hreflang="x-default"]'),
+  ).toHaveAttribute("href", /\/fr\/blog\/ef-core-lazy-loading$/);
+});
+
 test("the listing marks a post it only falls back to", async ({ page }) => {
   await page.goto("/en/blog");
 

@@ -123,6 +123,36 @@ describe("resolveContentLocale", () => {
   });
 });
 
+describe("postLocales", () => {
+  const onlyFrenchWrote = (async (dir: string) =>
+    String(dir).includes("fr") ? ["post-a.mdx"] : []) as never;
+
+  it("names every locale that wrote the slug", async () => {
+    vi.resetModules();
+    const { postLocales: fresh } = await import("@/lib/blog");
+    mockedReaddir.mockResolvedValue(["post-a.mdx"] as never);
+
+    await expect(fresh("post-a")).resolves.toEqual(["en", "fr"]);
+  });
+
+  // The set an `hreflang` cluster may name: a fallback URL canonicalises away.
+  it("leaves out a locale that only falls back to the slug", async () => {
+    vi.resetModules();
+    const { postLocales: fresh } = await import("@/lib/blog");
+    mockedReaddir.mockImplementation(onlyFrenchWrote);
+
+    await expect(fresh("post-a")).resolves.toEqual(["fr"]);
+  });
+
+  it("names nothing for a slug no locale wrote", async () => {
+    vi.resetModules();
+    const { postLocales: fresh } = await import("@/lib/blog");
+    mockedReaddir.mockResolvedValue([] as never);
+
+    await expect(fresh("ghost")).resolves.toEqual([]);
+  });
+});
+
 describe("getBlogPosts", () => {
   it("merges metadata with slug and reading time, sorted by date descending", async () => {
     mockedReaddir.mockResolvedValue(["post-a.mdx", "post-b.mdx"] as never);

@@ -88,6 +88,18 @@ export const resolveContentLocale = cache(
   },
 );
 
+/**
+ * The locales that wrote this slug, which is what an `hreflang` cluster and a
+ * sitemap entry may name: a locale that only falls back to a post serves a URL
+ * canonicalising elsewhere, and Google drops the whole set over one such target.
+ */
+export const postLocales = cache(async (slug: string): Promise<Locale[]> => {
+  const wrote = await Promise.all(
+    LOCALES.map(async (locale) => (await listSlugs(locale)).includes(slug)),
+  );
+  return LOCALES.filter((_, index) => wrote[index]);
+});
+
 /** Every slug this locale can serve: its own, plus the ones it falls back to. */
 export const getBlogPosts = cache(
   async (locale: Locale): Promise<BlogPostMeta[]> => {

@@ -11,10 +11,15 @@ import { UntranslatedNotice } from "@/app/[locale]/blog/[slug]/_components/untra
 import { JsonLd } from "@/components/json-ld";
 import { Badge } from "@/components/ui/badge";
 import { LOCALES, type Locale, localePath } from "@/i18n/locales";
-import { getBlogPosts, getPost, resolveContentLocale } from "@/lib/blog";
+import {
+  getBlogPosts,
+  getPost,
+  postLocales,
+  resolveContentLocale,
+} from "@/lib/blog";
 import { blogPostingJsonLd, breadcrumbJsonLd, graph } from "@/lib/json-ld";
 import { jsonLdContext } from "@/lib/json-ld-context";
-import { alternatesFor, openGraphBase } from "@/lib/metadata";
+import { alternatesFor, openGraphBase, rssAlternate } from "@/lib/metadata";
 import { person } from "@/lib/site";
 
 interface PostParams {
@@ -41,7 +46,10 @@ export async function generateMetadata({
   const contentLocale = await resolveContentLocale(locale, slug);
   if (!contentLocale) notFound();
 
-  const { metadata } = await getPost(contentLocale, slug);
+  const [{ metadata }, authors] = await Promise.all([
+    getPost(contentLocale, slug),
+    postLocales(slug),
+  ]);
   const translated = contentLocale === locale;
 
   return {
@@ -49,15 +57,13 @@ export async function generateMetadata({
     description: metadata.description,
     authors: [{ name: person.name, url: localePath(locale, "/about") }],
     // A fallback page is byte-identical to the original, so it claims no
-    // canonical of its own and points every alternate at the one it borrowed.
+    // canonical of its own and no alternates either: Google reads an `hreflang`
+    // set only off canonical URLs, and one bad target invalidates the set.
     alternates: translated
-      ? alternatesFor(`/blog/${slug}`, locale)
+      ? alternatesFor(`/blog/${slug}`, locale, authors)
       : {
           canonical: localePath(contentLocale, `/blog/${slug}`),
-          languages: {
-            [contentLocale]: localePath(contentLocale, `/blog/${slug}`),
-            "x-default": localePath(contentLocale, `/blog/${slug}`),
-          },
+          types: rssAlternate(locale),
         },
     openGraph: {
       // The shared text is what a social card previews, so it follows the body.
