@@ -15,7 +15,7 @@ export function UntranslatedNotice({
   const t = useTranslations("blog.post.untranslated");
 
   return (
-    <aside className="panel mt-8 flex items-start gap-4 bg-muted">
+    <aside className="panel my-8 flex items-start gap-4 bg-muted">
       <Languages aria-hidden className="mt-0.5 size-4 shrink-0 text-primary" />
       <p className="text-sm text-muted-foreground">
         {t("body", { language: t(`language.${contentLocale}`) })}{" "}
