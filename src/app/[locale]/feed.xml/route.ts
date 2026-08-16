@@ -1,9 +1,10 @@
 import { Feed } from "feed";
 import { hasLocale } from "next-intl";
+import { getTranslations } from "next-intl/server";
 import { LANGUAGE_TAG, localePath } from "@/i18n/locales";
 import { routing } from "@/i18n/routing";
 import { getBlogPosts } from "@/lib/blog";
-import { person, siteUrl, tagline } from "@/lib/site";
+import { person, siteUrl } from "@/lib/site";
 
 export const dynamic = "force-static";
 
@@ -23,12 +24,16 @@ export async function GET(
   const absolute = (path: string) =>
     new URL(localePath(locale, path), siteUrl).href;
   // Own posts only, or a French post reaches an English subscriber twice.
-  const all = await getBlogPosts(locale);
+  const [all, t] = await Promise.all([
+    getBlogPosts(locale),
+    getTranslations({ locale, namespace: "site" }),
+  ]);
   const posts = all.filter((post) => post.contentLocale === locale);
 
   const feed = new Feed({
+    // The name is the one thing that does not translate; the description does.
     title: person.name,
-    description: tagline,
+    description: t("tagline"),
     id: absolute("/"),
     link: absolute("/"),
     language: LANGUAGE_TAG[locale],

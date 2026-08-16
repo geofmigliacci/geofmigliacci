@@ -268,13 +268,24 @@ contents does too. The language switcher drops the hash for that reason.
 
 Translated copy lives in [src/messages/](src/messages/), per the Language
 section above. [src/lib/site.ts](src/lib/site.ts) keeps only what does not
-translate: `siteUrl`, `siteName`, `person`, `social`, `contactEmail`, `repoUrl`,
-`host` (bar its address, which names a country), and `SECTION_PATHS`. Import it,
-never retype it.
+translate: `siteUrl`, `siteName`, `person` (identity alone: a name, a handle, a
+portrait, an address, two profiles), `social`, `contactEmail`, `repoUrl`, `host`
+(bar its address, which names a country), and `SECTION_PATHS`. Import it, never
+retype it.
 
 `tagline` was once five separate literals across five files and drifted the
 first time it was reworded. The section names were four. Adding a surface means
 adding an import or a key, not another copy.
+
+**A prose string left in `site.ts` is French served to an English reader.** That
+is how the English feed came to be described in French under `<language>en</language>`,
+and the manifest with it: `tagline` stayed behind when the copy moved, and
+nothing typed can see the difference. Metadata routes reach copy the same way
+components do, through `getTranslations({ locale })` with the locale named
+explicitly. Under Vitest that throws, because next-intl resolves to its
+React-client build, so those tests mock it with
+[server.mock.ts](src/i18n/server.mock.ts), which reads the real catalogue rather
+than stubbing it.
 
 ## Comments
 

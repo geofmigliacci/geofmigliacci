@@ -3,10 +3,13 @@ import { GET } from "@/app/[locale]/feed.xml/route";
 import type { BlogPostMeta } from "@/lib/blog";
 import { getBlogPosts } from "@/lib/blog";
 import { testCover, testCoverAlt } from "@/lib/blog.fixtures";
+import en from "@/messages/en.json";
 
 vi.mock("@/lib/blog", () => ({
   getBlogPosts: vi.fn(),
 }));
+
+vi.mock("next-intl/server", () => import("@/i18n/server.mock"));
 
 const mockedGetPosts = vi.mocked(getBlogPosts);
 
@@ -67,6 +70,19 @@ describe("GET /feed.xml", () => {
     const xml = await response.text();
 
     expect(xml).toContain("<title><![CDATA[Post A & <tags>]]></title>");
+  });
+
+  // A feed declaring one language and describing itself in another reads as spam.
+  it("describes itself in the language it declares", async () => {
+    mockedGetPosts.mockResolvedValue([]);
+
+    const response = await GET(new Request("https://x/en/feed.xml"), {
+      params: Promise.resolve({ locale: "en" }),
+    });
+    const xml = await response.text();
+
+    expect(xml).toContain("<language>en-US</language>");
+    expect(xml).toContain(en.site.tagline);
   });
 
   it("renders an empty channel when there are no posts", async () => {

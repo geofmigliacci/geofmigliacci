@@ -35,15 +35,6 @@ export const host = {
 /** For `next/image`, which rejects `person.image` as a remote host. */
 export const portraitPath = "/geofmigliacci.jpg";
 
-export const tagline =
-  "J'écris sur le code, les langues, la philosophie : tout ce qui nourrit ma curiosité et la vie autour.";
-
-export const blogDescription =
-  "J'écris sur le développement et l'architecture logicielle, mais aussi les langues et la vie autour.";
-
-export const pitch =
-  "Je conçois des systèmes .NET capables d'absorber la charge sans broncher : de l'architecture backend jusqu'à l'interface.";
-
 export const repoUrl = "https://github.com/geofmigliacci/geofmigliacci.dev";
 
 export const social = {
@@ -51,20 +42,11 @@ export const social = {
   linkedin: "https://www.linkedin.com/in/geofmigliacci/",
 };
 
+/** Identity only. Anything a reader sees in their own language is in `messages`. */
 export const person = {
   name: "Geoffrey Migliacci",
   alternateName: "geofmigliacci",
   image: new URL(portraitPath, siteUrl).href,
-  jobTitle: "Ingénieur logiciel senior",
-  description: pitch,
   email: `mailto:${contactEmail}`,
-  knowsAbout: [
-    ".NET",
-    "ASP.NET Core",
-    "Entity Framework Core",
-    "SQL",
-    "Architecture logicielle",
-    "Performance applicative",
-  ],
   sameAs: [social.github, social.linkedin],
 };
