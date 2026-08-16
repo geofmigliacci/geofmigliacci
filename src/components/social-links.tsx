@@ -11,10 +11,7 @@ export function SocialLinks({ className }: { className?: string }) {
         variant="outline"
         aria-label="Me contacter par email"
         nativeButton={false}
-        render={
-          // biome-ignore lint/a11y/useAnchorContent: Base UI merges the Button children into the rendered anchor
-          <a href={person.email} />
-        }
+        render={<a href={person.email} />}
       >
         <FaEnvelope aria-hidden />
       </Button>
@@ -23,10 +20,7 @@ export function SocialLinks({ className }: { className?: string }) {
         variant="outline"
         aria-label="GitHub"
         nativeButton={false}
-        render={
-          // biome-ignore lint/a11y/useAnchorContent: Base UI merges the Button children into the rendered anchor
-          <a href={social.github} target="_blank" rel="noreferrer" />
-        }
+        render={<a href={social.github} target="_blank" rel="noreferrer" />}
       >
         <FaGithub aria-hidden />
       </Button>
@@ -35,10 +29,7 @@ export function SocialLinks({ className }: { className?: string }) {
         variant="outline"
         aria-label="LinkedIn"
         nativeButton={false}
-        render={
-          // biome-ignore lint/a11y/useAnchorContent: Base UI merges the Button children into the rendered anchor
-          <a href={social.linkedin} target="_blank" rel="noreferrer" />
-        }
+        render={<a href={social.linkedin} target="_blank" rel="noreferrer" />}
       >
         <FaLinkedinIn aria-hidden />
       </Button>

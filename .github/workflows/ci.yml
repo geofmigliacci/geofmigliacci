@@ -19,13 +19,15 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/setup@v2
+        with:
+          cache: true
+          install: false
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 24
-          cache: pnpm
+          node-version-file: .nvmrc
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -56,23 +58,22 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/setup@v2
+        with:
+          cache: true
+          install: false
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 24
-          cache: pnpm
+          node-version-file: .nvmrc
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      # Chromium alone, matching the single project in playwright.config.ts.
-      # `--with-deps` is what pulls the system libraries the runner lacks.
       - name: Install Chromium
         run: pnpm exec playwright install --with-deps chromium
 
-      # Builds and serves the production output itself, through `webServer`.
       - name: Smoke test
         run: pnpm e2e
 
@@ -95,7 +96,14 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/setup@v2
+        with:
+          install: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
 
       - name: Install Vercel CLI
         run: npm install --global vercel@latest

@@ -180,24 +180,20 @@ body::after {
 }
 
 /* Timing only: the UA keyframes are what keep the two snapshots summing to one opaque page. */
-/* biome-ignore lint/correctness/noUnknownTypeSelector: `root` names a view-transition group, not an element type */
 ::view-transition-old(root) {
   animation-duration: 300ms;
 }
 
-/* biome-ignore lint/correctness/noUnknownTypeSelector: `root` names a view-transition group, not an element type */
 ::view-transition-new(root) {
   animation-duration: 300ms;
 }
 
 /* The swap still happens unanimated, which is why the toggle needs no reduced-motion branch. */
 @media (prefers-reduced-motion: reduce) {
-  /* biome-ignore lint/correctness/noUnknownTypeSelector: `root` names a view-transition group, not an element type */
   ::view-transition-old(root) {
     animation: none;
   }
 
-  /* biome-ignore lint/correctness/noUnknownTypeSelector: `root` names a view-transition group, not an element type */
   ::view-transition-new(root) {
     animation: none;
   }

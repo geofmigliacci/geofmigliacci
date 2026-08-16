@@ -42,10 +42,7 @@ export default async function PostsPage() {
           variant="outline"
           aria-label="S'abonner au flux RSS"
           nativeButton={false}
-          render={
-            // biome-ignore lint/a11y/useAnchorContent: Base UI merges the Button children into the rendered anchor
-            <a href="/feed.xml" />
-          }
+          render={<a href="/feed.xml" />}
         >
           <Rss aria-hidden />
         </Button>
