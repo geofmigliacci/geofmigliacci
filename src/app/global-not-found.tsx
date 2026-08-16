@@ -2,13 +2,12 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Geist, JetBrains_Mono, Space_Grotesk } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
+import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import NotFoundArt from "@/app/[locale]/not-found";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
-import { routing } from "@/i18n/routing";
 import { THEME_BOOT_SCRIPT } from "@/lib/theme";
 import { cn } from "@/lib/utils";
-import messages from "@/messages/fr.json";
 
 const fontSans = Geist({
   subsets: ["latin", "latin-ext"],
@@ -24,7 +23,7 @@ const fontMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Erreur 404 · Geoffrey Migliacci",
+  title: "Error 404 · Geoffrey Migliacci",
 };
 
 /**
@@ -33,11 +32,20 @@ export const metadata: Metadata = {
  * instead. This file is what the docs prescribe when the root layout sits under
  * a top-level dynamic segment, and it owns the whole document, so the fonts and
  * the theme script are restated here the way `global-error.tsx` restates them.
+ *
+ * The locale comes from the request rather than the segment, since there is no
+ * segment: the proxy has already resolved one by the time this renders.
  */
-export default function GlobalNotFound() {
+export default async function GlobalNotFound() {
+  const [locale, messages, t] = await Promise.all([
+    getLocale(),
+    getMessages(),
+    getTranslations("nav"),
+  ]);
+
   return (
     <html
-      lang={routing.defaultLocale}
+      lang={locale}
       suppressHydrationWarning
       className={cn(
         "scroll-smooth motion-reduce:scroll-auto",
@@ -53,15 +61,12 @@ export default function GlobalNotFound() {
         />
       </head>
       <body className="antialiased">
-        <NextIntlClientProvider
-          locale={routing.defaultLocale}
-          messages={messages}
-        >
+        <NextIntlClientProvider locale={locale} messages={messages}>
           <a
             href="#content"
             className="sr-only rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50"
           >
-            Aller au contenu
+            {t("skipToContent")}
           </a>
           <div className="flex min-h-svh flex-col">
             <SiteHeader />

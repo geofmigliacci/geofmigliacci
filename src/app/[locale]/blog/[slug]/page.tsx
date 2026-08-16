@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { LOCALES, type Locale, localePath } from "@/i18n/locales";
 import { getBlogPosts, getPost, listSlugs } from "@/lib/blog";
 import { blogPostingJsonLd, breadcrumbJsonLd, graph } from "@/lib/json-ld";
+import { jsonLdContext } from "@/lib/json-ld-context";
 import { alternatesFor, openGraphBase } from "@/lib/metadata";
 import { person } from "@/lib/site";
 
@@ -56,9 +57,10 @@ export default async function PostPage({ params }: PostParams) {
   const { locale, slug } = await params;
   setRequestLocale(locale);
 
-  const [{ default: Post, metadata, toc }, posts] = await Promise.all([
+  const [{ default: Post, metadata, toc }, posts, ctx] = await Promise.all([
     getPost(locale, slug),
     getBlogPosts(locale),
+    jsonLdContext(locale),
   ]);
 
   const currentIndex = posts.findIndex((post) => post.slug === slug);
@@ -68,8 +70,7 @@ export default async function PostPage({ params }: PostParams) {
       ? posts[currentIndex + 1]
       : undefined;
 
-  const postData = blogPostingJsonLd({
-    locale,
+  const postData = blogPostingJsonLd(ctx, {
     title: metadata.title,
     description: metadata.description,
     date: metadata.date,
@@ -80,8 +81,7 @@ export default async function PostPage({ params }: PostParams) {
     slug,
   });
 
-  const breadcrumbData = breadcrumbJsonLd({
-    locale,
+  const breadcrumbData = breadcrumbJsonLd(ctx, {
     path: `/blog/${slug}`,
     leafName: metadata.title,
   });

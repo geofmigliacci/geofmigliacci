@@ -10,15 +10,26 @@ import type {
   WebSite,
 } from "schema-dts";
 import { LANGUAGE_TAG, type Locale, localePath } from "@/i18n/locales";
-import {
-  blogDescription,
-  home,
-  person,
-  sections,
-  siteName,
-  siteUrl,
-  tagline,
-} from "@/lib/site";
+import { person, siteName, siteUrl } from "@/lib/site";
+
+/**
+ * The translated half of the graph. Passed in rather than read here, so this
+ * module stays pure and its test needs no request context.
+ */
+export interface JsonLdCopy {
+  tagline: string;
+  blogDescription: string;
+  pitch: string;
+  jobTitle: string;
+  knowsAbout: string[];
+  blogName: string;
+  /** Locale-less path to display name, for the breadcrumb trail. */
+  routeNames: Record<string, string>;
+}
+
+export interface JsonLdContext extends JsonLdCopy {
+  locale: Locale;
+}
 
 const absolute = (locale: Locale, path: string) =>
   new URL(localePath(locale, path), siteUrl).href;
@@ -47,57 +58,49 @@ const personRef = (locale: Locale) =>
     url: profileId(locale),
   }) satisfies Person;
 
-const blogRef = (locale: Locale) =>
-  ({
-    "@type": "Blog",
-    "@id": blogId(locale),
-    name: sections.blog.name,
-  }) satisfies Blog;
-
 /** Mapped, not spread: a field added to `person` must not reach the graph unasked. */
-export function personJsonLd(locale: Locale) {
+export function personJsonLd(ctx: JsonLdContext) {
   return {
     "@type": "Person",
     "@id": PERSON_ID,
     name: person.name,
     alternateName: person.alternateName,
-    url: profileId(locale),
+    url: profileId(ctx.locale),
     image: person.image,
-    jobTitle: person.jobTitle,
-    description: person.description,
+    jobTitle: ctx.jobTitle,
+    description: ctx.pitch,
     email: person.email,
-    knowsAbout: person.knowsAbout,
+    knowsAbout: ctx.knowsAbout,
     sameAs: person.sameAs,
-    mainEntityOfPage: { "@type": "ProfilePage", "@id": profileId(locale) },
+    mainEntityOfPage: { "@type": "ProfilePage", "@id": profileId(ctx.locale) },
   } satisfies Person;
 }
 
 /** Google reads the site name from `name` and `url`, and only on the home page. */
-export function websiteJsonLd(locale: Locale) {
+export function websiteJsonLd(ctx: JsonLdContext) {
   return {
     "@type": "WebSite",
     "@id": WEBSITE_ID,
     name: siteName,
-    url: absolute(locale, "/"),
-    description: tagline,
-    inLanguage: LANGUAGE_TAG[locale],
-    publisher: personRef(locale),
+    url: absolute(ctx.locale, "/"),
+    description: ctx.tagline,
+    inLanguage: LANGUAGE_TAG[ctx.locale],
+    publisher: personRef(ctx.locale),
   } satisfies WebSite;
 }
 
-export function profilePageJsonLd(locale: Locale) {
+export function profilePageJsonLd(ctx: JsonLdContext) {
   return {
     "@type": "ProfilePage",
-    "@id": profileId(locale),
+    "@id": profileId(ctx.locale),
     name: person.name,
-    url: profileId(locale),
-    inLanguage: LANGUAGE_TAG[locale],
-    mainEntity: personJsonLd(locale),
+    url: profileId(ctx.locale),
+    inLanguage: LANGUAGE_TAG[ctx.locale],
+    mainEntity: personJsonLd(ctx),
   } satisfies ProfilePage;
 }
 
 interface BlogPostJsonLdInput {
-  locale: Locale;
   title: string;
   description: string;
   date: string;
@@ -107,19 +110,27 @@ interface BlogPostJsonLdInput {
   cover: StaticImageData;
   updated?: string;
   readingTime?: number;
+  /** The locale the body is written in, which a fallback makes differ from the page's. */
+  contentLocale?: Locale;
 }
 
-export function blogPostingJsonLd({
-  locale,
-  title,
-  description,
-  date,
-  slug,
-  tags,
-  cover,
-  updated,
-  readingTime,
-}: BlogPostJsonLdInput) {
+export function blogPostingJsonLd(
+  ctx: JsonLdContext,
+  {
+    title,
+    description,
+    date,
+    slug,
+    tags,
+    cover,
+    updated,
+    readingTime,
+    contentLocale,
+  }: BlogPostJsonLdInput,
+) {
+  // One post, one identity: a fallback page describes the original, not itself.
+  const locale = contentLocale ?? ctx.locale;
+
   return {
     "@type": "BlogPosting",
     "@id": postId(locale, slug),
@@ -132,7 +143,11 @@ export function blogPostingJsonLd({
       "@type": "WebPage",
       "@id": absolute(locale, `/blog/${slug}`),
     },
-    isPartOf: blogRef(locale),
+    isPartOf: {
+      "@type": "Blog",
+      "@id": blogId(locale),
+      name: ctx.blogName,
+    },
     inLanguage: LANGUAGE_TAG[locale],
     keywords: tags,
     ...(readingTime && { timeRequired: `PT${readingTime}M` }),
@@ -140,40 +155,23 @@ export function blogPostingJsonLd({
   } satisfies BlogPosting;
 }
 
-export function blogJsonLd(locale: Locale) {
+export function blogJsonLd(ctx: JsonLdContext) {
   return {
     "@type": "Blog",
-    "@id": blogId(locale),
-    name: sections.blog.name,
-    description: blogDescription,
-    url: absolute(locale, "/blog"),
-    inLanguage: LANGUAGE_TAG[locale],
-    author: personRef(locale),
+    "@id": blogId(ctx.locale),
+    name: ctx.blogName,
+    description: ctx.blogDescription,
+    url: absolute(ctx.locale, "/blog"),
+    inLanguage: LANGUAGE_TAG[ctx.locale],
+    author: personRef(ctx.locale),
   } satisfies Blog;
 }
 
-/** A page in a trail needs a row here, and so does every ancestor, or this throws. */
-const ROUTES = {
-  [home.path]: home.name,
-  [sections.blog.path]: sections.blog.name,
-  [sections.about.path]: sections.about.name,
-  [sections.legal.path]: sections.legal.name,
-  [sections.privacyPolicy.path]: sections.privacyPolicy.name,
-} as const;
-
-interface BreadcrumbInput {
-  locale: Locale;
-  /** Locale-less: the prefix is added when building each URL, never looked up. */
-  path: string;
-  leafName?: string;
-}
-
 /** The home step stays: two `ListItem`s is Google's floor for showing a trail. */
-export function breadcrumbJsonLd({
-  locale,
-  path,
-  leafName,
-}: BreadcrumbInput): BreadcrumbList {
+export function breadcrumbJsonLd(
+  ctx: JsonLdContext,
+  { path, leafName }: { path: string; leafName?: string },
+): BreadcrumbList {
   const segments = path.split("/").filter(Boolean);
   const trail = [
     "/",
@@ -184,19 +182,17 @@ export function breadcrumbJsonLd({
     "@type": "BreadcrumbList",
     itemListElement: trail.map((step, index) => {
       const name =
-        ROUTES[step as keyof typeof ROUTES] ??
-        (step === path ? leafName : undefined);
+        ctx.routeNames[step] ?? (step === path ? leafName : undefined);
+      // A page in a trail needs a row here, and so does every ancestor.
       if (!name) {
-        throw new Error(
-          `Breadcrumb step "${step}" has no name: add it to ROUTES.`,
-        );
+        throw new Error(`Breadcrumb step "${step}" has no name.`);
       }
 
       return {
         "@type": "ListItem" as const,
         position: index + 1,
         name,
-        item: absolute(locale, step),
+        item: absolute(ctx.locale, step),
       };
     }),
   } satisfies BreadcrumbList;

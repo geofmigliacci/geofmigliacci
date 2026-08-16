@@ -2,6 +2,9 @@ export const LOCALES = ["en", "fr"] as const;
 
 export type Locale = (typeof LOCALES)[number];
 
+/** next-intl writes this itself; named here so the privacy policy can cite it. */
+export const LOCALE_COOKIE = "NEXT_LOCALE";
+
 /**
  * BCP 47, for `Intl` and schema.org `inLanguage`. The URL segment cannot stand
  * in: bare `en` formats a long date the US way, so the byline would read

@@ -5,16 +5,34 @@ import {
   blogPostingJsonLd,
   breadcrumbJsonLd,
   graph,
+  type JsonLdContext,
   personJsonLd,
   profilePageJsonLd,
   websiteJsonLd,
 } from "@/lib/json-ld";
 
-type BlogPostInput = Parameters<typeof blogPostingJsonLd>[0];
+/** The translated half, spelt out: the builders take it rather than reading it. */
+const ctx = (locale: JsonLdContext["locale"] = "fr"): JsonLdContext => ({
+  locale,
+  tagline: "Une tagline.",
+  blogDescription: "Une description de blog.",
+  pitch: "Un pitch.",
+  jobTitle: "Ingénieur logiciel senior",
+  knowsAbout: [".NET", "Architecture logicielle"],
+  blogName: "Blog",
+  routeNames: {
+    "/": "Accueil",
+    "/blog": "Blog",
+    "/about": "À propos",
+    "/legal": "Mentions légales",
+    "/privacy-policy": "Politique de confidentialité",
+  },
+});
+
+type BlogPostInput = Parameters<typeof blogPostingJsonLd>[1];
 
 const post = (overrides: Partial<BlogPostInput> = {}) =>
-  blogPostingJsonLd({
-    locale: "fr",
+  blogPostingJsonLd(ctx(), {
     title: "Mon post",
     description: "Une description.",
     date: "2026-01-01",
@@ -26,7 +44,7 @@ const post = (overrides: Partial<BlogPostInput> = {}) =>
 
 describe("graph", () => {
   it("wraps nodes in a single contexted document", () => {
-    const data = graph(personJsonLd("fr"), websiteJsonLd("fr"));
+    const data = graph(personJsonLd(ctx()), websiteJsonLd(ctx()));
 
     expect(data["@context"]).toBe("https://schema.org");
     expect(data["@graph"]).toHaveLength(2);
@@ -35,7 +53,7 @@ describe("graph", () => {
 
 describe("personJsonLd", () => {
   it("builds a schema.org Person matching the site's identity", () => {
-    const data = personJsonLd("fr");
+    const data = personJsonLd(ctx());
 
     expect(data["@type"]).toBe("Person");
     expect(data.name).toBe("Geoffrey Migliacci");
@@ -43,7 +61,7 @@ describe("personJsonLd", () => {
   });
 
   it("carries the expertise the posts demonstrate", () => {
-    const data = personJsonLd("fr");
+    const data = personJsonLd(ctx());
 
     expect(data.knowsAbout).toContain(".NET");
     expect(data.description).toBeTruthy();
@@ -52,14 +70,14 @@ describe("personJsonLd", () => {
 
   // Emitted standalone here and nested in the ProfilePage on /about.
   it("uses the same identifier as the profile page's main entity", () => {
-    expect(personJsonLd("fr")["@id"]).toBe(
-      profilePageJsonLd("fr").mainEntity["@id"],
+    expect(personJsonLd(ctx())["@id"]).toBe(
+      profilePageJsonLd(ctx()).mainEntity["@id"],
     );
   });
 
   // The same URL the post pages hand to `authors`, so one page names one author.
   it("points at the page that identifies the person", () => {
-    expect(personJsonLd("fr").url).toBe(
+    expect(personJsonLd(ctx()).url).toBe(
       "https://www.geofmigliacci.dev/fr/about",
     );
   });
@@ -68,14 +86,14 @@ describe("personJsonLd", () => {
   it("agrees with the reference a post carries as its author", () => {
     const { author } = post();
 
-    expect(author["@id"]).toBe(personJsonLd("fr")["@id"]);
-    expect(author.url).toBe(personJsonLd("fr").url);
+    expect(author["@id"]).toBe(personJsonLd(ctx())["@id"]);
+    expect(author.url).toBe(personJsonLd(ctx()).url);
   });
 });
 
 describe("profilePageJsonLd", () => {
   it("wraps the person as the page's main entity", () => {
-    const data = profilePageJsonLd("fr");
+    const data = profilePageJsonLd(ctx());
 
     expect(data["@type"]).toBe("ProfilePage");
     expect(data.url).toBe("https://www.geofmigliacci.dev/fr/about");
@@ -150,7 +168,7 @@ describe("blogPostingJsonLd", () => {
 
 describe("blogJsonLd", () => {
   it("identifies the blog the posts declare themselves part of", () => {
-    const data = blogJsonLd("fr");
+    const data = blogJsonLd(ctx());
 
     expect(data["@type"]).toBe("Blog");
     expect(data["@id"]).toBe(post().isPartOf["@id"]);
@@ -159,14 +177,14 @@ describe("blogJsonLd", () => {
 
   // Google runs no list feature on Article, and each post describes itself.
   it("lists no posts", () => {
-    expect(blogJsonLd("fr")).not.toHaveProperty("blogPost");
+    expect(blogJsonLd(ctx())).not.toHaveProperty("blogPost");
   });
 });
 
 describe("websiteJsonLd", () => {
   // `name` and `url` are the two Google reads to decide the site name it prints.
   it("names the site and its canonical home page", () => {
-    const data = websiteJsonLd("fr");
+    const data = websiteJsonLd(ctx());
 
     expect(data["@type"]).toBe("WebSite");
     expect(data["@id"]).toBe("https://www.geofmigliacci.dev/#website");
@@ -176,20 +194,20 @@ describe("websiteJsonLd", () => {
 
   // The only thing tying the site to its author on a page carrying no standalone Person.
   it("reaches the person through its publisher", () => {
-    expect(websiteJsonLd("fr").publisher["@id"]).toBe(
-      personJsonLd("fr")["@id"],
+    expect(websiteJsonLd(ctx()).publisher["@id"]).toBe(
+      personJsonLd(ctx())["@id"],
     );
   });
 
   // The sitelinks search box it fed was removed from Search in November 2024.
   it("offers no search action", () => {
-    expect(websiteJsonLd("fr")).not.toHaveProperty("potentialAction");
+    expect(websiteJsonLd(ctx())).not.toHaveProperty("potentialAction");
   });
 });
 
 describe("breadcrumbJsonLd", () => {
   it("derives the trail from a static path's own segments", () => {
-    const data = breadcrumbJsonLd({ locale: "fr", path: "/about" });
+    const data = breadcrumbJsonLd(ctx(), { path: "/about" });
 
     expect(data["@type"]).toBe("BreadcrumbList");
     expect(data.itemListElement).toEqual([
@@ -210,7 +228,7 @@ describe("breadcrumbJsonLd", () => {
 
   // The lookup key is the locale-less path: prefixing it would throw on "/en".
   it("prefixes every URL with the locale without consulting it", () => {
-    const data = breadcrumbJsonLd({ locale: "en", path: "/legal" });
+    const data = breadcrumbJsonLd(ctx("en"), { path: "/legal" });
 
     expect(data.itemListElement).toEqual([
       {
@@ -229,8 +247,7 @@ describe("breadcrumbJsonLd", () => {
   });
 
   it("names a dynamic leaf from the caller and its ancestors from the table", () => {
-    const data = breadcrumbJsonLd({
-      locale: "fr",
+    const data = breadcrumbJsonLd(ctx(), {
       path: "/blog/mon-post",
       leafName: "Mon post",
     });
@@ -259,8 +276,7 @@ describe("breadcrumbJsonLd", () => {
 
   it("refuses a path whose ancestor is not in the table", () => {
     expect(() =>
-      breadcrumbJsonLd({
-        locale: "fr",
+      breadcrumbJsonLd(ctx(), {
         path: "/notes/mon-note",
         leafName: "Ma note",
       }),

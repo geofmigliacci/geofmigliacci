@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { TocItem } from "rehype-mdx-toc";
 import { AccentRule } from "@/components/decorative/accent-rule";
@@ -12,6 +13,7 @@ type LinkableItem = TocItem & { id: string };
 
 /** `rehype-mdx-toc` sees markdown headings only, so JSX titles never reach `items`. */
 export function BlogPostToc({ items }: { items: TocItem[] }) {
+  const t = useTranslations("blog.post");
   const entries = useMemo(
     () => items.filter((item): item is LinkableItem => Boolean(item.id)),
     [items],
@@ -27,11 +29,11 @@ export function BlogPostToc({ items }: { items: TocItem[] }) {
     <aside className="sticky top-8 hidden self-start lg:flex lg:flex-col lg:gap-4">
       <div className="flex items-center gap-4">
         <span className="font-mono text-xs leading-none tracking-eyebrow text-primary uppercase">
-          Sommaire
+          {t("contents")}
         </span>
         <AccentRule />
       </div>
-      <nav aria-label="Sommaire">
+      <nav aria-label={t("contents")}>
         <ol className="m-0 flex list-none flex-col gap-2 border-l border-border p-0 ps-4">
           {entries.map((entry) => {
             const active = entry.id === activeId;

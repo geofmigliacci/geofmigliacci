@@ -4,12 +4,28 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { JsonLd } from "@/components/json-ld";
 import { testCover } from "@/lib/blog.fixtures";
-import { blogPostingJsonLd, graph, personJsonLd } from "@/lib/json-ld";
+import {
+  blogPostingJsonLd,
+  graph,
+  type JsonLdContext,
+  personJsonLd,
+} from "@/lib/json-ld";
 import { render } from "@/test-utils";
+
+const ctx: JsonLdContext = {
+  locale: "fr",
+  tagline: "Une tagline.",
+  blogDescription: "Une description de blog.",
+  pitch: "Un pitch.",
+  jobTitle: "Ingénieur logiciel senior",
+  knowsAbout: [".NET"],
+  blogName: "Blog",
+  routeNames: { "/": "Accueil", "/blog": "Blog" },
+};
 
 describe("JsonLd", () => {
   it("renders the graph as a JSON-LD script tag", () => {
-    const data = graph(personJsonLd("fr"));
+    const data = graph(personJsonLd(ctx));
     const { container } = render(<JsonLd data={data} />);
 
     const script = container.querySelector(
@@ -24,8 +40,7 @@ describe("JsonLd", () => {
     const html = renderToStaticMarkup(
       <JsonLd
         data={graph(
-          blogPostingJsonLd({
-            locale: "fr",
+          blogPostingJsonLd(ctx, {
             title: "Échapper une balise </script> en MDX",
             description: "Une description.",
             date: "2026-01-01",
@@ -45,8 +60,7 @@ describe("JsonLd", () => {
     const { container } = render(
       <JsonLd
         data={graph(
-          blogPostingJsonLd({
-            locale: "fr",
+          blogPostingJsonLd(ctx, {
             title,
             description: "Une description.",
             date: "2026-01-01",

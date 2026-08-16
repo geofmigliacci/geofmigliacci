@@ -9,7 +9,7 @@ const formatUnderTimeZone = async (timeZone: string, iso: string) => {
   vi.resetModules();
   const { formatDate: freshFormatDate } = await import("@/lib/format");
   process.env.TZ = original;
-  return freshFormatDate(iso);
+  return freshFormatDate(iso, "fr");
 };
 
 describe("formatDate", () => {
@@ -18,11 +18,27 @@ describe("formatDate", () => {
   });
 
   it("formats an ISO date as a long French date", () => {
-    expect(formatDate("2026-01-01")).toBe("1 janvier 2026");
+    expect(formatDate("2026-01-01", "fr")).toBe("1 janvier 2026");
   });
 
   it("handles other months correctly", () => {
-    expect(formatDate("2026-07-13")).toBe("13 juillet 2026");
+    expect(formatDate("2026-07-13", "fr")).toBe("13 juillet 2026");
+  });
+
+  // `en-GB`, not `en`: a bare `en` would date the byline "July 13, 2026".
+  it("formats an English date day first, as the French one is", () => {
+    expect(formatDate("2026-01-01", "en")).toBe("1 January 2026");
+    expect(formatDate("2026-07-13", "en")).toBe("13 July 2026");
+  });
+
+  it("keeps one formatter per locale rather than building one per call", () => {
+    const spy = vi.spyOn(Intl, "DateTimeFormat");
+
+    formatDate("2026-01-01", "fr");
+    formatDate("2026-02-02", "fr");
+
+    expect(spy).not.toHaveBeenCalled();
+    spy.mockRestore();
   });
 
   it("does not shift the day for viewers west of UTC", async () => {

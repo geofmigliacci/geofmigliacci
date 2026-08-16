@@ -2,6 +2,7 @@
 
 import { ArrowLeft, RotateCcw } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
+import { useTranslations } from "next-intl";
 import { useEffect } from "react";
 import {
   LETTER_STAGGER,
@@ -11,7 +12,6 @@ import {
 import { RecoveryAction } from "@/components/recovery-action";
 import { EASE } from "@/lib/motion";
 
-const LINES = ["ERREUR", "INATTENDUE"] as const;
 const OUTLINE_LETTER =
   "text-transparent [-webkit-text-stroke:2px_var(--color-foreground)]";
 
@@ -22,9 +22,12 @@ export default function RouteError({
   error: Error & { digest?: string };
   unstable_retry: () => void;
 }) {
+  const t = useTranslations("errors.runtime");
   const reducedMotion = useReducedMotion();
+  // `overflow-hidden` clips line two rather than wrapping it: keep it under 11 characters.
+  const lines = [t("lineOne"), t("lineTwo")] as const;
   const lettersDone =
-    REVEAL_DELAY + (LINES[0].length + LINES[1].length) * LETTER_STAGGER;
+    REVEAL_DELAY + (lines[0].length + lines[1].length) * LETTER_STAGGER;
 
   useEffect(() => {
     console.error(error);
@@ -39,7 +42,7 @@ export default function RouteError({
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: EASE }}
         >
-          Anomalie détectée
+          {t("eyebrow")}
           <span
             aria-hidden
             className="animate-caret-blink motion-reduce:animate-none"
@@ -48,18 +51,18 @@ export default function RouteError({
           </span>
         </motion.p>
         <h1
-          aria-label="Une erreur inattendue est survenue"
+          aria-label={t("heading")}
           className="mt-2 font-bold leading-[0.95] tracking-tight"
         >
           <StaggerText
-            text={LINES[0]}
+            text={lines[0]}
             delay={REVEAL_DELAY}
             stagger={LETTER_STAGGER}
             className="text-[clamp(3rem,14vw,10rem)]"
           />
           <StaggerText
-            text={LINES[1]}
-            delay={REVEAL_DELAY + LINES[0].length * LETTER_STAGGER}
+            text={lines[1]}
+            delay={REVEAL_DELAY + lines[0].length * LETTER_STAGGER}
             stagger={LETTER_STAGGER}
             className="text-[clamp(1.5rem,7vw,6rem)]"
             letterClassName={OUTLINE_LETTER}
@@ -72,19 +75,19 @@ export default function RouteError({
           transition={{ delay: lettersDone + 0.1, duration: 0.6, ease: EASE }}
         >
           <p className="max-w-xl text-lg text-muted-foreground md:text-xl">
-            Quelque chose s'est cassé de notre côté. Réessayer suffit parfois.
+            {t("body")}
           </p>
           {error.digest && (
             <p className="font-mono text-xs text-muted-foreground">
-              Référence : {error.digest}
+              {t("reference")} {error.digest}
             </p>
           )}
           <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
             <RecoveryAction icon={RotateCcw} onClick={() => unstable_retry()}>
-              Réessayer
+              {t("retry")}
             </RecoveryAction>
             <RecoveryAction icon={ArrowLeft} href="/">
-              Accueil
+              {t("home")}
             </RecoveryAction>
           </div>
         </motion.div>

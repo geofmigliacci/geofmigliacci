@@ -2,25 +2,26 @@
 
 import { motion, useReducedMotion } from "motion/react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { EASE } from "@/lib/motion";
 
 /** A fixed composition: one portrait then two landscapes, and a fourth has no cell. */
 const ABOUT_PHOTOS = [
   {
     src: "/about/20220714_200312.jpg",
-    alt: "Sculpture en bronze d'une figure en équilibre sur un croissant de lune, à contre-jour au coucher du soleil sur le front de mer de Viareggio.",
+    altKey: "viareggio",
     cell: "aspect-[2/3] lg:aspect-auto lg:row-span-2",
     sizes: "(min-width: 1024px) 15rem, 100vw",
   },
   {
     src: "/about/20220715_144923.jpg",
-    alt: "La Rocca d'Angera, forteresse médiévale posée sur un éperon rocheux boisé, vue depuis l'autre rive du lac Majeur.",
+    altKey: "angera",
     cell: "aspect-[3/2] lg:aspect-auto",
     sizes: "(min-width: 1024px) 18rem, 100vw",
   },
   {
     src: "/about/20230914_100736.jpg",
-    alt: "Vue sur le lac Majeur depuis Isola Bella : une petite île boisée coiffée d'un clocher, et les montagnes de la rive en arrière-plan.",
+    altKey: "isolaBella",
     cell: "aspect-[16/9] lg:aspect-auto",
     sizes: "(min-width: 1024px) 18rem, 100vw",
   },
@@ -30,6 +31,7 @@ const PHOTO_STAGGER = 0.12;
 const SLIDE_FROM = 32;
 
 export function AboutPhotos() {
+  const t = useTranslations("about.photos");
   const reducedMotion = useReducedMotion();
 
   if (ABOUT_PHOTOS.length === 0) {
@@ -53,7 +55,7 @@ export function AboutPhotos() {
         >
           <Image
             src={photo.src}
-            alt={photo.alt}
+            alt={t(photo.altKey)}
             fill
             sizes={photo.sizes}
             loading="eager"

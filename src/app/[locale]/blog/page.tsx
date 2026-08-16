@@ -1,6 +1,7 @@
 import { DraftingCompass, Rss } from "lucide-react";
 import type { Metadata } from "next";
-import { setRequestLocale } from "next-intl/server";
+import { useTranslations } from "next-intl";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { BlogPostExplorer } from "@/app/[locale]/blog/_components/blog-post-explorer";
 import { JsonLd } from "@/components/json-ld";
 import { Button } from "@/components/ui/button";
@@ -14,8 +15,8 @@ import {
 import { type Locale, localePath } from "@/i18n/locales";
 import { getBlogPosts } from "@/lib/blog";
 import { blogJsonLd, breadcrumbJsonLd, graph } from "@/lib/json-ld";
+import { jsonLdContext } from "@/lib/json-ld-context";
 import { alternatesFor, openGraphBase } from "@/lib/metadata";
-import { blogDescription } from "@/lib/site";
 
 interface LocaleParams {
   params: Promise<{ locale: Locale }>;
@@ -25,9 +26,10 @@ export async function generateMetadata({
   params,
 }: LocaleParams): Promise<Metadata> {
   const { locale } = await params;
+  const t = await getTranslations({ locale });
   return {
-    title: "Blog",
-    description: blogDescription,
+    title: t("nav.sections.blog.name"),
+    description: t("site.blogDescription"),
     alternates: alternatesFor("/blog", locale),
     openGraph: {
       ...openGraphBase(locale),
@@ -41,30 +43,30 @@ export default async function PostsPage({ params }: LocaleParams) {
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const posts = await getBlogPosts(locale);
+  const [posts, ctx, t] = await Promise.all([
+    getBlogPosts(locale),
+    jsonLdContext(locale),
+    getTranslations("blog.list"),
+  ]);
 
   return (
     <div className="page-shell">
       <JsonLd
-        data={graph(
-          breadcrumbJsonLd({ locale, path: "/blog" }),
-          blogJsonLd(locale),
-        )}
+        data={graph(breadcrumbJsonLd(ctx, { path: "/blog" }), blogJsonLd(ctx))}
       />
       <section className="flex flex-col gap-6 enter-rise md:flex-row md:items-center md:justify-between">
         <div className="flex flex-col items-start gap-4">
           <h1 className="text-3xl font-bold tracking-tight text-balance md:text-4xl">
-            Blog
+            {t("heading")}
           </h1>
           <p className="max-w-xl text-lg text-muted-foreground md:text-xl">
-            J'écris sur ce qui me passionne : le développement et l'architecture
-            logicielle, mais aussi les langues et la vie autour.
+            {t("intro")}
           </p>
         </div>
         <Button
           size="icon-lg"
           variant="outline"
-          aria-label="S'abonner au flux RSS"
+          aria-label={t("rss")}
           nativeButton={false}
           render={<a href={localePath(locale, "/feed.xml")} />}
         >
@@ -77,6 +79,8 @@ export default async function PostsPage({ params }: LocaleParams) {
 }
 
 function EmptyState() {
+  const t = useTranslations("blog.list.empty");
+
   return (
     <div className="mt-12 enter-rise">
       <Empty className="py-16">
@@ -84,10 +88,8 @@ function EmptyState() {
           <EmptyMedia variant="icon">
             <DraftingCompass />
           </EmptyMedia>
-          <EmptyTitle>Aucun billet pour le moment</EmptyTitle>
-          <EmptyDescription>
-            Le premier est sur la planche à dessin : revenez bientôt.
-          </EmptyDescription>
+          <EmptyTitle>{t("title")}</EmptyTitle>
+          <EmptyDescription>{t("description")}</EmptyDescription>
         </EmptyHeader>
       </Empty>
     </div>

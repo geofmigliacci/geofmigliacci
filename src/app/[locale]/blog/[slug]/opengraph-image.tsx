@@ -53,7 +53,7 @@ export default async function Image({
       eyebrow="Geoffrey Migliacci"
       title={metadata.title}
       scale="headline"
-      meta={`${formatDate(metadata.date)} · ${ogHost()}`}
+      meta={`${formatDate(metadata.date, locale)} · ${ogHost()}`}
     />,
     { ...OG_SIZE, fonts },
   );

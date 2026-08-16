@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Hero } from "@/app/[locale]/about/_components/hero";
 import { JsonLd } from "@/components/json-ld";
 import { type Locale, localePath } from "@/i18n/locales";
 import { breadcrumbJsonLd, graph, profilePageJsonLd } from "@/lib/json-ld";
+import { jsonLdContext } from "@/lib/json-ld-context";
 import { alternatesFor, openGraphBase } from "@/lib/metadata";
 
 interface LocaleParams {
@@ -14,10 +15,10 @@ export async function generateMetadata({
   params,
 }: LocaleParams): Promise<Metadata> {
   const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "meta.about" });
   return {
-    title: "À propos",
-    description:
-      "Ingénieur logiciel senior, +7 ans d'expérience en .NET : le parcours, la stack et la façon de travailler derrière les billets.",
+    title: t("title"),
+    description: t("description"),
     alternates: alternatesFor("/about", locale),
     openGraph: {
       ...openGraphBase(locale),
@@ -31,12 +32,14 @@ export default async function AboutPage({ params }: LocaleParams) {
   const { locale } = await params;
   setRequestLocale(locale);
 
+  const ctx = await jsonLdContext(locale);
+
   return (
     <>
       <JsonLd
         data={graph(
-          profilePageJsonLd(locale),
-          breadcrumbJsonLd({ locale, path: "/about" }),
+          profilePageJsonLd(ctx),
+          breadcrumbJsonLd(ctx, { path: "/about" }),
         )}
       />
       <Hero />

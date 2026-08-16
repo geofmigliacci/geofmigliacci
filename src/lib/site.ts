@@ -4,27 +4,22 @@ export const siteUrl = new URL(
 
 export const siteName = "Geoffrey Migliacci";
 
-export interface Section {
-  path: string;
-  /** Full name, for a breadcrumb trail and a page title. */
-  name: string;
-  /** Compact form, where the full name would crowd the chrome. */
-  short?: string;
-}
+export const HOME_PATH = "/";
 
-export const home = { path: "/", name: "Accueil" } as const satisfies Section;
+/**
+ * The one table behind the header nav, the colophon, the crumb and the JSON-LD
+ * trail. Paths only: the names are translated, and live under `nav.sections`.
+ */
+export const SECTION_PATHS = {
+  blog: "/blog",
+  about: "/about",
+  legal: "/legal",
+  privacyPolicy: "/privacy-policy",
+} as const;
 
-/** The one table behind the header nav, the colophon, the crumb and the JSON-LD trail. */
-export const sections = {
-  blog: { path: "/blog", name: "Blog" },
-  about: { path: "/about", name: "À propos" },
-  legal: { path: "/legal", name: "Mentions légales" },
-  privacyPolicy: {
-    path: "/privacy-policy",
-    name: "Politique de confidentialité",
-    short: "Confidentialité",
-  },
-} as const satisfies Record<string, Section>;
+export type SectionKey = keyof typeof SECTION_PATHS;
+
+export const SECTION_KEYS = Object.keys(SECTION_PATHS) as SectionKey[];
 
 /** Bare address, for display. `person.email` needs the `mailto:` schema.org form. */
 export const contactEmail = "geoffrey.migliacci@gmail.com";

@@ -66,6 +66,13 @@ describe.each(posts)("$entry", ({ raw }) => {
     expect(headings.length).toBeGreaterThanOrEqual(MIN_HEADINGS);
   });
 
+  // TypeScript cannot see into MDX, so an untitled Epilogue renders a bare rule.
+  it("titles an epilogue in the language the post is written in", () => {
+    if (!raw.includes("<Epilogue")) return;
+
+    expect(raw).toMatch(/<Epilogue title="[^"]+">/);
+  });
+
   // TypeScript cannot see into MDX, so a coverless post typechecks and breaks the list.
   it("declares, imports and describes a cover", () => {
     expect(raw).toMatch(/^import cover from "\.\.\/covers\/.+\.jpg";$/m);

@@ -1,5 +1,4 @@
 import {
-  DEFAULT_LOCALE,
   LOCALES,
   localePath,
   publishedPosts,
@@ -62,6 +61,12 @@ for (const { locale, slug } of publishedPosts) {
 // `dynamicParams` is `false` on the post route, so an unknown slug 404s through it.
 const NOT_FOUND_ROUTES = ["/not-a-page", "/blog/not-a-post"];
 
+/** Spelt out, for the same reason `routes.ts` spells its titles out. */
+const NOT_FOUND = {
+  en: { heading: "Error 404 · page not found", home: "Back to home" },
+  fr: { heading: "Erreur 404 · page introuvable", home: "Retour à l'accueil" },
+} as const;
+
 for (const locale of LOCALES) {
   for (const route of NOT_FOUND_ROUTES) {
     const path = localePath(locale, route);
@@ -73,15 +78,15 @@ for (const locale of LOCALES) {
       await expect(
         page.getByRole("heading", {
           level: 1,
-          name: "Erreur 404 · page introuvable",
+          name: NOT_FOUND[locale].heading,
         }),
       ).toBeVisible();
       await expect(
-        page.getByRole("link", { name: "Retour à l'accueil" }),
+        page.getByRole("link", { name: NOT_FOUND[locale].home }),
       ).toBeVisible();
-      // `global-not-found.tsx`, not the layout: an unmatched URL never reaches
-      // `[locale]`, so the document is always the default locale's.
-      await expectSiteShell(page, DEFAULT_LOCALE);
+      // `global-not-found.tsx` renders this, and reads its locale from the
+      // request rather than a segment, so the shell still matches the URL.
+      await expectSiteShell(page, locale);
     });
   }
 }

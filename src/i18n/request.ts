@@ -2,8 +2,10 @@ import { hasLocale } from "next-intl";
 import { getRequestConfig } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 
-export default getRequestConfig(async ({ requestLocale }) => {
-  const requested = await requestLocale;
+export default getRequestConfig(async ({ requestLocale, locale: explicit }) => {
+  // `explicit` first: `requestLocale` reads headers, and a caller that named the
+  // locale may be running where there is no request, as `generateStaticParams` is.
+  const requested = explicit ?? (await requestLocale);
   const locale = hasLocale(routing.locales, requested)
     ? requested
     : routing.defaultLocale;

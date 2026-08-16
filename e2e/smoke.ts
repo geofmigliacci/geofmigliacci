@@ -84,21 +84,33 @@ export async function expectStructuredData(page: Page): Promise<void> {
   }
 }
 
+/** Spelt out, for the same reason `routes.ts` spells its titles out. */
+const SHELL = {
+  en: {
+    skip: "Skip to content",
+    nav: "Main navigation",
+    legal: "Legal information",
+  },
+  fr: {
+    skip: "Aller au contenu",
+    nav: "Navigation principale",
+    legal: "Informations légales",
+  },
+} as const;
+
 export async function expectSiteShell(
   page: Page,
   locale: Locale = "fr",
 ): Promise<void> {
+  const copy = SHELL[locale];
+
   await expect(page.locator("html")).toHaveAttribute("lang", locale);
   // Attached rather than visible: it is `sr-only` until focused.
-  await expect(
-    page.getByRole("link", { name: "Aller au contenu" }),
-  ).toBeAttached();
-  await expect(
-    page.getByRole("navigation", { name: "Navigation principale" }),
-  ).toBeVisible();
+  await expect(page.getByRole("link", { name: copy.skip })).toBeAttached();
+  await expect(page.getByRole("navigation", { name: copy.nav })).toBeVisible();
   await expect(page.getByRole("main")).toBeVisible();
   await expect(page.getByRole("contentinfo")).toBeVisible();
   await expect(
-    page.getByRole("navigation", { name: "Informations légales" }),
+    page.getByRole("navigation", { name: copy.legal }),
   ).toBeVisible();
 }

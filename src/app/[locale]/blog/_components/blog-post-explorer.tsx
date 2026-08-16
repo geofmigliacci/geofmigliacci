@@ -1,6 +1,7 @@
 "use client";
 
 import { X } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { BlogPostSummary } from "@/components/blog-post-summary";
 import { CoverBand } from "@/components/cover-band";
@@ -17,15 +18,8 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Link } from "@/i18n/navigation";
 import type { BlogPostMeta } from "@/lib/blog";
 
-/** Never the visible empty state verbatim: both sit in the DOM, and a reader hears both. */
-function announceCount(count: number): string {
-  if (count === 0) {
-    return "Aucun billet ne correspond";
-  }
-  return count > 1 ? `${count} billets affichés` : "1 billet affiché";
-}
-
 export function BlogPostExplorer({ posts }: { posts: BlogPostMeta[] }) {
+  const t = useTranslations("blog.list");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
   const allTags = useMemo(
@@ -46,7 +40,7 @@ export function BlogPostExplorer({ posts }: { posts: BlogPostMeta[] }) {
         <div className="mt-8">
           <div className="flex items-center gap-4">
             <span className="font-mono text-xs tracking-eyebrow text-primary uppercase">
-              Filtrer
+              {t("filter.label")}
             </span>
             <AccentRule />
           </div>
@@ -55,7 +49,7 @@ export function BlogPostExplorer({ posts }: { posts: BlogPostMeta[] }) {
               multiple
               value={selectedTags}
               onValueChange={setSelectedTags}
-              aria-label="Filtrer les billets par tag"
+              aria-label={t("filter.byTag")}
             >
               {allTags.map((tag) => (
                 <ToggleGroupItem
@@ -72,7 +66,7 @@ export function BlogPostExplorer({ posts }: { posts: BlogPostMeta[] }) {
               <Button
                 variant="ghost"
                 size="icon"
-                aria-label="Réinitialiser les filtres"
+                aria-label={t("filter.reset")}
                 onClick={() => setSelectedTags([])}
               >
                 <X />
@@ -83,7 +77,7 @@ export function BlogPostExplorer({ posts }: { posts: BlogPostMeta[] }) {
       )}
       {/* Outside the branch: a live region only announces mutations it is mounted for. */}
       <p aria-live="polite" className="sr-only">
-        {announceCount(filteredPosts.length)}
+        {t("announceCount", { count: filteredPosts.length })}
       </p>
       {filteredPosts.length === 0 ? (
         <NoMatches onReset={() => setSelectedTags([])} />
@@ -95,19 +89,19 @@ export function BlogPostExplorer({ posts }: { posts: BlogPostMeta[] }) {
 }
 
 function NoMatches({ onReset }: { onReset: () => void }) {
+  const t = useTranslations("blog.list");
+
   return (
     <div className="mt-12 enter-rise">
       <Empty className="py-16">
         <EmptyHeader>
-          <EmptyTitle>Aucun billet pour ces tags</EmptyTitle>
-          <EmptyDescription>
-            Essayez d'autres tags, ou réinitialisez le filtre.
-          </EmptyDescription>
+          <EmptyTitle>{t("noMatches.title")}</EmptyTitle>
+          <EmptyDescription>{t("noMatches.description")}</EmptyDescription>
         </EmptyHeader>
         <EmptyContent>
           <Button variant="outline" size="sm" onClick={onReset}>
             <X />
-            Réinitialiser les filtres
+            {t("filter.reset")}
           </Button>
         </EmptyContent>
       </Empty>

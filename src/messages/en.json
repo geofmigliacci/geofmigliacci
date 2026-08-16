@@ -1,16 +1,214 @@
 {
+  "site": {
+    "tagline": "I write about code, languages and philosophy: everything that feeds my curiosity, and the life around it.",
+    "blogDescription": "I write about software development and architecture, but also languages and the life around them.",
+    "pitch": "I build .NET systems that absorb load without flinching, from the backend architecture through to the interface.",
+    "jobTitle": "Senior software engineer",
+    "credentials": "7+ years · Performance · CQRS · Clean Architecture",
+    "portraitAlt": "Portrait of Geoffrey Migliacci",
+    "hostAddress": "440 N Barranca Ave #4133, Covina, CA 91723, United States",
+    "knowsAbout": {
+      "architecture": "Software architecture",
+      "performance": "Application performance"
+    }
+  },
   "nav": {
     "sections": {
-      "blog": { "name": "Blog" },
-      "about": { "name": "About" },
-      "legal": { "name": "Legal notice" },
-      "privacyPolicy": { "name": "Privacy policy", "short": "Privacy" }
+      "blog": {
+        "name": "Blog"
+      },
+      "about": {
+        "name": "About"
+      },
+      "legal": {
+        "name": "Legal notice"
+      },
+      "privacyPolicy": {
+        "name": "Privacy policy",
+        "short": "Privacy"
+      }
     },
-    "home": { "name": "Home" },
+    "home": {
+      "name": "Home"
+    },
+    "skipToContent": "Skip to content",
+    "main": "Main navigation",
+    "breadcrumb": "Breadcrumb",
+    "homeLink": "Geoffrey Migliacci · home",
+    "legalInformation": "Legal information",
+    "rss": "RSS",
     "language": {
       "label": "Language",
       "en": "English",
       "fr": "Français"
+    }
+  },
+  "common": {
+    "email": "Contact me by email",
+    "github": "GitHub",
+    "linkedin": "LinkedIn",
+    "theme": "Switch theme"
+  },
+  "meta": {
+    "home": {
+      "title": "Geoffrey Migliacci · Senior software engineer",
+      "ogAlt": "Geoffrey Migliacci · Senior software engineer"
+    },
+    "about": {
+      "title": "About",
+      "description": "Senior software engineer with 7+ years in .NET: the path, the stack and the way of working behind the posts.",
+      "ogAlt": "About · Geoffrey Migliacci",
+      "ogDescription": "Senior software engineer with 7+ years in .NET."
+    },
+    "blog": {
+      "ogAlt": "Blog · Geoffrey Migliacci"
+    },
+    "legal": {
+      "title": "Legal notice",
+      "description": "Publisher, host, intellectual property and liability for the geofmigliacci.dev site.",
+      "ogAlt": "Legal notice · Geoffrey Migliacci"
+    },
+    "privacyPolicy": {
+      "title": "Privacy policy",
+      "description": "This site uses no analytics, no trackers and no advertising cookies. Detail of what is stored and of your rights.",
+      "ogAlt": "Privacy policy · Geoffrey Migliacci"
+    }
+  },
+  "home": {
+    "latestPosts": "Latest posts",
+    "allPosts": "All posts"
+  },
+  "about": {
+    "bio": {
+      "start": "I learned to code around 13 on a SA:MP server, then on FiveM projects: two multiplayer mods for GTA, where a few hundred players share one server. My first users, then, and the discovery that it takes only a handful more of them to bring down what ran perfectly well on its own. Since then it has been .NET, mostly backend.",
+      "away": "When I am not at my screen, you will probably find me hiking somewhere, or playing games when I am not trying to build one.",
+      "invitation": "If something here speaks to you, write to me. I answer."
+    },
+    "photos": {
+      "viareggio": "Bronze sculpture of a figure balancing on a crescent moon, backlit at sunset on the Viareggio seafront.",
+      "angera": "The Rocca d'Angera, a medieval fortress set on a wooded rocky spur, seen from the far shore of Lake Maggiore.",
+      "isolaBella": "View over Lake Maggiore from Isola Bella: a small wooded island topped by a bell tower, with the mountains of the shore behind."
+    }
+  },
+  "blog": {
+    "list": {
+      "heading": "Blog",
+      "intro": "I write about what fascinates me: software development and architecture, but also languages and the life around them.",
+      "rss": "Subscribe to the RSS feed",
+      "readPost": "Read the post",
+      "empty": {
+        "title": "No posts yet",
+        "description": "The first one is on the drawing board: come back soon."
+      },
+      "filter": {
+        "label": "Filter",
+        "byTag": "Filter posts by tag",
+        "reset": "Reset filters"
+      },
+      "noMatches": {
+        "title": "No posts for these tags",
+        "description": "Try other tags, or reset the filter."
+      },
+      "announceCount": "{count, plural, =0 {No posts match} one {1 post shown} other {# posts shown}}"
+    },
+    "post": {
+      "readingTime": "{count} min read",
+      "readingTimeShort": "{count} min",
+      "updatedOn": "Updated on",
+      "contents": "Contents",
+      "backToTop": "Back to top",
+      "olderPost": "Older post",
+      "newerPost": "Newer post",
+      "navigation": "Post navigation"
+    }
+  },
+  "errors": {
+    "notFound": {
+      "eyebrow": "Uncharted territory",
+      "lineOne": "404",
+      "lineTwo": "NOT FOUND",
+      "heading": "Error 404 · page not found",
+      "body": "The page you are looking for does not exist or has moved.",
+      "home": "Back to home"
+    },
+    "runtime": {
+      "eyebrow": "Anomaly detected",
+      "lineOne": "ERROR",
+      "lineTwo": "UNEXPECTED",
+      "heading": "An unexpected error occurred",
+      "body": "Something broke on our side. Retrying is sometimes enough.",
+      "reference": "Reference:",
+      "retry": "Retry",
+      "home": "Home"
+    }
+  },
+  "legal": {
+    "lastUpdatedLabel": "Last updated:",
+    "lastUpdated": "6 August 2026",
+    "prevails": "This is a courtesy translation. In case of any discrepancy, the French version prevails.",
+    "publisher": {
+      "heading": "Site publisher",
+      "individual": "{name}, private individual. This is a personal site, with no commercial activity and no advertising.",
+      "director": "Publication director: {name}",
+      "contactLabel": "Contact:",
+      "lcen": "Article 6, III, 2 of the French law for confidence in the digital economy allows a non-professional publisher to disclose publicly only its host's details, provided it has given that host its personal identification details. I choose to identify myself regardless, and rely on that provision only so as not to publish my postal address: it is held by the host named below."
+    },
+    "host": {
+      "heading": "Host"
+    },
+    "intellectualProperty": {
+      "heading": "Intellectual property",
+      "owned": "The posts, texts, illustrations and graphic elements published on this site, logo included, are the property of {name}. All rights reserved.",
+      "reuse": "Any reproduction or republication, in whole or in substantial part, without prior written agreement is prohibited. The right of quotation still applies: a short quotation remains allowed, provided it names the author and links back to the original page.",
+      "code": "The code is the exception. The site's source code is published under the MIT licence: see the <repo>site repository</repo>.",
+      "snippets": "The code snippets published in the posts are freely reusable: copy them, adapt them, put them in a project, commercial included, with no permission and no attribution. They come with no warranty of any kind."
+    },
+    "liability": {
+      "heading": "Liability",
+      "body": "The content of this site is published for information. Despite the care taken in writing it, errors or omissions may remain, and some technical information may become outdated. The author cannot be held responsible for the consequences of any use made of the information published."
+    },
+    "externalLinks": {
+      "heading": "External links",
+      "body": "This site links to third party sites over which the author has no control. Their content is the responsibility of their respective publishers alone, and these links do not amount to endorsement."
+    },
+    "personalData": {
+      "heading": "Personal data",
+      "body": "Data processing is described in the <privacy>privacy policy</privacy>."
+    }
+  },
+  "privacy": {
+    "lastUpdatedLabel": "Last updated:",
+    "lastUpdated": "16 August 2026",
+    "prevails": "This is a courtesy translation. In case of any discrepancy, the French version prevails.",
+    "summary": {
+      "heading": "In short",
+      "body": "This site does not measure its audience, does not profile anyone and sells nothing. It carries no third party script, no analytics tool and no ad network. There is therefore no consent banner to show, for want of a tracker to have accepted."
+    },
+    "stored": {
+      "heading": "What is stored in your browser",
+      "theme": "Two values at most are written to your browser. The first, under the key <code>{themeKey}</code>, is kept in local storage and only if you switch between the light and dark themes. It is <code>light</code> or <code>dark</code>, nothing else.",
+      "locale": "The second, the cookie <code>{localeCookie}</code>, is written only if you change the language from the switcher in the header. It holds the language code you chose, and lets a later visit open in that language rather than guessing from your browser's settings.",
+      "neverLeaves": "Neither value identifies you, and neither is used to track you. You can delete both at any time by clearing this site's data from your browser settings.",
+      "consent": "Both are strictly necessary to a service you asked for, namely remembering a display preference and a language, so they fall outside prior consent under the CNIL's guidelines."
+    },
+    "logs": {
+      "heading": "Host logs",
+      "processor": "The site is hosted by {host}, acting as a processor within the meaning of the GDPR. Like any host, {host} technically records the requests it receives: IP address, date and time, page requested, browser type. These logs serve to provide the service, to secure it and to diagnose failures. This processing rests on the legitimate interest in running a site that is available and safe.",
+      "notRead": "I do not consult these logs, keep no copy of them and draw no statistics from them. Their retention period is set by the host alone, under the rules described in its <link>privacy policy</link>.",
+      "transfer": "As {host} is established in the United States, a transfer of data outside the European Union takes place. It is governed by the European Commission's standard contractual clauses, and by {host}'s certification under the EU-US Data Privacy Framework."
+    },
+    "writing": {
+      "heading": "If you write to me",
+      "body": "There is no form on this site. If you write to me at <mail>{email}</mail>, your address and the content of your message are used only to reply to you, and stay in my mailbox. They are neither passed on nor reused for other purposes."
+    },
+    "rights": {
+      "heading": "Your rights",
+      "body": "The General Data Protection Regulation gives you rights of access, rectification, erasure, restriction, objection and portability over your data. To exercise them, write to <mail>{email}</mail>.",
+      "complaint": "If a reply does not satisfy you, you may refer the matter to the French data protection authority: <cnil>www.cnil.fr</cnil>."
+    },
+    "controller": {
+      "heading": "Data controller",
+      "body": "The data controller is {name}, reachable at <mail>{email}</mail>. The only processor is {host}, for the hosting described above. No data is passed to any other recipient. The publishing details appear in the <legal>legal notice</legal>."
     }
   }
 }

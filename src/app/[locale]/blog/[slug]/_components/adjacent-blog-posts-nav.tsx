@@ -1,4 +1,5 @@
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import type { BlogPostMeta } from "@/lib/blog";
 import { cn } from "@/lib/utils";
@@ -10,9 +11,10 @@ function AdjacentPostCard({
   post: BlogPostMeta;
   direction: "older" | "newer";
 }) {
+  const t = useTranslations("blog.post");
   const isOlder = direction === "older";
   const Icon = isOlder ? ArrowLeft : ArrowRight;
-  const label = isOlder ? "Billet plus ancien" : "Billet plus récent";
+  const label = t(isOlder ? "olderPost" : "newerPost");
 
   return (
     <Link
@@ -42,13 +44,15 @@ export function AdjacentBlogPostsNav({
   olderPost?: BlogPostMeta;
   newerPost?: BlogPostMeta;
 }) {
+  const t = useTranslations("blog.post");
+
   if (!olderPost && !newerPost) {
     return null;
   }
 
   return (
     <nav
-      aria-label="Navigation entre billets"
+      aria-label={t("navigation")}
       className="mt-12 grid gap-4 sm:grid-cols-2"
     >
       {olderPost ? (

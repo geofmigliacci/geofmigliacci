@@ -1,4 +1,6 @@
 import Image from "next/image";
+import { useLocale, useTranslations } from "next-intl";
+import type { Locale } from "@/i18n/locales";
 import { Link } from "@/i18n/navigation";
 import { formatDate } from "@/lib/format";
 import { person, portraitPath } from "@/lib/site";
@@ -26,6 +28,9 @@ export function BlogPostByline({
   readingTime,
   updated,
 }: BlogPostBylineProps) {
+  const t = useTranslations("blog.post");
+  const locale = useLocale() as Locale;
+
   return (
     <div className="mt-4 flex flex-wrap items-center gap-2 font-mono text-xs text-muted-foreground">
       <Link
@@ -46,17 +51,18 @@ export function BlogPostByline({
         </span>
       </Link>
       <Segment>
-        <time dateTime={date}>{formatDate(date)}</time>
+        <time dateTime={date}>{formatDate(date, locale)}</time>
       </Segment>
       {readingTime !== undefined && (
         <Segment>
-          <span>{readingTime} min de lecture</span>
+          <span>{t("readingTime", { count: readingTime })}</span>
         </Segment>
       )}
       {updated && updated !== date && (
         <Segment>
           <span>
-            Mis à jour le <time dateTime={updated}>{formatDate(updated)}</time>
+            {t("updatedOn")}{" "}
+            <time dateTime={updated}>{formatDate(updated, locale)}</time>
           </span>
         </Segment>
       )}

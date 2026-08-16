@@ -3,13 +3,13 @@ import "../globals.css";
 import { Geist, JetBrains_Mono, Space_Grotesk } from "next/font/google";
 import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import type { Locale } from "@/i18n/locales";
 import { routing } from "@/i18n/routing";
 import { openGraphBase } from "@/lib/metadata";
-import { siteUrl, tagline } from "@/lib/site";
+import { siteUrl } from "@/lib/site";
 import { THEME_BOOT_SCRIPT } from "@/lib/theme";
 import { cn } from "@/lib/utils";
 
@@ -34,13 +34,14 @@ export async function generateMetadata({
   params: Promise<{ locale: Locale }>;
 }): Promise<Metadata> {
   const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "site" });
   return {
     metadataBase: siteUrl,
     title: {
       default: "Geoffrey Migliacci",
       template: "%s · Geoffrey Migliacci",
     },
-    description: tagline,
+    description: t("tagline"),
     openGraph: { ...openGraphBase(locale), type: "website" },
     twitter: { card: "summary_large_image" },
   };
@@ -67,6 +68,8 @@ export default async function RootLayout({
   // Omitting this is silent: the page still renders, it just stops being static.
   setRequestLocale(locale);
 
+  const t = await getTranslations("nav");
+
   return (
     <html
       lang={locale}
@@ -91,7 +94,7 @@ export default async function RootLayout({
             href="#content"
             className="sr-only rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50"
           >
-            Aller au contenu
+            {t("skipToContent")}
           </a>
           <div className="flex min-h-svh flex-col">
             <SiteHeader />

@@ -8,6 +8,7 @@ import {
   useReducedMotion,
   useScroll,
 } from "motion/react";
+import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -18,6 +19,7 @@ const beyondFirstScreen = (y: number) => y > window.innerHeight;
 
 /** Mount outside any ancestor with `filter`/`transform`, or `position: fixed` scrolls away. */
 export function BackToTop() {
+  const t = useTranslations("blog.post");
   const { scrollY } = useScroll();
   const reducedMotion = useReducedMotion();
   const [passed, setPassed] = useState(false);
@@ -42,7 +44,7 @@ export function BackToTop() {
         >
           <a
             href="#content"
-            aria-label="Retour en haut de la page"
+            aria-label={t("backToTop")}
             // The base variant carries `border-transparent`: only tailwind-merge lets it lose.
             className={cn(
               buttonVariants({ variant: "outline", size: "icon-lg" }),

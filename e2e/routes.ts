@@ -18,19 +18,25 @@ interface StaticPageCopy {
   title: PerLocale;
 }
 
-const HOME_TITLE = "Geoffrey Migliacci · Ingénieur logiciel senior";
+const HOME_TITLE = {
+  en: "Geoffrey Migliacci · Senior software engineer",
+  fr: "Geoffrey Migliacci · Ingénieur logiciel senior",
+};
 
 const STATIC_PAGE_COPY: StaticPageCopy[] = [
   {
     path: "/",
     heading: { en: "Geoffrey Migliacci", fr: "Geoffrey Migliacci" },
     // No suffix: a template skips the segment defining it, and both are root.
-    title: { en: HOME_TITLE, fr: HOME_TITLE },
+    title: HOME_TITLE,
   },
   {
     path: "/about",
     heading: { en: "Geoffrey Migliacci", fr: "Geoffrey Migliacci" },
-    title: { en: `À propos${TITLE_SUFFIX}`, fr: `À propos${TITLE_SUFFIX}` },
+    title: {
+      en: `About${TITLE_SUFFIX}`,
+      fr: `À propos${TITLE_SUFFIX}`,
+    },
   },
   {
     path: "/blog",
@@ -39,20 +45,20 @@ const STATIC_PAGE_COPY: StaticPageCopy[] = [
   },
   {
     path: "/legal",
-    heading: { en: "Mentions légales", fr: "Mentions légales" },
+    heading: { en: "Legal notice", fr: "Mentions légales" },
     title: {
-      en: `Mentions légales${TITLE_SUFFIX}`,
+      en: `Legal notice${TITLE_SUFFIX}`,
       fr: `Mentions légales${TITLE_SUFFIX}`,
     },
   },
   {
     path: "/privacy-policy",
     heading: {
-      en: "Politique de confidentialité",
+      en: "Privacy policy",
       fr: "Politique de confidentialité",
     },
     title: {
-      en: `Politique de confidentialité${TITLE_SUFFIX}`,
+      en: `Privacy policy${TITLE_SUFFIX}`,
       fr: `Politique de confidentialité${TITLE_SUFFIX}`,
     },
   },

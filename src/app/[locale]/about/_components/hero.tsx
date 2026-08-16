@@ -2,6 +2,7 @@
 
 import { motion, useReducedMotion } from "motion/react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { AboutPhotos } from "@/app/[locale]/about/_components/about-photos";
 import {
   LETTER_STAGGER,
@@ -10,7 +11,7 @@ import {
 } from "@/components/decorative/stagger-text";
 import { SocialLinks } from "@/components/social-links";
 import { EASE } from "@/lib/motion";
-import { pitch, portraitPath, tagline } from "@/lib/site";
+import { portraitPath } from "@/lib/site";
 
 const NAME_LINES = ["GEOFFREY", "MIGLIACCI"] as const;
 const NAME_SIZE =
@@ -19,6 +20,7 @@ const OUTLINE_LETTER =
   "text-transparent [-webkit-text-stroke:2px_var(--color-foreground)]";
 
 export function Hero() {
+  const t = useTranslations();
   const reducedMotion = useReducedMotion();
   const lettersDone =
     REVEAL_DELAY +
@@ -36,7 +38,7 @@ export function Hero() {
           <div className="relative size-40 shrink-0 overflow-hidden md:size-52 xl:size-56">
             <Image
               src={portraitPath}
-              alt="Portrait de Geoffrey Migliacci"
+              alt={t("site.portraitAlt")}
               fill
               priority
               sizes="(min-width: 1280px) 224px, (min-width: 768px) 208px, 160px"
@@ -45,7 +47,7 @@ export function Hero() {
           </div>
           <div className="flex flex-col gap-2">
             <p className="font-mono text-xs tracking-eyebrow text-primary uppercase">
-              Ingénieur logiciel senior
+              {t("site.jobTitle")}
             </p>
             <h1
               aria-label="Geoffrey Migliacci"
@@ -66,7 +68,7 @@ export function Hero() {
               />
             </h1>
             <p className="font-mono text-xs text-muted-foreground">
-              +7 ans d'expérience · Performance · CQRS · Clean Architecture
+              {t("site.credentials")}
             </p>
           </div>
         </motion.div>
@@ -84,26 +86,15 @@ export function Hero() {
             transition={{ delay: lettersDone + 0.1, duration: 0.6, ease: EASE }}
           >
             <p className="max-w-xl text-lg text-foreground md:text-xl">
-              {pitch}
+              {t("site.pitch")}
             </p>
             <p className="max-w-xl text-lg text-muted-foreground md:text-xl">
-              {tagline}
+              {t("site.tagline")}
             </p>
             <div className="flex max-w-xl flex-col gap-4 text-muted-foreground">
-              <p>
-                J'ai appris à coder vers 13 ans sur un serveur SA:MP, puis sur
-                des projets FiveM : deux mods multijoueurs pour GTA, où quelques
-                centaines de joueurs partagent le même serveur. Mes premiers
-                utilisateurs, donc, et la découverte qu'il suffit d'une poignée
-                de joueurs en plus pour faire tomber ce qui marchait très bien
-                tout seul. Depuis, c'est du .NET, surtout du backend.
-              </p>
-              <p>
-                Si je ne suis pas devant mon écran, vous me trouverez
-                probablement en train de randonner quelque part... ou de jouer à
-                des jeux quand je n'essaie pas d'en fabriquer.
-              </p>
-              <p>Si quelque chose ici vous parle, écrivez-moi. Je réponds.</p>
+              <p>{t("about.bio.start")}</p>
+              <p>{t("about.bio.away")}</p>
+              <p>{t("about.bio.invitation")}</p>
             </div>
             <SocialLinks />
           </motion.div>
