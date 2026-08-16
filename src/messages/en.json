@@ -119,7 +119,16 @@
       "backToTop": "Back to top",
       "olderPost": "Older post",
       "newerPost": "Newer post",
-      "navigation": "Post navigation"
+      "navigation": "Post navigation",
+      "untranslated": {
+        "body": "This post has not been translated yet, so what follows is the {language} original.",
+        "readOriginal": "Read the original",
+        "language": {
+          "en": "English",
+          "fr": "French"
+        },
+        "badge": "In {language}"
+      }
     }
   },
   "errors": {

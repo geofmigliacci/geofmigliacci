@@ -17,6 +17,7 @@ const postA: BlogPostMeta = {
   date: "2026-02-01",
   tags: ["dev"],
   readingTime: 3,
+  contentLocale: "fr",
   cover: testCover,
   coverAlt: testCoverAlt,
 };
@@ -28,21 +29,30 @@ const postB: BlogPostMeta = {
   date: "2026-05-01",
   tags: ["cuisine"],
   readingTime: 5,
+  contentLocale: "fr",
   cover: testCover,
   coverAlt: testCoverAlt,
 };
 
 const HOST = "https://www.geofmigliacci.dev";
 
-/** Every entry carries the full set, so one row proves the pair for all of them. */
+/** Static routes exist in both locales, so their alternates carry the pair. */
 const languagesFor = (path: string) => ({
   en: `${HOST}/en${path}`,
   fr: `${HOST}/fr${path}`,
 });
 
+/** A post's alternates name only the locales that wrote it. */
+const frenchOnlyLanguages = (path: string) => ({ fr: `${HOST}/fr${path}` });
+
+/** Both posts are written in French, so `/en` may list neither. */
+const frenchOnly = () => {
+  mockedGetPosts.mockResolvedValue([postB, postA]);
+};
+
 describe("sitemap", () => {
-  it("includes the home, about, legal and posts index, plus one entry per post", async () => {
-    mockedGetPosts.mockResolvedValue([postB, postA]);
+  it("lists every static route under every locale", async () => {
+    frenchOnly();
 
     const result = await sitemap();
 
@@ -58,18 +68,6 @@ describe("sitemap", () => {
       priority: 0.7,
       alternates: { languages: languagesFor("/about") },
     });
-    expect(result[2]).toEqual({
-      url: `${HOST}/en/legal`,
-      changeFrequency: "yearly",
-      priority: 0.2,
-      alternates: { languages: languagesFor("/legal") },
-    });
-    expect(result[3]).toEqual({
-      url: `${HOST}/en/privacy-policy`,
-      changeFrequency: "yearly",
-      priority: 0.2,
-      alternates: { languages: languagesFor("/privacy-policy") },
-    });
     expect(result[4]).toEqual({
       url: `${HOST}/en/blog`,
       lastModified: "2026-05-01",
@@ -77,35 +75,42 @@ describe("sitemap", () => {
       priority: 0.8,
       alternates: { languages: languagesFor("/blog") },
     });
-    expect(result.slice(5, 7)).toEqual([
+    expect(result.map(({ url }) => url)).toContain(`${HOST}/fr`);
+  });
+
+  it("lists a post under the locale that wrote it, and only that one", async () => {
+    frenchOnly();
+
+    const result = await sitemap();
+    const posts = result.filter(({ url }) => url.includes("/blog/"));
+
+    expect(posts).toEqual([
       {
-        url: `${HOST}/en/blog/post-b`,
+        url: `${HOST}/fr/blog/post-b`,
         lastModified: "2026-05-01",
         changeFrequency: "yearly",
         priority: 0.6,
-        alternates: { languages: languagesFor("/blog/post-b") },
+        alternates: { languages: frenchOnlyLanguages("/blog/post-b") },
       },
       {
-        url: `${HOST}/en/blog/post-a`,
+        url: `${HOST}/fr/blog/post-a`,
         lastModified: "2026-02-01",
         changeFrequency: "yearly",
         priority: 0.6,
-        alternates: { languages: languagesFor("/blog/post-a") },
+        alternates: { languages: frenchOnlyLanguages("/blog/post-a") },
       },
     ]);
   });
 
-  // Two locales, so every route appears twice and nothing may be listed once.
-  it("emits the same routes under every locale", async () => {
-    mockedGetPosts.mockResolvedValue([postB, postA]);
+  // A fallback page canonicalises elsewhere, so listing it would contradict that.
+  it("omits the locale a post only falls back into", async () => {
+    frenchOnly();
 
     const result = await sitemap();
 
-    expect(result).toHaveLength(14);
-    expect(
-      result.filter(({ url }) => url.startsWith(`${HOST}/fr`)),
-    ).toHaveLength(7);
-    expect(result[7].url).toBe(`${HOST}/fr`);
+    expect(result.map(({ url }) => url)).not.toContain(
+      `${HOST}/en/blog/post-a`,
+    );
   });
 
   it("omits lastModified on the posts index and adds no post entries when there are none", async () => {

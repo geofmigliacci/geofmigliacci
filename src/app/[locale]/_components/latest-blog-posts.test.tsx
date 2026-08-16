@@ -13,6 +13,7 @@ const post: BlogPostMeta = {
   date: "2026-07-17",
   tags: ["dotnet", "ef-core"],
   readingTime: 12,
+  contentLocale: "fr",
   cover: testCover,
   coverAlt: testCoverAlt,
 };
@@ -23,6 +24,7 @@ const previous = (index: number): BlogPostMeta => ({
   description: `Description ${index}`,
   date: `2026-06-${String(index).padStart(2, "0")}`,
   tags: ["dotnet"],
+  contentLocale: "fr",
   readingTime: index,
   cover: testCover,
   coverAlt: testCoverAlt,

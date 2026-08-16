@@ -15,6 +15,7 @@ export function BlogPostSummary({
 }) {
   const t = useTranslations("blog");
   const locale = useLocale() as Locale;
+  const translated = post.contentLocale === locale;
 
   return (
     <>
@@ -23,11 +24,26 @@ export function BlogPostSummary({
         {t("post.readingTime", { count: post.readingTime })}
       </p>
       {/* `max-w-2xl` holds the title to the same measure as the description below it. */}
-      <Title className="mt-2 max-w-2xl text-2xl font-bold tracking-tight text-balance transition-colors group-hover:text-primary md:text-3xl">
+      <Title
+        lang={translated ? undefined : post.contentLocale}
+        className="mt-2 max-w-2xl text-2xl font-bold tracking-tight text-balance transition-colors group-hover:text-primary md:text-3xl"
+      >
         {post.title}
       </Title>
-      <p className="mt-3 max-w-2xl text-muted-foreground">{post.description}</p>
+      <p
+        lang={translated ? undefined : post.contentLocale}
+        className="mt-3 max-w-2xl text-muted-foreground"
+      >
+        {post.description}
+      </p>
       <div className="mt-4 flex flex-wrap gap-2">
+        {!translated && (
+          <Badge variant="outline" className="border-primary/40 text-primary">
+            {t("post.untranslated.badge", {
+              language: t(`post.untranslated.language.${post.contentLocale}`),
+            })}
+          </Badge>
+        )}
         {post.tags.map((tag) => (
           <Badge key={tag} variant="outline">
             {tag}

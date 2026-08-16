@@ -3,9 +3,14 @@ import "../globals.css";
 import { Geist, JetBrains_Mono, Space_Grotesk } from "next/font/google";
 import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import {
+  getMessages,
+  getTranslations,
+  setRequestLocale,
+} from "next-intl/server";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import { clientMessages } from "@/i18n/client-messages";
 import type { Locale } from "@/i18n/locales";
 import { routing } from "@/i18n/routing";
 import { openGraphBase } from "@/lib/metadata";
@@ -68,7 +73,10 @@ export default async function RootLayout({
   // Omitting this is silent: the page still renders, it just stops being static.
   setRequestLocale(locale);
 
-  const t = await getTranslations("nav");
+  const [t, messages] = await Promise.all([
+    getTranslations("nav"),
+    getMessages(),
+  ]);
 
   return (
     <html
@@ -89,7 +97,7 @@ export default async function RootLayout({
         />
       </head>
       <body className="antialiased">
-        <NextIntlClientProvider>
+        <NextIntlClientProvider messages={clientMessages(messages)}>
           <a
             href="#content"
             className="sr-only rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50"

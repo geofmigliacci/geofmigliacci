@@ -6,7 +6,7 @@ import type { StaticImageData } from "next/image";
 import { cache } from "react";
 import type { TocItem } from "rehype-mdx-toc";
 import type { CoverPosition } from "@/components/cover-band";
-import type { Locale } from "@/i18n/locales";
+import { LOCALES, type Locale } from "@/i18n/locales";
 
 /** TypeScript cannot see into MDX: `content/blog.test.ts` is what holds posts to this shape. */
 export interface BlogPostMetadata {
@@ -25,6 +25,8 @@ export interface BlogPostMetadata {
 export interface BlogPostMeta extends BlogPostMetadata {
   slug: string;
   readingTime: number;
+  /** The locale the body is written in. A fallback makes it differ from the page's. */
+  contentLocale: Locale;
 }
 
 export type BlogPostModule = {
@@ -68,19 +70,53 @@ const readingTime = async (locale: Locale, slug: string): Promise<number> => {
   return Math.max(1, Math.round(words / WORDS_PER_MINUTE));
 };
 
+/**
+ * Which locale's MDX serves this slug: its own, or another's as a fallback.
+ * Iterates `LOCALES` in declaration order, which only decides anything once a
+ * third locale exists.
+ */
+export const resolveContentLocale = cache(
+  async (locale: Locale, slug: string): Promise<Locale | undefined> => {
+    if ((await listSlugs(locale)).includes(slug)) return locale;
+
+    for (const candidate of LOCALES) {
+      if (candidate === locale) continue;
+      if ((await listSlugs(candidate)).includes(slug)) return candidate;
+    }
+
+    return undefined;
+  },
+);
+
+/** Every slug this locale can serve: its own, plus the ones it falls back to. */
 export const getBlogPosts = cache(
   async (locale: Locale): Promise<BlogPostMeta[]> => {
-    const slugs = await listSlugs(locale);
+    const own = await listSlugs(locale);
+    const borrowed = (
+      await Promise.all(
+        LOCALES.filter((candidate) => candidate !== locale).map(
+          async (candidate) =>
+            (
+              await listSlugs(candidate)
+            )
+              .filter((slug) => !own.includes(slug))
+              .map((slug) => [candidate, slug] as const),
+        ),
+      )
+    ).flat();
 
     const posts = await Promise.all(
-      slugs.map(async (slug): Promise<BlogPostMeta> => {
-        const { metadata } = await getPost(locale, slug);
-        return {
-          slug,
-          readingTime: await readingTime(locale, slug),
-          ...metadata,
-        };
-      }),
+      [...own.map((slug) => [locale, slug] as const), ...borrowed].map(
+        async ([contentLocale, slug]): Promise<BlogPostMeta> => {
+          const { metadata } = await getPost(contentLocale, slug);
+          return {
+            slug,
+            contentLocale,
+            readingTime: await readingTime(contentLocale, slug),
+            ...metadata,
+          };
+        },
+      ),
     );
 
     return posts.sort((a, b) => b.date.localeCompare(a.date));

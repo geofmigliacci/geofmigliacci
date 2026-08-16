@@ -1,14 +1,15 @@
 import { ImageResponse } from "next/og";
 import { LOCALES, type Locale } from "@/i18n/locales";
-import { getPost, listSlugs } from "@/lib/blog";
+import { getBlogPosts, getPost, resolveContentLocale } from "@/lib/blog";
 import { formatDate } from "@/lib/format";
 import { loadOgFonts, OG_SIZE, OgCard, ogHost } from "@/lib/og-image";
 
 export async function generateStaticParams() {
   const perLocale = await Promise.all(
+    // The union, matching the page: a fallback post has an OG card too.
     LOCALES.map(async (locale) => {
-      const slugs = await listSlugs(locale);
-      return slugs.map((slug) => ({ locale, slug }));
+      const posts = await getBlogPosts(locale);
+      return posts.map((post) => ({ locale, slug: post.slug }));
     }),
   );
   return perLocale.flat();
@@ -25,7 +26,8 @@ export async function generateImageMetadata({
     return [{ id: "og", size: OG_SIZE, contentType: "image/png" }];
   }
 
-  const { metadata } = await getPost(locale, slug);
+  const contentLocale = (await resolveContentLocale(locale, slug)) ?? locale;
+  const { metadata } = await getPost(contentLocale, slug);
 
   return [
     {
@@ -43,8 +45,9 @@ export default async function Image({
   params: Promise<{ locale: Locale; slug: string }>;
 }) {
   const { locale, slug } = await params;
+  const contentLocale = (await resolveContentLocale(locale, slug)) ?? locale;
   const [{ metadata }, fonts] = await Promise.all([
-    getPost(locale, slug),
+    getPost(contentLocale, slug),
     loadOgFonts(),
   ]);
 

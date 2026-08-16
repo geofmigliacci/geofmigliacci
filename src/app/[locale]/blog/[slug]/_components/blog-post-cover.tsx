@@ -6,6 +6,8 @@ interface BlogPostCoverProps {
   alt: string;
   caption?: string;
   position?: CoverPosition;
+  /** `alt` cannot carry one of its own, so the figure is the closest honest ancestor. */
+  lang?: string;
 }
 
 /** Loaded eagerly: this is the post's likely LCP element. */
@@ -14,9 +16,10 @@ export function BlogPostCover({
   alt,
   caption,
   position,
+  lang,
 }: BlogPostCoverProps) {
   return (
-    <figure className="my-8">
+    <figure lang={lang} className="my-8">
       <CoverBand cover={cover} alt={alt} position={position} eager />
       {caption && (
         <figcaption className="mt-3 font-mono text-xs text-muted-foreground">

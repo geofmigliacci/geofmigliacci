@@ -1,6 +1,6 @@
 import fs from "node:fs/promises";
 import { describe, expect, it, vi } from "vitest";
-import { getBlogPosts, listSlugs } from "@/lib/blog";
+import { getBlogPosts, listSlugs, resolveContentLocale } from "@/lib/blog";
 
 vi.mock("server-only", () => ({}));
 
@@ -97,6 +97,32 @@ describe("listSlugs", () => {
   });
 });
 
+describe("resolveContentLocale", () => {
+  it("prefers the locale asked for when it has the post", async () => {
+    mockedReaddir.mockResolvedValue(["post-a.mdx"] as never);
+
+    await expect(resolveContentLocale("fr", "post-a")).resolves.toBe("fr");
+  });
+
+  // The whole point of the fallback: an untranslated post is still reachable.
+  it("falls back to another locale that wrote the post", async () => {
+    vi.resetModules();
+    const { resolveContentLocale: fresh } = await import("@/lib/blog");
+    mockedReaddir.mockImplementation((async (dir: string) =>
+      String(dir).includes("fr") ? ["post-a.mdx"] : []) as never);
+
+    await expect(fresh("en", "post-a")).resolves.toBe("fr");
+  });
+
+  it("resolves nothing for a slug no locale wrote", async () => {
+    vi.resetModules();
+    const { resolveContentLocale: fresh } = await import("@/lib/blog");
+    mockedReaddir.mockResolvedValue([] as never);
+
+    await expect(fresh("en", "ghost")).resolves.toBeUndefined();
+  });
+});
+
 describe("getBlogPosts", () => {
   it("merges metadata with slug and reading time, sorted by date descending", async () => {
     mockedReaddir.mockResolvedValue(["post-a.mdx", "post-b.mdx"] as never);
@@ -111,6 +137,7 @@ describe("getBlogPosts", () => {
     expect(posts).toEqual([
       {
         slug: "post-b",
+        contentLocale: "fr",
         readingTime: 1,
         title: "Post B",
         description: "Description B",
@@ -119,6 +146,7 @@ describe("getBlogPosts", () => {
       },
       {
         slug: "post-a",
+        contentLocale: "fr",
         readingTime: 3,
         title: "Post A",
         description: "Description A",

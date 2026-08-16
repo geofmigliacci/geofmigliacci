@@ -22,7 +22,9 @@ export async function GET(
 
   const absolute = (path: string) =>
     new URL(localePath(locale, path), siteUrl).href;
-  const posts = await getBlogPosts(locale);
+  // Own posts only, or a French post reaches an English subscriber twice.
+  const all = await getBlogPosts(locale);
+  const posts = all.filter((post) => post.contentLocale === locale);
 
   const feed = new Feed({
     title: person.name,

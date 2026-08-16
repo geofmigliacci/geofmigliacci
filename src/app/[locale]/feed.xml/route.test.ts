@@ -17,6 +17,7 @@ const post: BlogPostMeta = {
   date: "2026-05-01",
   tags: ["dev"],
   readingTime: 3,
+  contentLocale: "fr",
   cover: testCover,
   coverAlt: testCoverAlt,
 };

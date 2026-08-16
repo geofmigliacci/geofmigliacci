@@ -76,3 +76,38 @@ test("each locale declares the other as its alternate", async ({ page }) => {
     page.locator('link[rel="alternate"][hreflang="x-default"]'),
   ).toHaveAttribute("href", /\/en$/);
 });
+
+// The fallback: an untranslated post is still reachable, and says so.
+test("an untranslated post serves the original inside the other locale", async ({
+  page,
+}) => {
+  const response = await page.goto("/en/blog/ef-core-lazy-loading");
+
+  expect(response?.status()).toBe(200);
+  await expect(page.getByText("has not been translated yet")).toBeVisible();
+
+  // The prose is French inside an English document, and has to say so.
+  await expect(page.locator('div.prose[lang="fr"]')).toBeVisible();
+  await expect(page.locator("html")).toHaveAttribute("lang", "en");
+
+  // No self-canonical: the body is the French page's, so the ranking is too.
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+    "href",
+    /\/fr\/blog\/ef-core-lazy-loading$/,
+  );
+});
+
+test("the listing marks a post it only falls back to", async ({ page }) => {
+  await page.goto("/en/blog");
+
+  await expect(page.getByText("In French").first()).toBeVisible();
+});
+
+test("the sitemap lists a post only under the locale that wrote it", async ({
+  request,
+}) => {
+  const sitemap = await (await request.get("/sitemap.xml")).text();
+
+  expect(sitemap).toContain("/fr/blog/ef-core-lazy-loading");
+  expect(sitemap).not.toContain("/en/blog/ef-core-lazy-loading");
+});

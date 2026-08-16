@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { setRequestLocale } from "next-intl/server";
 import { AdjacentBlogPostsNav } from "@/app/[locale]/blog/[slug]/_components/adjacent-blog-posts-nav";
 import { BackToTop } from "@/app/[locale]/blog/[slug]/_components/back-to-top";
@@ -6,10 +7,11 @@ import { BlogPostByline } from "@/app/[locale]/blog/[slug]/_components/blog-post
 import { BlogPostCover } from "@/app/[locale]/blog/[slug]/_components/blog-post-cover";
 import { BlogPostToc } from "@/app/[locale]/blog/[slug]/_components/blog-post-toc";
 import { ReadingProgressBar } from "@/app/[locale]/blog/[slug]/_components/reading-progress-bar";
+import { UntranslatedNotice } from "@/app/[locale]/blog/[slug]/_components/untranslated-notice";
 import { JsonLd } from "@/components/json-ld";
 import { Badge } from "@/components/ui/badge";
 import { LOCALES, type Locale, localePath } from "@/i18n/locales";
-import { getBlogPosts, getPost, listSlugs } from "@/lib/blog";
+import { getBlogPosts, getPost, resolveContentLocale } from "@/lib/blog";
 import { blogPostingJsonLd, breadcrumbJsonLd, graph } from "@/lib/json-ld";
 import { jsonLdContext } from "@/lib/json-ld-context";
 import { alternatesFor, openGraphBase } from "@/lib/metadata";
@@ -20,10 +22,11 @@ interface PostParams {
 }
 
 export async function generateStaticParams() {
+  // The union, not each locale's own: a fallback page is a real route.
   const perLocale = await Promise.all(
     LOCALES.map(async (locale) => {
-      const slugs = await listSlugs(locale);
-      return slugs.map((slug) => ({ locale, slug }));
+      const posts = await getBlogPosts(locale);
+      return posts.map((post) => ({ locale, slug: post.slug }));
     }),
   );
   return perLocale.flat();
@@ -35,14 +38,30 @@ export async function generateMetadata({
   params,
 }: PostParams): Promise<Metadata> {
   const { locale, slug } = await params;
-  const { metadata } = await getPost(locale, slug);
+  const contentLocale = await resolveContentLocale(locale, slug);
+  if (!contentLocale) notFound();
+
+  const { metadata } = await getPost(contentLocale, slug);
+  const translated = contentLocale === locale;
+
   return {
     title: metadata.title,
     description: metadata.description,
     authors: [{ name: person.name, url: localePath(locale, "/about") }],
-    alternates: alternatesFor(`/blog/${slug}`, locale),
+    // A fallback page is byte-identical to the original, so it claims no
+    // canonical of its own and points every alternate at the one it borrowed.
+    alternates: translated
+      ? alternatesFor(`/blog/${slug}`, locale)
+      : {
+          canonical: localePath(contentLocale, `/blog/${slug}`),
+          languages: {
+            [contentLocale]: localePath(contentLocale, `/blog/${slug}`),
+            "x-default": localePath(contentLocale, `/blog/${slug}`),
+          },
+        },
     openGraph: {
-      ...openGraphBase(locale),
+      // The shared text is what a social card previews, so it follows the body.
+      ...openGraphBase(contentLocale),
       type: "article",
       url: localePath(locale, `/blog/${slug}`),
       publishedTime: metadata.date,
@@ -57,11 +76,15 @@ export default async function PostPage({ params }: PostParams) {
   const { locale, slug } = await params;
   setRequestLocale(locale);
 
+  const contentLocale = await resolveContentLocale(locale, slug);
+  if (!contentLocale) notFound();
+
   const [{ default: Post, metadata, toc }, posts, ctx] = await Promise.all([
-    getPost(locale, slug),
+    getPost(contentLocale, slug),
     getBlogPosts(locale),
     jsonLdContext(locale),
   ]);
+  const translated = contentLocale === locale;
 
   const currentIndex = posts.findIndex((post) => post.slug === slug);
   const newerPost = currentIndex > 0 ? posts[currentIndex - 1] : undefined;
@@ -79,6 +102,7 @@ export default async function PostPage({ params }: PostParams) {
     cover: metadata.cover,
     readingTime: posts[currentIndex]?.readingTime,
     slug,
+    contentLocale,
   });
 
   const breadcrumbData = breadcrumbJsonLd(ctx, {
@@ -92,7 +116,10 @@ export default async function PostPage({ params }: PostParams) {
       <ReadingProgressBar />
       <BackToTop />
       <div className="enter-rise">
-        <h1 className="text-3xl font-bold tracking-tight text-balance md:text-4xl">
+        <h1
+          lang={translated ? undefined : contentLocale}
+          className="text-3xl font-bold tracking-tight text-balance md:text-4xl"
+        >
           {metadata.title}
         </h1>
         <BlogPostByline
@@ -100,7 +127,10 @@ export default async function PostPage({ params }: PostParams) {
           readingTime={posts[currentIndex]?.readingTime}
           updated={metadata.updated}
         />
-        <div className="mt-4 flex flex-wrap gap-2">
+        <div
+          lang={translated ? undefined : contentLocale}
+          className="mt-4 flex flex-wrap gap-2"
+        >
           {metadata.tags.map((tag) => (
             <Badge key={tag} variant="outline">
               {tag}
@@ -115,12 +145,22 @@ export default async function PostPage({ params }: PostParams) {
           alt={metadata.coverAlt}
           caption={metadata.coverCaption}
           position={metadata.coverPosition}
+          lang={translated ? undefined : contentLocale}
         />
+        {!translated && (
+          <UntranslatedNotice contentLocale={contentLocale} slug={slug} />
+        )}
         <div className="post-columns">
-          <div className="prose prose-lg prose-zinc max-w-3xl dark:prose-invert prose-code:wrap-break-word prose-headings:scroll-mt-8 prose-pre:border prose-pre:border-border prose-pre:bg-muted prose-pre:text-foreground">
+          <div
+            lang={translated ? undefined : contentLocale}
+            className="prose prose-lg prose-zinc max-w-3xl dark:prose-invert prose-code:wrap-break-word prose-headings:scroll-mt-8 prose-pre:border prose-pre:border-border prose-pre:bg-muted prose-pre:text-foreground"
+          >
             <Post />
           </div>
-          <BlogPostToc items={toc} />
+          <BlogPostToc
+            items={toc}
+            lang={translated ? undefined : contentLocale}
+          />
         </div>
       </div>
       <AdjacentBlogPostsNav olderPost={olderPost} newerPost={newerPost} />

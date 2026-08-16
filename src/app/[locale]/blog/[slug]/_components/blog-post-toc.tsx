@@ -12,7 +12,14 @@ const HEADING_BAND = "-32px 0px -70% 0px";
 type LinkableItem = TocItem & { id: string };
 
 /** `rehype-mdx-toc` sees markdown headings only, so JSX titles never reach `items`. */
-export function BlogPostToc({ items }: { items: TocItem[] }) {
+export function BlogPostToc({
+  items,
+  lang,
+}: {
+  items: TocItem[];
+  /** The entries are heading text, so a fallback post's are the other locale's. */
+  lang?: string;
+}) {
   const t = useTranslations("blog.post");
   const entries = useMemo(
     () => items.filter((item): item is LinkableItem => Boolean(item.id)),
@@ -34,7 +41,10 @@ export function BlogPostToc({ items }: { items: TocItem[] }) {
         <AccentRule />
       </div>
       <nav aria-label={t("contents")}>
-        <ol className="m-0 flex list-none flex-col gap-2 border-l border-border p-0 ps-4">
+        <ol
+          lang={lang}
+          className="m-0 flex list-none flex-col gap-2 border-l border-border p-0 ps-4"
+        >
           {entries.map((entry) => {
             const active = entry.id === activeId;
             return (

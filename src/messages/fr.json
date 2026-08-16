@@ -119,7 +119,16 @@
       "backToTop": "Retour en haut de la page",
       "olderPost": "Billet plus ancien",
       "newerPost": "Billet plus récent",
-      "navigation": "Navigation entre billets"
+      "navigation": "Navigation entre billets",
+      "untranslated": {
+        "body": "Ce billet n'est pas encore traduit : ce qui suit est l'original en {language}.",
+        "readOriginal": "Lire l'original",
+        "language": {
+          "en": "anglais",
+          "fr": "français"
+        },
+        "badge": "En {language}"
+      }
     }
   },
   "errors": {

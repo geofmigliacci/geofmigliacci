@@ -13,6 +13,7 @@ const postA: BlogPostMeta = {
   date: "2026-01-01",
   tags: ["dev"],
   readingTime: 3,
+  contentLocale: "fr",
   cover: testCover,
   coverAlt: testCoverAlt,
 };
@@ -24,6 +25,7 @@ const postB: BlogPostMeta = {
   date: "2026-02-01",
   tags: ["cuisine"],
   readingTime: 5,
+  contentLocale: "fr",
   cover: testCover,
   coverAlt: testCoverAlt,
 };
@@ -35,6 +37,7 @@ const postC: BlogPostMeta = {
   date: "2026-03-01",
   tags: ["dev", "cuisine"],
   readingTime: 2,
+  contentLocale: "fr",
   cover: testCover,
   coverAlt: testCoverAlt,
 };
