@@ -59,7 +59,7 @@
     "@types/react-dom": "^19",
     "@vitest/coverage-v8": "^4.1.10",
     "husky": "^9.1.7",
-    "jsdom": "^29.1.1",
+    "jsdom": "^30.0.1",
     "jsdom-testing-mocks": "^1.16.0",
     "schema-dts": "^2.0.0",
     "sharp": "^0.35.3",
