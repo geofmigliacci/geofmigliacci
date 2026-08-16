@@ -50,6 +50,26 @@ for (const { link, path, heading } of COLOPHON_TARGETS) {
   });
 }
 
+/**
+ * The switcher loads a document rather than routing. A soft navigation remounts
+ * the `[locale]` layout, and React re-applies `<html className>` over the class
+ * the theme boot script added, dropping a dark reader into light mode. The
+ * console assertion in the fixture catches the other half: React warning about
+ * the boot script it just remounted.
+ */
+test("switching language leaves a dark reader in the dark", async ({
+  page,
+}) => {
+  await page.goto("/fr");
+  await page.getByRole("button", { name: "Changer de thème" }).click();
+  await expect(page.locator("html")).toHaveClass(/dark/);
+
+  await page.getByRole("link", { name: "English" }).click();
+
+  await expect(page).toHaveURL("/en");
+  await expect(page.locator("html")).toHaveClass(/dark/);
+});
+
 test("a post opens from the listing", async ({ page }) => {
   await page.goto("/fr/blog");
 

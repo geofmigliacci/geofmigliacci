@@ -69,8 +69,10 @@ comments inside `content/blog/` are French.
   legal pages are most of it while rendering server side only.
 - **Every internal link goes through `Link` from
   [src/i18n/navigation.ts](src/i18n/navigation.ts)**, which adds the prefix.
-  `next/link` stays for nothing, and a bare `<a>` only for `#content`, `mailto:`
-  and off-site URLs.
+  `next/link` stays for nothing, and a bare `<a>` only for `#content`, `mailto:`,
+  off-site URLs, and
+  [language-switcher.tsx](src/components/language-switcher.tsx), which needs the
+  full document load the next section explains.
 - Dates go through [src/lib/format.ts](src/lib/format.ts), not next-intl's
   formatter, and the locale argument is required. The routing locale is the URL
   segment, and `Intl` reads a bare `en` as US English: the byline would read
@@ -108,6 +110,17 @@ left in `en.json` fails no test and breaks no build, it just reads wrong.
 - The request config prefers an explicitly passed locale over `requestLocale`,
   which reads headers. Without that, `generateStaticParams` and
   `generateImageMetadata` fail at build time, where there is no request.
+- **The language switcher navigates the document, not the router.** `[locale]` is
+  a segment of the root layout, so switching it is a soft navigation that
+  remounts that layout, and React re-applies `<html className>` over the `dark`
+  class [theme.ts](src/lib/theme.ts)'s boot script added imperatively: the reader
+  is dropped into light mode, and the same remount logs "Encountered a script tag
+  while rendering React component" over the boot script itself. Plain anchors
+  avoid both, the proxy writes `NEXT_LOCALE` on the document request, and
+  [e2e/locale.spec.ts](e2e/locale.spec.ts) holds it shut. `next/script` is not the
+  way out: `strategy="beforeInteractive"` still renders a `<script>`, and it
+  defers execution to Next's runtime, which is after first paint and therefore a
+  guaranteed flash.
 
 ## Where code goes
 

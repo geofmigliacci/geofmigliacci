@@ -103,6 +103,21 @@ test("the listing marks a post it only falls back to", async ({ page }) => {
   await expect(page.getByText("In French").first()).toBeVisible();
 });
 
+// The switcher's own doing: the proxy writes the cookie on the document request.
+test("switching language keeps the path and stores the choice", async ({
+  page,
+  context,
+}) => {
+  await page.goto("/fr/blog");
+  await page.getByRole("link", { name: "English" }).click();
+
+  await expect(page).toHaveURL(/\/en\/blog$/);
+  await expect(page.locator("html")).toHaveAttribute("lang", "en");
+
+  const cookies = await context.cookies();
+  expect(cookies.find(({ name }) => name === "NEXT_LOCALE")?.value).toBe("en");
+});
+
 test("the sitemap lists a post only under the locale that wrote it", async ({
   request,
 }) => {
