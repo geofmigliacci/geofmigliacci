@@ -28,6 +28,9 @@ export default defineConfig({
         "src/app/**/not-found.tsx",
         "src/app/**/error.tsx",
         "src/app/global-error.tsx",
+        "src/app/global-not-found.tsx",
+        // Test scaffolding, like `test-utils` above it.
+        "src/i18n/server.mock.ts",
         "src/components/decorative/**",
         "src/test-utils.tsx",
         "src/components/mdx/**",

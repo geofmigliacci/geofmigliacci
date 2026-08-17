@@ -6,6 +6,8 @@ import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import NotFoundArt from "@/app/[locale]/not-found";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import { clientMessages } from "@/i18n/client-messages";
+import { siteName } from "@/lib/site";
 import { THEME_BOOT_SCRIPT } from "@/lib/theme";
 import { cn } from "@/lib/utils";
 
@@ -22,9 +24,11 @@ const fontMono = JetBrains_Mono({
   variable: "--font-jetbrains-mono",
 });
 
-export const metadata: Metadata = {
-  title: "Error 404 · Geoffrey Migliacci",
-};
+/** A function, not a constant: the body follows the request locale, so the title must too. */
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("errors.notFound");
+  return { title: `${t("title")} · ${siteName}` };
+}
 
 /**
  * An unmatched URL never reaches `[locale]`, so the layout cannot render it and
@@ -61,7 +65,10 @@ export default async function GlobalNotFound() {
         />
       </head>
       <body className="antialiased">
-        <NextIntlClientProvider locale={locale} messages={messages}>
+        <NextIntlClientProvider
+          locale={locale}
+          messages={clientMessages(messages)}
+        >
           <a
             href="#content"
             className="sr-only rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50"

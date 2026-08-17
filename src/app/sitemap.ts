@@ -24,21 +24,41 @@ const STATIC_ROUTES = [
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const byLocale = await Promise.all(
-    LOCALES.map(async (locale) => ({
-      locale,
-      posts: await getBlogPosts(locale),
-    })),
+    LOCALES.map(async (locale) => {
+      const posts = await getBlogPosts(locale);
+      // Own posts only: a fallback URL canonicalises to another locale, and
+      // listing it, or advertising it as an alternate, contradicts that.
+      const own = posts.filter((post) => post.contentLocale === locale);
+      return {
+        locale,
+        posts,
+        own: await Promise.all(
+          own.map(async (post) => ({
+            post,
+            authors: await postLocales(post.slug),
+          })),
+        ),
+      };
+    }),
+  );
+
+  /** Locale-invariant, so they are built once rather than once per locale. */
+  const staticLanguages = new Map(
+    [...STATIC_ROUTES.map(({ path }) => path), "/blog"].map((path) => [
+      path,
+      languagesFor(path, LOCALES),
+    ]),
   );
 
   const entries: MetadataRoute.Sitemap = [];
 
-  for (const { locale, posts } of byLocale) {
+  for (const { locale, posts, own } of byLocale) {
     for (const route of STATIC_ROUTES) {
       entries.push({
         url: absolute(locale, route.path),
         changeFrequency: route.changeFrequency,
         priority: route.priority,
-        alternates: { languages: languagesFor(route.path, LOCALES) },
+        alternates: { languages: staticLanguages.get(route.path) },
       });
     }
 
@@ -48,21 +68,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: posts[0]?.date,
       changeFrequency: "weekly",
       priority: 0.8,
-      alternates: { languages: languagesFor("/blog", LOCALES) },
+      alternates: { languages: staticLanguages.get("/blog") },
     });
 
-    // Own posts only: a fallback URL canonicalises to another locale, and
-    // listing it, or advertising it as an alternate, contradicts that.
-    for (const post of posts.filter((p) => p.contentLocale === locale)) {
+    for (const { post, authors } of own) {
       const path = `/blog/${post.slug}`;
       entries.push({
         url: absolute(locale, path),
         lastModified: post.date,
         changeFrequency: "yearly",
         priority: 0.6,
-        alternates: {
-          languages: languagesFor(path, await postLocales(post.slug)),
-        },
+        alternates: { languages: languagesFor(path, authors) },
       });
     }
   }

@@ -3,6 +3,7 @@ import { getTranslations } from "next-intl/server";
 import type { Locale } from "@/i18n/locales";
 import { routing } from "@/i18n/routing";
 import { loadOgFonts, OG_SIZE, OgCard, ogHost } from "@/lib/og-image";
+import { siteName } from "@/lib/site";
 
 // Without this the route falls out of the static table: it sits under [locale]
 // and has no params of its own to enumerate.
@@ -42,7 +43,7 @@ export default async function Image({ params }: LocaleParams) {
 
   return new ImageResponse(
     <OgCard
-      eyebrow="Geoffrey Migliacci"
+      eyebrow={siteName}
       title={t("nav.sections.blog.name")}
       meta={ogHost("/blog")}
     />,

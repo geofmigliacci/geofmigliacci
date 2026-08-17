@@ -13,6 +13,7 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 import { type Locale, localePath } from "@/i18n/locales";
+import { Link } from "@/i18n/navigation";
 import { getBlogPosts } from "@/lib/blog";
 import { blogJsonLd, breadcrumbJsonLd, graph } from "@/lib/json-ld";
 import { jsonLdContext } from "@/lib/json-ld-context";
@@ -68,7 +69,7 @@ export default async function PostsPage({ params }: LocaleParams) {
           variant="outline"
           aria-label={t("rss")}
           nativeButton={false}
-          render={<a href={localePath(locale, "/feed.xml")} />}
+          render={<Link href="/feed.xml" />}
         >
           <Rss aria-hidden />
         </Button>

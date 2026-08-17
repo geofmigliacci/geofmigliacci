@@ -104,31 +104,29 @@ export const postLocales = cache(async (slug: string): Promise<Locale[]> => {
 export const getBlogPosts = cache(
   async (locale: Locale): Promise<BlogPostMeta[]> => {
     const own = await listSlugs(locale);
-    const borrowed = (
-      await Promise.all(
-        LOCALES.filter((candidate) => candidate !== locale).map(
-          async (candidate) =>
-            (
-              await listSlugs(candidate)
-            )
-              .filter((slug) => !own.includes(slug))
-              .map((slug) => [candidate, slug] as const),
-        ),
-      )
-    ).flat();
+    // Keyed by slug, or a post written in two other locales is borrowed from
+    // both and every consumer sees it twice: two rows, two feed items, two
+    // `generateStaticParams` entries. The first donor wins, as `resolveContentLocale`
+    // picks the same one.
+    const source = new Map<string, Locale>(own.map((slug) => [slug, locale]));
+    for (const candidate of LOCALES) {
+      if (candidate === locale) continue;
+      for (const slug of await listSlugs(candidate)) {
+        if (source.has(slug)) continue;
+        source.set(slug, candidate);
+      }
+    }
 
     const posts = await Promise.all(
-      [...own.map((slug) => [locale, slug] as const), ...borrowed].map(
-        async ([contentLocale, slug]): Promise<BlogPostMeta> => {
-          const { metadata } = await getPost(contentLocale, slug);
-          return {
-            slug,
-            contentLocale,
-            readingTime: await readingTime(contentLocale, slug),
-            ...metadata,
-          };
-        },
-      ),
+      [...source].map(async ([slug, contentLocale]): Promise<BlogPostMeta> => {
+        const { metadata } = await getPost(contentLocale, slug);
+        return {
+          slug,
+          contentLocale,
+          readingTime: await readingTime(contentLocale, slug),
+          ...metadata,
+        };
+      }),
     );
 
     return posts.sort((a, b) => b.date.localeCompare(a.date));

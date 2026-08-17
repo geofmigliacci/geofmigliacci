@@ -136,6 +136,7 @@
   },
   "errors": {
     "notFound": {
+      "title": "Error 404",
       "eyebrow": "Uncharted territory",
       "lineOne": "404",
       "lineTwo": "NOT FOUND",

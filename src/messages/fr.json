@@ -136,6 +136,7 @@
   },
   "errors": {
     "notFound": {
+      "title": "Erreur 404",
       "eyebrow": "Zone non cartographiée",
       "lineOne": "404",
       "lineTwo": "INTROUVABLE",

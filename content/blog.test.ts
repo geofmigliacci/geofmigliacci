@@ -11,9 +11,9 @@ const MIN_HEADINGS = 2;
 const written = await Promise.all(
   LOCALES.map(async (locale) => {
     const dir = path.join(BLOG_DIR, locale);
-    const entries = await fs.readdir(dir).catch(() => []);
+    const entries = await fs.readdir(dir).catch(() => null);
     const posts = await Promise.all(
-      entries
+      (entries ?? [])
         .filter((entry) => entry.endsWith(".mdx") && !entry.startsWith("_"))
         .map(async (entry) => ({
           locale,
@@ -22,22 +22,28 @@ const written = await Promise.all(
           raw: await fs.readFile(path.join(dir, entry), "utf8"),
         })),
     );
-    return { locale, posts };
+    return { locale, posts, exists: entries !== null };
   }),
 );
 
-const authored = written.filter(({ posts }) => posts.length > 0);
-const posts = authored.flatMap(({ posts }) => posts);
+const posts = written.flatMap(({ posts }) => posts);
 
 // Without this, an empty directory generates no cases at all and the file passes.
 it("finds posts to check", () => {
   expect(posts).not.toHaveLength(0);
 });
 
-// Per locale, or an empty `en/` would hide behind a full `fr/`.
-it.each(authored)("$locale has posts", ({ posts }) => {
-  expect(posts).not.toHaveLength(0);
-});
+/**
+ * On the directory existing, not on it holding posts: a locale nobody has
+ * translated into has no directory and falls back, which is the design. A
+ * directory that exists and is empty is a locale someone started and left.
+ */
+it.each(written.filter(({ exists }) => exists))(
+  "$locale has posts in the directory it declares",
+  ({ posts }) => {
+    expect(posts).not.toHaveLength(0);
+  },
+);
 
 describe.each(posts)("$entry", ({ raw }) => {
   it("has a description within SERP-safe length", () => {

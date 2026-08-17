@@ -30,14 +30,34 @@ describe("formatDate", () => {
     expect(formatDate("2026-07-13", "en")).toBe("July 13, 2026");
   });
 
-  it("keeps one formatter per locale rather than building one per call", () => {
-    const spy = vi.spyOn(Intl, "DateTimeFormat");
+  // Counted through a subclass: `spyOn` replaces the constructor with something
+  // `new` rejects. On a fresh module, or the assertion only says an earlier test
+  // warmed the Map.
+  it("keeps one formatter per locale rather than building one per call", async () => {
+    const Original = Intl.DateTimeFormat;
+    let built = 0;
 
-    formatDate("2026-01-01", "fr");
-    formatDate("2026-02-02", "fr");
+    vi.resetModules();
+    vi.stubGlobal("Intl", {
+      ...Intl,
+      DateTimeFormat: class extends Original {
+        constructor(...args: ConstructorParameters<typeof Original>) {
+          built += 1;
+          super(...args);
+        }
+      },
+    });
 
-    expect(spy).not.toHaveBeenCalled();
-    spy.mockRestore();
+    try {
+      const { formatDate: fresh } = await import("@/lib/format");
+      fresh("2026-01-01", "fr");
+      fresh("2026-02-02", "fr");
+      fresh("2026-03-03", "fr");
+    } finally {
+      vi.unstubAllGlobals();
+    }
+
+    expect(built).toBe(1);
   });
 
   it("does not shift the day for viewers west of UTC", async () => {

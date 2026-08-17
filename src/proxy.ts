@@ -8,7 +8,9 @@ export default function proxy(request: NextRequest) {
   const response = negotiate(request);
   // next-intl sets no `Vary`, and without one a shared cache can pin the
   // language it negotiated for one visitor onto everybody who follows.
-  response.headers.set("Vary", "Accept-Language, Cookie");
+  // `append`, not `set`: Next puts its own `Vary` on a rendered page, and this
+  // has no business replacing it.
+  response.headers.append("Vary", "Accept-Language, Cookie");
   return response;
 }
 

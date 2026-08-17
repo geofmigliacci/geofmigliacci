@@ -3,6 +3,7 @@ import { LOCALES, type Locale } from "@/i18n/locales";
 import { getBlogPosts, getPost, resolveContentLocale } from "@/lib/blog";
 import { formatDate } from "@/lib/format";
 import { loadOgFonts, OG_SIZE, OgCard, ogHost } from "@/lib/og-image";
+import { siteName } from "@/lib/site";
 
 export async function generateStaticParams() {
   const perLocale = await Promise.all(
@@ -32,7 +33,7 @@ export async function generateImageMetadata({
   return [
     {
       id: "og",
-      alt: `${metadata.title} · Geoffrey Migliacci`,
+      alt: `${metadata.title} · ${siteName}`,
       size: OG_SIZE,
       contentType: "image/png",
     },
@@ -53,7 +54,7 @@ export default async function Image({
 
   return new ImageResponse(
     <OgCard
-      eyebrow="Geoffrey Migliacci"
+      eyebrow={siteName}
       title={metadata.title}
       scale="headline"
       meta={`${formatDate(metadata.date, locale)} · ${ogHost()}`}

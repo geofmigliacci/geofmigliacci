@@ -14,7 +14,7 @@ import { clientMessages } from "@/i18n/client-messages";
 import type { Locale } from "@/i18n/locales";
 import { routing } from "@/i18n/routing";
 import { openGraphBase } from "@/lib/metadata";
-import { siteUrl } from "@/lib/site";
+import { siteName, siteUrl } from "@/lib/site";
 import { THEME_BOOT_SCRIPT } from "@/lib/theme";
 import { cn } from "@/lib/utils";
 
@@ -43,8 +43,8 @@ export async function generateMetadata({
   return {
     metadataBase: siteUrl,
     title: {
-      default: "Geoffrey Migliacci",
-      template: "%s · Geoffrey Migliacci",
+      default: siteName,
+      template: `%s · ${siteName}`,
     },
     description: t("tagline"),
     openGraph: { ...openGraphBase(locale), type: "website" },
