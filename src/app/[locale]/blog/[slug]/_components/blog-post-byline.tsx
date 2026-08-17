@@ -43,6 +43,8 @@ export function BlogPostByline({
           alt=""
           width={AVATAR_PX}
           height={AVATAR_PX}
+          loading="eager"
+          fetchPriority="high"
           className="size-7 shrink-0 object-cover grayscale contrast-125 transition-[filter] group-hover:grayscale-0"
         />
         <span className="font-sans font-medium text-foreground transition-colors group-hover:text-primary">
