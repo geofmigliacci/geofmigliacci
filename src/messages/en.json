@@ -124,7 +124,8 @@
       "newerPost": "Newer post",
       "navigation": "Post navigation",
       "untranslated": {
-        "body": "This post has not been translated yet, so what follows is the {language} original.",
+        "eyebrow": "{language} original",
+        "body": "This post has not been translated yet, so what follows is the original.",
         "readOriginal": "Read the original",
         "language": {
           "en": "English",

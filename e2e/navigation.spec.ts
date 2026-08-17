@@ -70,6 +70,20 @@ test("switching language leaves a dark reader in the dark", async ({
   await expect(page.locator("html")).toHaveClass(/dark/);
 });
 
+// The notice's link crosses a locale too, so it carries the same hazard.
+test("reading the original leaves a dark reader in the dark", async ({
+  page,
+}) => {
+  await page.goto("/en/blog/ef-core-lazy-loading");
+  await page.getByRole("button", { name: "Switch theme" }).click();
+  await expect(page.locator("html")).toHaveClass(/dark/);
+
+  await page.getByRole("link", { name: "Read the original" }).click();
+
+  await expect(page).toHaveURL("/fr/blog/ef-core-lazy-loading");
+  await expect(page.locator("html")).toHaveClass(/dark/);
+});
+
 test("a post opens from the listing", async ({ page }) => {
   await page.goto("/fr/blog");
 

@@ -124,7 +124,8 @@
       "newerPost": "Billet plus récent",
       "navigation": "Navigation entre billets",
       "untranslated": {
-        "body": "Ce billet n'est pas encore traduit : ce qui suit est l'original en {language}.",
+        "eyebrow": "Original en {language}",
+        "body": "Ce billet n'est pas encore traduit : ce qui suit est l'original.",
         "readOriginal": "Lire l'original",
         "language": {
           "en": "anglais",
