@@ -73,7 +73,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       const path = `/blog/${post.slug}`;
       entries.push({
         url: absolute(locale, path),
-        lastModified: post.date,
+        lastModified: post.updated ?? post.date,
         changeFrequency: "yearly",
         priority: 0.6,
         alternates: { languages: languagesFor(path, authors) },

@@ -63,7 +63,9 @@ export async function generateMetadata({
     openGraph: {
       ...openGraphBase(contentLocale),
       type: "article",
-      url: localePath(locale, `/blog/${slug}`),
+      // The canonical, which a fallback puts in another locale: `og:url` keys the
+      // shared object, and two of them would split one article's engagement.
+      url: localePath(contentLocale, `/blog/${slug}`),
       publishedTime: metadata.date,
       modifiedTime: metadata.updated ?? metadata.date,
       authors: [person.name],

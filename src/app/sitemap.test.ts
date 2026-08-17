@@ -133,6 +133,16 @@ describe("sitemap", () => {
     );
   });
 
+  it("dates an edited post by its edit, which is what lastmod means", async () => {
+    mockedGetPosts.mockResolvedValue([{ ...postA, updated: "2026-08-01" }]);
+    mockedPostLocales.mockResolvedValue(["fr"]);
+
+    const result = await sitemap();
+    const post = result.find(({ url }) => url.endsWith("/blog/post-a"));
+
+    expect(post?.lastModified).toBe("2026-08-01");
+  });
+
   it("omits lastModified on the posts index and adds no post entries when there are none", async () => {
     mockedGetPosts.mockResolvedValue([]);
 

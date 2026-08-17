@@ -30,6 +30,10 @@ export async function GET(
     getTranslations({ locale, namespace: "site" }),
   ]);
   const posts = all.filter((post) => post.contentLocale === locale);
+  // Newest edit, not newest post: the sort is by publication date.
+  const [built] = posts
+    .map((post) => post.updated ?? post.date)
+    .sort((a, b) => b.localeCompare(a));
 
   const feed = new Feed({
     // The name is the one thing that does not translate; the description does.
@@ -39,7 +43,7 @@ export async function GET(
     link: absolute("/"),
     language: LANGUAGE_TAG[locale],
     copyright: `© ${person.name}`,
-    updated: posts[0] ? new Date(posts[0].date) : undefined,
+    updated: built ? new Date(built) : undefined,
     feedLinks: { rss: absolute("/feed.xml") },
     author: { name: person.name, link: absolute("/about") },
   });

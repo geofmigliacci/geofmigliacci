@@ -84,6 +84,24 @@ describe("GET /feed.xml", () => {
     expect(xml).toContain(en.site.tagline);
   });
 
+  it("builds the channel from the newest edit, not the newest post", async () => {
+    mockedGetPosts.mockResolvedValue([
+      post,
+      { ...post, slug: "post-b", date: "2026-01-01", updated: "2026-08-01" },
+    ]);
+
+    const response = await GET(new Request("https://x/fr/feed.xml"), {
+      params: Promise.resolve({ locale: "fr" }),
+    });
+    const xml = await response.text();
+
+    expect(xml).toContain(
+      "<lastBuildDate>Sat, 01 Aug 2026 00:00:00 GMT</lastBuildDate>",
+    );
+    // The edit moves the channel, never an item: pubDate means published.
+    expect(xml).toContain("<pubDate>Thu, 01 Jan 2026 00:00:00 GMT</pubDate>");
+  });
+
   it("renders an empty channel when there are no posts", async () => {
     mockedGetPosts.mockResolvedValue([]);
 
