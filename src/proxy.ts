@@ -24,6 +24,6 @@ export default function proxy(request: NextRequest) {
 export const config = {
   // `$`-anchored: a blanket `.*\..*` would also exclude `/blog/foo.draft`.
   matcher: [
-    "/((?!_next/|feed\\.xml|sitemap\\.xml|robots\\.txt|manifest\\.webmanifest|favicon\\.ico|icon\\.svg|apple-icon\\.png|about/|geofmigliacci\\.jpg|.*\\.(?:avif|ico|jpe?g|png|svg|txt|webp|webmanifest|xml)$).*)",
+    "/((?!_next/|.*\\.(?:avif|ico|jpe?g|png|svg|txt|webp|webmanifest|xml)$).*)",
   ],
 };
