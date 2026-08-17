@@ -5,20 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { LOCALES, localePath, stripLocale } from "@/i18n/locales";
 import { cn } from "@/lib/utils";
 
-/**
- * Two links rather than a select: at two locales a select needs JS to navigate
- * and is not crawlable, while anchors work without it and reinforce the hreflang
- * pair.
- *
- * Plain anchors, not next-intl's `Link`, because a locale switch has to replace
- * the document. A soft navigation remounts the `[locale]` layout, and React
- * re-applies `<html className>` over the `dark` class the theme boot script set
- * imperatively, dropping the reader into light mode. The proxy writes
- * `NEXT_LOCALE` on the document request, so the cookie survives the change.
- *
- * The hash is deliberately dropped: `rehype-slug` derives heading ids from their
- * text, so a translated post's fragments differ and a kept one lands nowhere.
- */
+/** Plain anchors, not `Link`: a soft locale switch remounts the layout over the theme class. */
 export function LanguageSwitcher() {
   const t = useTranslations("nav.language");
   const active = useLocale();
@@ -36,7 +23,6 @@ export function LanguageSwitcher() {
             href={localePath(locale, path)}
             hrefLang={locale}
             lang={locale}
-            // Still a link when current: clicking it re-asserts the preference.
             aria-current={current ? "true" : undefined}
             aria-label={t(locale)}
             className={cn(

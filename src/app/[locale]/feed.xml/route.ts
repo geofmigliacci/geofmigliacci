@@ -17,8 +17,7 @@ export async function GET(
   { params }: RouteContext<"/[locale]/feed.xml">,
 ) {
   const { locale } = await params;
-  // Its own check rather than `toLocale`: `notFound()` has no meaning in a route
-  // handler, which owes the client a response.
+  // Not `toLocale`: `notFound()` has no meaning in a route handler.
   if (!hasLocale(routing.locales, locale)) {
     return new Response(null, { status: 404 });
   }

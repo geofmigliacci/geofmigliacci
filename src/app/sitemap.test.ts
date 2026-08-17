@@ -38,20 +38,17 @@ const postB: BlogPostMeta = {
 
 const HOST = "https://www.geofmigliacci.dev";
 
-/** Static routes exist in both locales, so their alternates carry the pair. */
 const languagesFor = (path: string) => ({
   en: `${HOST}/en${path}`,
   fr: `${HOST}/fr${path}`,
   "x-default": `${HOST}/en${path}`,
 });
 
-/** A post's alternates name only the locales that wrote it, x-default included. */
 const frenchOnlyLanguages = (path: string) => ({
   fr: `${HOST}/fr${path}`,
   "x-default": `${HOST}/fr${path}`,
 });
 
-/** Both posts are written in French, so `/en` may list neither. */
 const frenchOnly = () => {
   mockedGetPosts.mockResolvedValue([postB, postA]);
   mockedPostLocales.mockResolvedValue(["fr"]);
@@ -115,7 +112,6 @@ describe("sitemap", () => {
     ]);
   });
 
-  // A fallback page canonicalises elsewhere, so listing it would contradict that.
   it("omits the locale a post only falls back into", async () => {
     frenchOnly();
 
@@ -126,7 +122,6 @@ describe("sitemap", () => {
     );
   });
 
-  // The declaration Google reads off the page has to agree with this one.
   it("sends x-default to the locale that wrote a post, not to the default one", async () => {
     frenchOnly();
 

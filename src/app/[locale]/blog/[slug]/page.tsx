@@ -24,7 +24,6 @@ import { alternatesFor, openGraphBase, rssAlternate } from "@/lib/metadata";
 import { person } from "@/lib/site";
 
 export async function generateStaticParams() {
-  // The union, not each locale's own: a fallback page is a real route.
   const perLocale = await Promise.all(
     LOCALES.map(async (locale) => {
       const posts = await getBlogPosts(locale);
@@ -54,9 +53,7 @@ export async function generateMetadata({
     title: metadata.title,
     description: metadata.description,
     authors: [{ name: person.name, url: localePath(locale, "/about") }],
-    // A fallback page is byte-identical to the original, so it claims no
-    // canonical of its own and no alternates either: Google reads an `hreflang`
-    // set only off canonical URLs, and one bad target invalidates the set.
+    // No alternates on a fallback: `hreflang` is read off canonical URLs only.
     alternates: translated
       ? alternatesFor(`/blog/${slug}`, locale, authors)
       : {
@@ -64,7 +61,6 @@ export async function generateMetadata({
           types: rssAlternate(locale),
         },
     openGraph: {
-      // The shared text is what a social card previews, so it follows the body.
       ...openGraphBase(contentLocale),
       type: "article",
       url: localePath(locale, `/blog/${slug}`),

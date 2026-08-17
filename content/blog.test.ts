@@ -33,11 +33,7 @@ it("finds posts to check", () => {
   expect(posts).not.toHaveLength(0);
 });
 
-/**
- * On the directory existing, not on it holding posts: a locale nobody has
- * translated into has no directory and falls back, which is the design. A
- * directory that exists and is empty is a locale someone started and left.
- */
+// On the directory existing: an absent one falls back, an empty one was abandoned.
 it.each(written.filter(({ exists }) => exists))(
   "$locale has posts in the directory it declares",
   ({ posts }) => {
@@ -72,7 +68,6 @@ describe.each(posts)("$entry", ({ raw }) => {
     expect(headings.length).toBeGreaterThanOrEqual(MIN_HEADINGS);
   });
 
-  // TypeScript cannot see into MDX, so an untitled Epilogue renders a bare rule.
   it("titles an epilogue in the language the post is written in", () => {
     if (!raw.includes("<Epilogue")) return;
 
@@ -87,7 +82,6 @@ describe.each(posts)("$entry", ({ raw }) => {
   });
 });
 
-// The photograph is shared, so two translations disagreeing on it is a mistake.
 it("keeps one cover per slug across locales", () => {
   const covers = new Map<string, Set<string>>();
 

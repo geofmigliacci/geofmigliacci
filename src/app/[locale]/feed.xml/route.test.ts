@@ -72,7 +72,6 @@ describe("GET /feed.xml", () => {
     expect(xml).toContain("<title><![CDATA[Post A & <tags>]]></title>");
   });
 
-  // A feed declaring one language and describing itself in another reads as spam.
   it("describes itself in the language it declares", async () => {
     mockedGetPosts.mockResolvedValue([]);
 

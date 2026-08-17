@@ -26,8 +26,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const byLocale = await Promise.all(
     LOCALES.map(async (locale) => {
       const posts = await getBlogPosts(locale);
-      // Own posts only: a fallback URL canonicalises to another locale, and
-      // listing it, or advertising it as an alternate, contradicts that.
+      // Own posts only: a fallback URL canonicalises to another locale.
       const own = posts.filter((post) => post.contentLocale === locale);
       return {
         locale,
@@ -42,7 +41,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }),
   );
 
-  /** Locale-invariant, so they are built once rather than once per locale. */
   const staticLanguages = new Map(
     [...STATIC_ROUTES.map(({ path }) => path), "/blog"].map((path) => [
       path,

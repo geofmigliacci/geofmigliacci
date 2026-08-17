@@ -46,8 +46,7 @@ export async function generateMetadata({
     description: t("tagline"),
     openGraph: { ...openGraphBase(locale), type: "website" },
     twitter: { card: "summary_large_image" },
-    // Every post opens on a full-width cover, and `max-image-preview` is what
-    // lets a result carry it rather than a thumbnail.
+    // `max-image-preview` is what lets a result carry the cover at full size.
     robots: {
       index: true,
       follow: true,

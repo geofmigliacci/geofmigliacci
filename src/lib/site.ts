@@ -6,10 +6,7 @@ export const siteName = "Geoffrey Migliacci";
 
 export const HOME_PATH = "/";
 
-/**
- * The one table behind the header nav, the colophon, the crumb and the JSON-LD
- * trail. Paths only: the names are translated, and live under `nav.sections`.
- */
+/** Paths only: the names are translated, under `nav.sections`. */
 export const SECTION_PATHS = {
   blog: "/blog",
   about: "/about",

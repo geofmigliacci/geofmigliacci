@@ -12,10 +12,7 @@ import type {
 import { LANGUAGE_TAG, type Locale, localePath } from "@/i18n/locales";
 import { person, siteName, siteUrl } from "@/lib/site";
 
-/**
- * The translated half of the graph. Passed in rather than read here, so this
- * module stays pure and its test needs no request context.
- */
+/** Passed in rather than read here, so this module needs no request context. */
 export interface JsonLdCopy {
   tagline: string;
   blogDescription: string;
@@ -38,7 +35,6 @@ const absolute = (locale: Locale, path: string) =>
 const PERSON_ID = new URL("/#person", siteUrl).href;
 const WEBSITE_ID = new URL("/#website", siteUrl).href;
 
-/** These are page URLs, unlike the two above, so they carry the locale. */
 const blogId = (locale: Locale) => `${absolute(locale, "/blog")}#blog`;
 const profileId = (locale: Locale) => absolute(locale, "/about");
 const postId = (locale: Locale, slug: string) =>
@@ -128,7 +124,6 @@ export function blogPostingJsonLd(
     contentLocale,
   }: BlogPostJsonLdInput,
 ) {
-  // One post, one identity: a fallback page describes the original, not itself.
   const locale = contentLocale ?? ctx.locale;
 
   return {

@@ -30,9 +30,7 @@ describe("formatDate", () => {
     expect(formatDate("2026-07-13", "en")).toBe("July 13, 2026");
   });
 
-  // Counted through a subclass: `spyOn` replaces the constructor with something
-  // `new` rejects. On a fresh module, or the assertion only says an earlier test
-  // warmed the Map.
+  // A subclass, not `spyOn`: that replaces the constructor with something `new` rejects.
   it("keeps one formatter per locale rather than building one per call", async () => {
     const Original = Intl.DateTimeFormat;
     let built = 0;

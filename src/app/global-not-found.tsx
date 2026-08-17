@@ -24,22 +24,12 @@ const fontMono = JetBrains_Mono({
   variable: "--font-jetbrains-mono",
 });
 
-/** A function, not a constant: the body follows the request locale, so the title must too. */
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("errors.notFound");
   return { title: `${t("title")} · ${siteName}` };
 }
 
-/**
- * An unmatched URL never reaches `[locale]`, so the layout cannot render it and
- * `[locale]/not-found.tsx` is never the boundary: Next serves its own default
- * instead. This file is what the docs prescribe when the root layout sits under
- * a top-level dynamic segment, and it owns the whole document, so the fonts and
- * the theme script are restated here the way `global-error.tsx` restates them.
- *
- * The locale comes from the request rather than the segment, since there is no
- * segment: the proxy has already resolved one by the time this renders.
- */
+/** Owns the whole document: this file is never composed with the `[locale]` layout. */
 export default async function GlobalNotFound() {
   const [locale, messages, t] = await Promise.all([
     getLocale(),

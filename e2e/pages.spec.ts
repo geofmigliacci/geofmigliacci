@@ -84,8 +84,7 @@ for (const locale of LOCALES) {
       await expect(
         page.getByRole("link", { name: NOT_FOUND[locale].home }),
       ).toBeVisible();
-      // `global-not-found.tsx` renders this, and reads its locale from the
-      // request rather than a segment, so the shell still matches the URL.
+      // `global-not-found.tsx` renders this, from the request locale.
       await expectSiteShell(page, locale);
     });
   }

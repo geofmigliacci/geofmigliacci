@@ -1,10 +1,6 @@
 import type { Messages } from "next-intl";
 
-/**
- * The namespaces a Client Component reads. Anything omitted stays on the
- * server: `NextIntlClientProvider` forwards the whole catalogue otherwise, and
- * the two legal pages are most of it while rendering server side only.
- */
+/** `NextIntlClientProvider` forwards the whole catalogue unless it is given a subset. */
 const CLIENT_NAMESPACES = [
   "nav",
   "common",

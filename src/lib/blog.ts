@@ -54,7 +54,7 @@ export const listSlugs = cache(async (locale: Locale): Promise<string[]> => {
     .filter((slug) => includeDrafts || !isDraft(slug));
 });
 
-/** The one interpolation site: the bundler builds its context module from this literal. */
+/** The one interpolation site: the bundler builds a context module from this literal. */
 export const getPost = (
   locale: Locale,
   slug: string,
@@ -70,11 +70,6 @@ const readingTime = async (locale: Locale, slug: string): Promise<number> => {
   return Math.max(1, Math.round(words / WORDS_PER_MINUTE));
 };
 
-/**
- * Which locale's MDX serves this slug: its own, or another's as a fallback.
- * Iterates `LOCALES` in declaration order, which only decides anything once a
- * third locale exists.
- */
 export const resolveContentLocale = cache(
   async (locale: Locale, slug: string): Promise<Locale | undefined> => {
     if ((await listSlugs(locale)).includes(slug)) return locale;
@@ -88,11 +83,7 @@ export const resolveContentLocale = cache(
   },
 );
 
-/**
- * The locales that wrote this slug, which is what an `hreflang` cluster and a
- * sitemap entry may name: a locale that only falls back to a post serves a URL
- * canonicalising elsewhere, and Google drops the whole set over one such target.
- */
+/** The set an `hreflang` cluster may name: a fallback URL canonicalises elsewhere. */
 export const postLocales = cache(async (slug: string): Promise<Locale[]> => {
   const wrote = await Promise.all(
     LOCALES.map(async (locale) => (await listSlugs(locale)).includes(slug)),
@@ -100,14 +91,9 @@ export const postLocales = cache(async (slug: string): Promise<Locale[]> => {
   return LOCALES.filter((_, index) => wrote[index]);
 });
 
-/** Every slug this locale can serve: its own, plus the ones it falls back to. */
 export const getBlogPosts = cache(
   async (locale: Locale): Promise<BlogPostMeta[]> => {
     const own = await listSlugs(locale);
-    // Keyed by slug, or a post written in two other locales is borrowed from
-    // both and every consumer sees it twice: two rows, two feed items, two
-    // `generateStaticParams` entries. The first donor wins, as `resolveContentLocale`
-    // picks the same one.
     const source = new Map<string, Locale>(own.map((slug) => [slug, locale]));
     for (const candidate of LOCALES) {
       if (candidate === locale) continue;

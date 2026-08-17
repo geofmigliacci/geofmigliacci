@@ -3,11 +3,7 @@ import { getTranslations } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 import { person } from "@/lib/site";
 
-/**
- * One manifest, in the default locale: it is a single route with no segment to
- * read a locale from. `start_url` stays bare so an installed app still
- * negotiates, and a French visitor lands on `/fr`.
- */
+/** `start_url` stays bare so an installed app still negotiates. */
 export default async function manifest(): Promise<MetadataRoute.Manifest> {
   const t = await getTranslations({
     locale: routing.defaultLocale,

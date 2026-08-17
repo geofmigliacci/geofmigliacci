@@ -102,6 +102,11 @@ left in `en.json` fails no test and breaks no build, it just reads wrong.
   `Vary` header**, and without one a shared cache can serve the language it
   negotiated for one visitor to everyone behind them.
   [e2e/locale.spec.ts](e2e/locale.spec.ts) asserts it.
+- **That header goes on the negotiated redirect alone**, never on a prefixed URL.
+  A `Vary` written there does not merge with the `rsc, next-router-state-tree, …`
+  list Next puts on a rendered response, it replaces it, and an RSC payload would
+  then cache under a key that cannot tell it from the document. Appending does not
+  avoid that; only not writing does.
 - `redirects()` in [next.config.ts](next.config.ts) runs **before** the proxy, so
   `/articles/:slug` still answers 308 to `/blog/:slug` and the browser
   re-requests. That is why [e2e/redirects.spec.ts](e2e/redirects.spec.ts) needed
@@ -283,6 +288,12 @@ marked and wrapped in a notice. That page claims no canonical of its own and
 points its alternates at the original, and the sitemap and feed carry a post
 only under the locale that wrote it: listing a URL that canonicalises elsewhere
 contradicts the canonical.
+
+**Both sides of that union are keyed by slug, and the donor is the first locale
+in `LOCALES` that has one.** Neither decides anything at two locales, and both
+decide something at three: without the key a post written in two other locales is
+borrowed from both and every consumer sees it twice, and the order is what makes
+`getBlogPosts` and `resolveContentLocale` agree on which one it borrowed.
 
 **Translated headings produce different anchors.** `rehype-slug` derives ids
 from heading text, so a post's `#fragment`s differ per locale and its table of

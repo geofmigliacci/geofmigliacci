@@ -17,10 +17,7 @@ const catalogues: [string, Tree][] = [
   ["fr", fr],
 ];
 
-/**
- * Blank in French on purpose: it names the version the other defers to, and the
- * French text defers to nothing.
- */
+/** Blank in French on purpose: the French text defers to nothing. */
 const MAY_BE_BLANK = ["legal.prevails", "privacy.prevails"];
 
 describe("messages", () => {
@@ -30,8 +27,7 @@ describe("messages", () => {
     );
   });
 
-  // The declaration merge enforces the key set at typecheck. This catches what
-  // it cannot see: a key that is present, and empty.
+  // What the declaration merge cannot see: a key present, and empty.
   it.each(catalogues)("%s leaves no key accidentally empty", (_, tree) => {
     const blank = entries(tree)
       .filter(([, value]) => value.trim() === "")

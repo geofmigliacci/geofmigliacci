@@ -87,7 +87,6 @@ describe("listSlugs", () => {
     ]);
   });
 
-  // A locale nobody has written for yet has no directory, and must not fail the build.
   it("reads a missing locale directory as an empty blog", async () => {
     mockedReaddir.mockRejectedValue(
       Object.assign(new Error("ENOENT"), { code: "ENOENT" }),
@@ -104,7 +103,6 @@ describe("resolveContentLocale", () => {
     await expect(resolveContentLocale("fr", "post-a")).resolves.toBe("fr");
   });
 
-  // The whole point of the fallback: an untranslated post is still reachable.
   it("falls back to another locale that wrote the post", async () => {
     vi.resetModules();
     const { resolveContentLocale: fresh } = await import("@/lib/blog");
@@ -135,7 +133,6 @@ describe("postLocales", () => {
     await expect(fresh("post-a")).resolves.toEqual(["en", "fr"]);
   });
 
-  // The set an `hreflang` cluster may name: a fallback URL canonicalises away.
   it("leaves out a locale that only falls back to the slug", async () => {
     vi.resetModules();
     const { postLocales: fresh } = await import("@/lib/blog");

@@ -17,7 +17,6 @@ export const openGraphBase = (locale: Locale) =>
     ),
   }) satisfies Metadata["openGraph"];
 
-/** Where `x-default` sends an unmatched language: the default locale, or the only one written. */
 export const defaultAmong = (locales: readonly Locale[]): Locale => {
   const [first] = locales;
   // A cluster of nothing would resolve to `/undefined/...` and typecheck.
@@ -28,10 +27,7 @@ export const defaultAmong = (locales: readonly Locale[]): Locale => {
     : first;
 };
 
-/**
- * Relative throughout: `metadataBase` on the layout is what makes these absolute.
- * `locales` narrows the set for a page that does not exist in all of them.
- */
+/** Relative: `metadataBase` on the layout is what makes these absolute. */
 export function alternatesFor(
   path: string,
   locale: Locale,
