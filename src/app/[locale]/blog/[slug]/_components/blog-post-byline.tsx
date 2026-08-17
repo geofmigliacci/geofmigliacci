@@ -1,6 +1,5 @@
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
-import type { Locale } from "@/i18n/locales";
 import { Link } from "@/i18n/navigation";
 import { formatDate } from "@/lib/format";
 import { person, portraitPath } from "@/lib/site";
@@ -29,7 +28,7 @@ export function BlogPostByline({
   updated,
 }: BlogPostBylineProps) {
   const t = useTranslations("blog.post");
-  const locale = useLocale() as Locale;
+  const locale = useLocale();
 
   return (
     <div className="mt-4 flex flex-wrap items-center gap-2 font-mono text-xs text-muted-foreground">

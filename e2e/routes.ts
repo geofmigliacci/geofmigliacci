@@ -5,7 +5,6 @@ import path from "node:path";
 export const TITLE_SUFFIX = " · Geoffrey Migliacci";
 
 export const LOCALES = ["en", "fr"] as const;
-export const DEFAULT_LOCALE = "en";
 export type Locale = (typeof LOCALES)[number];
 
 /** Spelt out per locale, for the same reason as the suffix above. */

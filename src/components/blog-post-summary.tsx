@@ -1,7 +1,6 @@
 import { ArrowRight } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { Badge } from "@/components/ui/badge";
-import type { Locale } from "@/i18n/locales";
 import type { BlogPostMeta } from "@/lib/blog";
 import { formatDate } from "@/lib/format";
 
@@ -14,7 +13,7 @@ export function BlogPostSummary({
   titleAs?: "h2" | "h3";
 }) {
   const t = useTranslations("blog");
-  const locale = useLocale() as Locale;
+  const locale = useLocale();
   const translated = post.contentLocale === locale;
 
   return (

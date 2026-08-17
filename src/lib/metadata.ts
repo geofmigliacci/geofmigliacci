@@ -18,8 +18,15 @@ export const openGraphBase = (locale: Locale) =>
   }) satisfies Metadata["openGraph"];
 
 /** Where `x-default` sends an unmatched language: the default locale, or the only one written. */
-export const defaultAmong = (locales: readonly Locale[]): Locale =>
-  locales.includes(routing.defaultLocale) ? routing.defaultLocale : locales[0];
+export const defaultAmong = (locales: readonly Locale[]): Locale => {
+  const [first] = locales;
+  // A cluster of nothing would resolve to `/undefined/...` and typecheck.
+  if (!first) throw new Error("An alternates cluster needs a locale.");
+
+  return locales.includes(routing.defaultLocale)
+    ? routing.defaultLocale
+    : first;
+};
 
 /**
  * Relative throughout: `metadataBase` on the layout is what makes these absolute.

@@ -55,10 +55,18 @@ comments inside `content/blog/` are French.
   reaches the component through `useTranslations` (isomorphic: Server and Client
   alike) or `getTranslations` where the caller is already async. That includes
   `aria-label`, `alt`, and anything a screen reader would read.
-- **English is structurally the source of truth.** `global.d.ts` types the
-  catalogue from `en.json`, so a key only one locale has fails `tsc` rather than
-  rendering blank. [messages.test.ts](src/messages/messages.test.ts) catches the
-  case types cannot see: a key present, and empty.
+- **English is structurally the source of truth.** [global.d.ts](global.d.ts)
+  types the catalogue from `en.json`, so a key only one locale has fails `tsc`
+  rather than rendering blank. [messages.test.ts](src/messages/messages.test.ts)
+  catches the case types cannot see: a key present, and empty.
+  **It must stay `declare module "next-intl"`.** next-intl reads `AppConfig` from
+  its own module, so `declare global { interface AppConfig }` compiles, looks
+  right, and types nothing: `t("no.such.key")` and `useLocale()` widen to `string`
+  in silence. The tell is a `useLocale() as Locale` cast being *needed* somewhere.
+  A dynamic key must therefore resolve to a real union, which is why
+  `nav.sections` gives all four entries a `short` and
+  [about-photos.tsx](src/app/[locale]/about/_components/about-photos.tsx) is
+  `as const`.
 - **`useTranslations` in a Server Component does not need `async`.** Making a
   component async to reach `getTranslations` costs it its test, since RTL cannot
   render an async Server Component.

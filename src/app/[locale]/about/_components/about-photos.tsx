@@ -25,7 +25,7 @@ const ABOUT_PHOTOS = [
     cell: "aspect-[16/9] lg:aspect-auto",
     sizes: "(min-width: 1024px) 18rem, 100vw",
   },
-];
+] as const;
 
 const PHOTO_STAGGER = 0.12;
 const SLIDE_FROM = 32;
@@ -33,10 +33,6 @@ const SLIDE_FROM = 32;
 export function AboutPhotos() {
   const t = useTranslations("about.photos");
   const reducedMotion = useReducedMotion();
-
-  if (ABOUT_PHOTOS.length === 0) {
-    return null;
-  }
 
   return (
     <div className="grid gap-3 lg:aspect-[4/3] lg:grid-cols-[5fr_6fr] lg:grid-rows-2">

@@ -1,7 +1,6 @@
 import { useLocale, useTranslations } from "next-intl";
 import { BlogPostSummary } from "@/components/blog-post-summary";
 import { AccentRule } from "@/components/decorative/accent-rule";
-import type { Locale } from "@/i18n/locales";
 import { Link } from "@/i18n/navigation";
 import type { BlogPostMeta } from "@/lib/blog";
 import { formatDate } from "@/lib/format";
@@ -45,7 +44,7 @@ export function LatestBlogPosts({ posts }: { posts: BlogPostMeta[] }) {
 
 function PreviousPost({ post }: { post: BlogPostMeta }) {
   const t = useTranslations("blog.post");
-  const locale = useLocale() as Locale;
+  const locale = useLocale();
 
   return (
     <Link

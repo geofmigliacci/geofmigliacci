@@ -15,13 +15,16 @@
   "nav": {
     "sections": {
       "blog": {
-        "name": "Blog"
+        "name": "Blog",
+        "short": "Blog"
       },
       "about": {
-        "name": "About"
+        "name": "About",
+        "short": "About"
       },
       "legal": {
-        "name": "Legal notice"
+        "name": "Legal notice",
+        "short": "Legal notice"
       },
       "privacyPolicy": {
         "name": "Privacy policy",

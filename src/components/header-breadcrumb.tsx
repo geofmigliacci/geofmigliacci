@@ -39,9 +39,7 @@ export function HeaderBreadcrumb() {
               aria-current={pathname === path ? "page" : undefined}
               className="truncate rounded-md bg-muted px-2 py-1 text-foreground transition-colors hover:text-primary"
             >
-              {t.has(`sections.${key}.short`)
-                ? t(`sections.${key}.short`)
-                : t(`sections.${key}.name`)}
+              {t(`sections.${key}.short`)}
             </Link>
           </li>
         )}
