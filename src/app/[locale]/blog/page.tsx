@@ -12,21 +12,18 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
-import { type Locale, localePath } from "@/i18n/locales";
+import { localePath } from "@/i18n/locales";
 import { Link } from "@/i18n/navigation";
+import { toLocale } from "@/i18n/params";
 import { getBlogPosts } from "@/lib/blog";
 import { blogJsonLd, breadcrumbJsonLd, graph } from "@/lib/json-ld";
 import { jsonLdContext } from "@/lib/json-ld-context";
 import { alternatesFor, openGraphBase } from "@/lib/metadata";
 
-interface LocaleParams {
-  params: Promise<{ locale: Locale }>;
-}
-
 export async function generateMetadata({
   params,
-}: LocaleParams): Promise<Metadata> {
-  const { locale } = await params;
+}: PageProps<"/[locale]/blog">): Promise<Metadata> {
+  const locale = toLocale((await params).locale);
   const t = await getTranslations({ locale });
   return {
     title: t("nav.sections.blog.name"),
@@ -40,8 +37,10 @@ export async function generateMetadata({
   };
 }
 
-export default async function PostsPage({ params }: LocaleParams) {
-  const { locale } = await params;
+export default async function PostsPage({
+  params,
+}: PageProps<"/[locale]/blog">) {
+  const locale = toLocale((await params).locale);
   setRequestLocale(locale);
 
   const [posts, ctx, t] = await Promise.all([

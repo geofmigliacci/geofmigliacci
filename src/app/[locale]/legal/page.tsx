@@ -3,21 +3,18 @@ import { useTranslations } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { JsonLd } from "@/components/json-ld";
 import { Separator } from "@/components/ui/separator";
-import { type Locale, localePath } from "@/i18n/locales";
+import { localePath } from "@/i18n/locales";
 import { Link } from "@/i18n/navigation";
+import { toLocale } from "@/i18n/params";
 import { breadcrumbJsonLd, graph } from "@/lib/json-ld";
 import { jsonLdContext } from "@/lib/json-ld-context";
 import { alternatesFor, openGraphBase } from "@/lib/metadata";
 import { contactEmail, host, person, repoUrl, SECTION_PATHS } from "@/lib/site";
 
-interface LocaleParams {
-  params: Promise<{ locale: Locale }>;
-}
-
 export async function generateMetadata({
   params,
-}: LocaleParams): Promise<Metadata> {
-  const { locale } = await params;
+}: PageProps<"/[locale]/legal">): Promise<Metadata> {
+  const locale = toLocale((await params).locale);
   const t = await getTranslations({ locale, namespace: "meta.legal" });
   return {
     title: t("title"),
@@ -31,8 +28,10 @@ export async function generateMetadata({
   };
 }
 
-export default async function LegalPage({ params }: LocaleParams) {
-  const { locale } = await params;
+export default async function LegalPage({
+  params,
+}: PageProps<"/[locale]/legal">) {
+  const locale = toLocale((await params).locale);
   setRequestLocale(locale);
 
   const ctx = await jsonLdContext(locale);

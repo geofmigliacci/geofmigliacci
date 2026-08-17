@@ -20,7 +20,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 | `pnpm dev` | Dev server on :3000 |
 | `pnpm lint` | **Biome** (`biome check`), not ESLint |
 | `pnpm format` | `biome format --write` |
-| `pnpm typecheck` | `tsc --noEmit` |
+| `pnpm typecheck` | `next typegen && tsc --noEmit` |
 | `pnpm test` | Vitest, single run |
 | `pnpm test:coverage` | Vitest with v8 coverage, what CI gates on |
 | `pnpm e2e` | Playwright smoke suite, builds and serves on :3100 itself |
@@ -121,6 +121,22 @@ left in `en.json` fails no test and breaks no build, it just reads wrong.
 - The request config prefers an explicitly passed locale over `requestLocale`,
   which reads headers. Without that, `generateStaticParams` and
   `generateImageMetadata` fail at build time, where there is no request.
+- **Routes are typed by `PageProps` / `LayoutProps` / `RouteContext`**, the
+  generated helpers, against a route literal like `'/[locale]/blog/[slug]'`. They
+  need no import. `pnpm typecheck` runs `next typegen` first, which is what makes
+  them exist on a fresh checkout where `.next/` does not: do not drop that half of
+  the command. They type `[locale]` as `string`, because a folder name says
+  nothing about which values are legal, so pages narrow it through
+  [`toLocale`](src/i18n/params.ts). `feed.xml` keeps its own `hasLocale` check
+  instead: `notFound()` means nothing in a route handler, which owes the client a
+  response.
+- **`next/root-params` is deliberately not used**, though the i18n guide
+  recommends it. next-intl's `getLocale()` already gives a request-scoped locale
+  with no prop drilling, and [global-not-found.tsx](src/app/global-not-found.tsx)
+  uses it. Root params reach neither route handlers nor Client Components, so
+  `feed.xml` and the client components would keep what they use now, leaving two
+  locale sources for one question. Its documented payoff is reading a root param
+  inside a `'use cache'` function, which needs `cacheComponents`. Revisit then.
 - **The language switcher navigates the document, not the router.** `[locale]` is
   a segment of the root layout, so switching it is a soft navigation that
   remounts that layout, and React re-applies `<html className>` over the `dark`

@@ -14,9 +14,11 @@ export function generateStaticParams() {
 
 export async function GET(
   _request: Request,
-  { params }: { params: Promise<{ locale: string }> },
+  { params }: RouteContext<"/[locale]/feed.xml">,
 ) {
   const { locale } = await params;
+  // Its own check rather than `toLocale`: `notFound()` has no meaning in a route
+  // handler, which owes the client a response.
   if (!hasLocale(routing.locales, locale)) {
     return new Response(null, { status: 404 });
   }

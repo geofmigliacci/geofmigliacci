@@ -3,22 +3,19 @@ import { useTranslations } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { JsonLd } from "@/components/json-ld";
 import { Separator } from "@/components/ui/separator";
-import { LOCALE_COOKIE, type Locale, localePath } from "@/i18n/locales";
+import { LOCALE_COOKIE, localePath } from "@/i18n/locales";
 import { Link } from "@/i18n/navigation";
+import { toLocale } from "@/i18n/params";
 import { breadcrumbJsonLd, graph } from "@/lib/json-ld";
 import { jsonLdContext } from "@/lib/json-ld-context";
 import { alternatesFor, openGraphBase } from "@/lib/metadata";
 import { contactEmail, host, person, SECTION_PATHS } from "@/lib/site";
 import { THEME_STORAGE_KEY } from "@/lib/theme";
 
-interface LocaleParams {
-  params: Promise<{ locale: Locale }>;
-}
-
 export async function generateMetadata({
   params,
-}: LocaleParams): Promise<Metadata> {
-  const { locale } = await params;
+}: PageProps<"/[locale]/privacy-policy">): Promise<Metadata> {
+  const locale = toLocale((await params).locale);
   const t = await getTranslations({ locale, namespace: "meta.privacyPolicy" });
   return {
     title: t("title"),
@@ -32,8 +29,10 @@ export async function generateMetadata({
   };
 }
 
-export default async function PrivacyPolicyPage({ params }: LocaleParams) {
-  const { locale } = await params;
+export default async function PrivacyPolicyPage({
+  params,
+}: PageProps<"/[locale]/privacy-policy">) {
+  const locale = toLocale((await params).locale);
   setRequestLocale(locale);
 
   const ctx = await jsonLdContext(locale);

@@ -10,7 +10,8 @@ import { ReadingProgressBar } from "@/app/[locale]/blog/[slug]/_components/readi
 import { UntranslatedNotice } from "@/app/[locale]/blog/[slug]/_components/untranslated-notice";
 import { JsonLd } from "@/components/json-ld";
 import { Badge } from "@/components/ui/badge";
-import { LOCALES, type Locale, localePath } from "@/i18n/locales";
+import { LOCALES, localePath } from "@/i18n/locales";
+import { toLocale } from "@/i18n/params";
 import {
   getBlogPosts,
   getPost,
@@ -21,10 +22,6 @@ import { blogPostingJsonLd, breadcrumbJsonLd, graph } from "@/lib/json-ld";
 import { jsonLdContext } from "@/lib/json-ld-context";
 import { alternatesFor, openGraphBase, rssAlternate } from "@/lib/metadata";
 import { person } from "@/lib/site";
-
-interface PostParams {
-  params: Promise<{ locale: Locale; slug: string }>;
-}
 
 export async function generateStaticParams() {
   // The union, not each locale's own: a fallback page is a real route.
@@ -41,8 +38,9 @@ export const dynamicParams = false;
 
 export async function generateMetadata({
   params,
-}: PostParams): Promise<Metadata> {
-  const { locale, slug } = await params;
+}: PageProps<"/[locale]/blog/[slug]">): Promise<Metadata> {
+  const { locale: raw, slug } = await params;
+  const locale = toLocale(raw);
   const contentLocale = await resolveContentLocale(locale, slug);
   if (!contentLocale) notFound();
 
@@ -78,8 +76,11 @@ export async function generateMetadata({
   };
 }
 
-export default async function PostPage({ params }: PostParams) {
-  const { locale, slug } = await params;
+export default async function PostPage({
+  params,
+}: PageProps<"/[locale]/blog/[slug]">) {
+  const { locale: raw, slug } = await params;
+  const locale = toLocale(raw);
   setRequestLocale(locale);
 
   const contentLocale = await resolveContentLocale(locale, slug);

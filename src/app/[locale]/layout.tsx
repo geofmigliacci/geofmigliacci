@@ -1,8 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "../globals.css";
 import { Geist, JetBrains_Mono, Space_Grotesk } from "next/font/google";
-import { notFound } from "next/navigation";
-import { hasLocale, NextIntlClientProvider } from "next-intl";
+import { NextIntlClientProvider } from "next-intl";
 import {
   getMessages,
   getTranslations,
@@ -11,7 +10,7 @@ import {
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { clientMessages } from "@/i18n/client-messages";
-import type { Locale } from "@/i18n/locales";
+import { toLocale } from "@/i18n/params";
 import { routing } from "@/i18n/routing";
 import { openGraphBase } from "@/lib/metadata";
 import { siteName, siteUrl } from "@/lib/site";
@@ -35,10 +34,8 @@ const fontMono = JetBrains_Mono({
 
 export async function generateMetadata({
   params,
-}: {
-  params: Promise<{ locale: Locale }>;
-}): Promise<Metadata> {
-  const { locale } = await params;
+}: LayoutProps<"/[locale]">): Promise<Metadata> {
+  const locale = toLocale((await params).locale);
   const t = await getTranslations({ locale, namespace: "site" });
   return {
     metadataBase: siteUrl,
@@ -76,12 +73,8 @@ export function generateStaticParams() {
 export default async function RootLayout({
   children,
   params,
-}: Readonly<{
-  children: React.ReactNode;
-  params: Promise<{ locale: string }>;
-}>) {
-  const { locale } = await params;
-  if (!hasLocale(routing.locales, locale)) notFound();
+}: LayoutProps<"/[locale]">) {
+  const locale = toLocale((await params).locale);
 
   // Omitting this is silent: the page still renders, it just stops being static.
   setRequestLocale(locale);

@@ -38,13 +38,13 @@ export function BlogPostByline({
         className="group inline-flex items-center gap-2"
       >
         {/* Empty alt on purpose: the name sits right beside it. */}
+        {/* No `eager` or `fetchPriority`: the cover below is the LCP element and
+            claims both, and a 28px avatar competing for them delays it. */}
         <Image
           src={portraitPath}
           alt=""
           width={AVATAR_PX}
           height={AVATAR_PX}
-          loading="eager"
-          fetchPriority="high"
           className="size-7 shrink-0 object-cover grayscale contrast-125 transition-[filter] group-hover:grayscale-0"
         />
         <span className="font-sans font-medium text-foreground transition-colors group-hover:text-primary">
