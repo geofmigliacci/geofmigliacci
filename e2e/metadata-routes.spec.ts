@@ -1,8 +1,9 @@
 // Playwright's `test`, not smoke.ts's: that one builds a browser page to watch.
 import { expect, test } from "@playwright/test";
-import { publishedSlugs, STATIC_PAGES } from "./routes";
+import { localePath, publishedPosts, STATIC_PAGES } from "./routes";
 
 const GENERATED_ROUTES = [
+  // Unprefixed, so this also proves the permanent redirect to the French feed.
   { path: "/feed.xml", contentType: /application\/rss\+xml/ },
   { path: "/robots.txt", contentType: /text\/plain/ },
   { path: "/sitemap.xml", contentType: /(application|text)\/xml/ },
@@ -31,18 +32,22 @@ test("the sitemap lists every page", async ({ request }) => {
 
   const expected = [
     ...STATIC_PAGES.map(({ path }) => path),
-    ...publishedSlugs().map((slug) => `/blog/${slug}`),
+    ...publishedPosts.map(({ locale, slug }) =>
+      localePath(locale, `/blog/${slug}`),
+    ),
   ];
 
   expect(listed.toSorted()).toEqual(expected.toSorted());
 });
 
-test("the feed carries every post", async ({ request }) => {
-  const feed = await (await request.get("/feed.xml")).text();
-  const slugs = publishedSlugs();
+test("each locale's feed carries that locale's posts", async ({ request }) => {
+  expect(publishedPosts.length).toBeGreaterThan(0);
 
-  expect(slugs.length).toBeGreaterThan(0);
-  for (const slug of slugs) {
-    expect(feed).toContain(`/blog/${slug}`);
+  for (const { locale, slug } of publishedPosts) {
+    const feed = await (
+      await request.get(localePath(locale, "/feed.xml"))
+    ).text();
+
+    expect(feed).toContain(localePath(locale, `/blog/${slug}`));
   }
 });

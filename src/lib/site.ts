@@ -1,22 +1,22 @@
-import type { Metadata } from "next";
-
 export const siteUrl = new URL(
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.geofmigliacci.dev",
 );
 
 export const siteName = "Geoffrey Migliacci";
 
-export const openGraphBase = {
-  siteName,
-  locale: "fr_FR",
-} satisfies Metadata["openGraph"];
+export const HOME_PATH = "/";
 
-/** Schema.org wants BCP 47, so the `fr_FR` above cannot stand in. */
-export const siteLanguage = "fr-FR";
+/** Paths only: the names are translated, under `nav.sections`. */
+export const SECTION_PATHS = {
+  blog: "/blog",
+  about: "/about",
+  legal: "/legal",
+  privacyPolicy: "/privacy-policy",
+} as const;
 
-export const rssAlternate = {
-  "application/rss+xml": "/feed.xml",
-} satisfies NonNullable<Metadata["alternates"]>["types"];
+export type SectionKey = keyof typeof SECTION_PATHS;
+
+export const SECTION_KEYS = Object.keys(SECTION_PATHS) as SectionKey[];
 
 /** Bare address, for display. `person.email` needs the `mailto:` schema.org form. */
 export const contactEmail = "geoffrey.migliacci@gmail.com";
@@ -32,15 +32,6 @@ export const host = {
 /** For `next/image`, which rejects `person.image` as a remote host. */
 export const portraitPath = "/geofmigliacci.jpg";
 
-export const tagline =
-  "J'écris sur le code, les langues, la philosophie : tout ce qui nourrit ma curiosité et la vie autour.";
-
-export const blogDescription =
-  "J'écris sur le développement et l'architecture logicielle, mais aussi les langues et la vie autour.";
-
-export const pitch =
-  "Je conçois des systèmes .NET capables d'absorber la charge sans broncher : de l'architecture backend jusqu'à l'interface.";
-
 export const repoUrl = "https://github.com/geofmigliacci/geofmigliacci.dev";
 
 export const social = {
@@ -48,23 +39,11 @@ export const social = {
   linkedin: "https://www.linkedin.com/in/geofmigliacci/",
 };
 
-export const profileUrl = new URL("/about", siteUrl).href;
-
+/** Identity only. Anything a reader sees in their own language is in `messages`. */
 export const person = {
   name: "Geoffrey Migliacci",
   alternateName: "geofmigliacci",
-  url: profileUrl,
   image: new URL(portraitPath, siteUrl).href,
-  jobTitle: "Ingénieur logiciel senior",
-  description: pitch,
   email: `mailto:${contactEmail}`,
-  knowsAbout: [
-    ".NET",
-    "ASP.NET Core",
-    "Entity Framework Core",
-    "SQL",
-    "Architecture logicielle",
-    "Performance applicative",
-  ],
   sameAs: [social.github, social.linkedin],
 };

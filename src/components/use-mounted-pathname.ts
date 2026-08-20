@@ -2,8 +2,9 @@
 
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { stripLocale } from "@/i18n/locales";
 
-/** `usePathname` directly in the header returns React #418: one 404 document, every URL. */
+/** Not next-intl's `usePathname`, which strips only the locale its provider was given. */
 export function useMountedPathname(): string | null {
   const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
@@ -12,5 +13,5 @@ export function useMountedPathname(): string | null {
     setMounted(true);
   }, []);
 
-  return mounted ? pathname : null;
+  return mounted ? stripLocale(pathname) : null;
 }

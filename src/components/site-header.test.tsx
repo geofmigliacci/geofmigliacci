@@ -1,8 +1,9 @@
 // @vitest-environment jsdom
-import { render, screen, within } from "@testing-library/react";
+
 import { usePathname } from "next/navigation";
 import { describe, expect, it, vi } from "vitest";
 import { SiteHeader } from "@/components/site-header";
+import { render, screen, within } from "@/test-utils";
 
 vi.mock("next/navigation", async (importOriginal) => {
   const actual = await importOriginal<typeof import("next/navigation")>();

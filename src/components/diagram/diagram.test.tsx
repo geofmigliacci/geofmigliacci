@@ -1,7 +1,8 @@
 // @vitest-environment jsdom
-import { render, screen } from "@testing-library/react";
+
 import { describe, expect, it } from "vitest";
 import { Readout } from "@/components/diagram/diagram";
+import { render, screen } from "@/test-utils";
 
 describe("Readout", () => {
   it("renders the label and numeric value", () => {

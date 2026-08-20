@@ -1,8 +1,9 @@
 // @vitest-environment jsdom
-import { render, screen } from "@testing-library/react";
+
 import { usePathname } from "next/navigation";
 import { describe, expect, it, vi } from "vitest";
 import { NavLink } from "@/components/nav-link";
+import { render, screen } from "@/test-utils";
 
 vi.mock("next/navigation", async (importOriginal) => {
   const actual = await importOriginal<typeof import("next/navigation")>();
@@ -18,7 +19,7 @@ describe("NavLink", () => {
 
     expect(screen.getByRole("button", { name: "Blog" })).toHaveAttribute(
       "href",
-      "/blog",
+      "/fr/blog",
     );
   });
 

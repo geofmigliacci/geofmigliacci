@@ -1,6 +1,10 @@
-{/* Image de couverture, obligatoire : la placer à côté du .mdx. Elle est
-    recadrée en bandeau (2:1, puis 3:1 à partir de md). La liste des billets
-    l'affiche sur toute la largeur : un billet sans couverture y ferait un trou.
+{/* Ce modèle reste ici, au-dessus des dossiers de langue. Un billet se copie
+    dans content/blog/<langue>/, et sa couverture va dans content/blog/covers/ :
+    la photo ne se traduit pas, seuls coverAlt et coverCaption le font.
+
+    Image de couverture, obligatoire. Elle est recadrée en bandeau (2:1, puis
+    3:1 à partir de md). La liste des billets l'affiche sur toute la largeur :
+    un billet sans couverture y ferait un trou.
 
     Le bandeau 3:1 ne garde qu'environ 60 % de la hauteur d'une photo 1.8:1 :
     vérifier le recadrage sur un écran large, pas seulement sur téléphone, où il
@@ -12,7 +16,7 @@
     s'appelle _template : l'import dynamique des billets compile aussi ce
     modèle, et il échouerait sur une image qui n'existe pas. Les décommenter en
     même temps qu'on le renomme. */}
-{/* import cover from "./mon-billet.jpg"; */}
+{/* import cover from "../covers/mon-billet.jpg"; */}
 
 export const metadata = {
   title: "Lorem ipsum dolor sit amet",

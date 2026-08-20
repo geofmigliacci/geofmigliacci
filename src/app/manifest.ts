@@ -1,11 +1,21 @@
 import type { MetadataRoute } from "next";
-import { person, tagline } from "@/lib/site";
+import { getTranslations } from "next-intl/server";
+import { routing } from "@/i18n/routing";
+import { person } from "@/lib/site";
 
-export default function manifest(): MetadataRoute.Manifest {
+/** `start_url` stays bare so an installed app still negotiates. */
+export default async function manifest(): Promise<MetadataRoute.Manifest> {
+  const t = await getTranslations({
+    locale: routing.defaultLocale,
+    namespace: "site",
+  });
+
   return {
+    id: "/",
     name: person.name,
     short_name: "Migliacci",
-    description: tagline,
+    description: t("tagline"),
+    lang: routing.defaultLocale,
     start_url: "/",
     display: "standalone",
     background_color: "#fbfcfd",

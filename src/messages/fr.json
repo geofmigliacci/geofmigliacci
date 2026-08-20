@@ -1,0 +1,228 @@
+{
+  "site": {
+    "tagline": "J'écris sur le code, les langues, la philosophie : tout ce qui nourrit ma curiosité et la vie autour.",
+    "blogDescription": "J'écris sur le développement et l'architecture logicielle, mais aussi les langues et la vie autour.",
+    "pitch": "Je conçois des systèmes .NET capables d'absorber la charge sans broncher : de l'architecture backend jusqu'à l'interface.",
+    "jobTitle": "Ingénieur logiciel senior",
+    "credentials": "+7 ans d'expérience · Performance · CQRS · Clean Architecture",
+    "portraitAlt": "Portrait de Geoffrey Migliacci",
+    "hostAddress": "440 N Barranca Ave #4133, Covina, CA 91723, États-Unis",
+    "knowsAbout": {
+      "architecture": "Architecture logicielle",
+      "performance": "Performance applicative"
+    }
+  },
+  "nav": {
+    "sections": {
+      "blog": {
+        "name": "Blog",
+        "short": "Blog"
+      },
+      "about": {
+        "name": "À propos",
+        "short": "À propos"
+      },
+      "legal": {
+        "name": "Mentions légales",
+        "short": "Mentions légales"
+      },
+      "privacyPolicy": {
+        "name": "Politique de confidentialité",
+        "short": "Confidentialité"
+      }
+    },
+    "home": {
+      "name": "Accueil"
+    },
+    "skipToContent": "Aller au contenu",
+    "main": "Navigation principale",
+    "breadcrumb": "Fil d'Ariane",
+    "homeLink": "Geoffrey Migliacci · accueil",
+    "legalInformation": "Informations légales",
+    "rss": "RSS",
+    "language": {
+      "label": "Langue",
+      "en": "English",
+      "fr": "Français"
+    }
+  },
+  "common": {
+    "email": "Me contacter par email",
+    "github": "GitHub",
+    "linkedin": "LinkedIn",
+    "theme": "Changer de thème"
+  },
+  "meta": {
+    "home": {
+      "title": "Geoffrey Migliacci · Ingénieur logiciel senior",
+      "ogAlt": "Geoffrey Migliacci · Ingénieur logiciel senior"
+    },
+    "about": {
+      "title": "À propos",
+      "description": "Ingénieur logiciel senior, +7 ans d'expérience en .NET : le parcours, la stack et la façon de travailler derrière les billets.",
+      "ogAlt": "À propos · Geoffrey Migliacci",
+      "ogDescription": "Ingénieur logiciel senior, +7 ans d'expérience en .NET."
+    },
+    "blog": {
+      "ogAlt": "Blog · Geoffrey Migliacci"
+    },
+    "legal": {
+      "title": "Mentions légales",
+      "description": "Éditeur, hébergeur, propriété intellectuelle et responsabilité pour le site geofmigliacci.dev.",
+      "ogAlt": "Mentions légales · Geoffrey Migliacci"
+    },
+    "privacyPolicy": {
+      "title": "Politique de confidentialité",
+      "description": "Ce site n'utilise ni mesure d'audience, ni traceur, ni cookie publicitaire. Détail de ce qui est stocké et de vos droits.",
+      "ogAlt": "Politique de confidentialité · Geoffrey Migliacci"
+    }
+  },
+  "home": {
+    "latestPosts": "Derniers billets",
+    "allPosts": "Tous les billets"
+  },
+  "about": {
+    "bio": {
+      "start": "J'ai appris à coder vers 13 ans sur un serveur SA:MP, puis sur des projets FiveM : deux mods multijoueurs pour GTA, où quelques centaines de joueurs partagent le même serveur. Mes premiers utilisateurs, donc, et la découverte qu'il suffit d'une poignée de joueurs en plus pour faire tomber ce qui marchait très bien tout seul. Depuis, c'est du .NET, surtout du backend.",
+      "away": "Si je ne suis pas devant mon écran, vous me trouverez probablement en train de randonner quelque part... ou de jouer à des jeux quand je n'essaie pas d'en fabriquer.",
+      "invitation": "Si quelque chose ici vous parle, écrivez-moi. Je réponds."
+    },
+    "photos": {
+      "viareggio": "Sculpture en bronze d'une figure en équilibre sur un croissant de lune, à contre-jour au coucher du soleil sur le front de mer de Viareggio.",
+      "angera": "La Rocca d'Angera, forteresse médiévale posée sur un éperon rocheux boisé, vue depuis l'autre rive du lac Majeur.",
+      "isolaBella": "Vue sur le lac Majeur depuis Isola Bella : une petite île boisée coiffée d'un clocher, et les montagnes de la rive en arrière-plan."
+    }
+  },
+  "blog": {
+    "list": {
+      "heading": "Blog",
+      "intro": "J'écris sur ce qui me passionne : le développement et l'architecture logicielle, mais aussi les langues et la vie autour.",
+      "rss": "S'abonner au flux RSS",
+      "readPost": "Lire le billet",
+      "empty": {
+        "title": "Aucun billet pour le moment",
+        "description": "Le premier est sur la planche à dessin : revenez bientôt."
+      },
+      "filter": {
+        "label": "Filtrer",
+        "byTag": "Filtrer les billets par tag",
+        "reset": "Réinitialiser les filtres"
+      },
+      "noMatches": {
+        "title": "Aucun billet pour ces tags",
+        "description": "Essayez d'autres tags, ou réinitialisez le filtre."
+      },
+      "announceCount": "{count, plural, =0 {Aucun billet ne correspond} one {1 billet affiché} other {# billets affichés}}"
+    },
+    "post": {
+      "readingTime": "{count} min de lecture",
+      "readingTimeShort": "{count} min",
+      "updatedOn": "Mis à jour le",
+      "contents": "Sommaire",
+      "backToTop": "Retour en haut de la page",
+      "olderPost": "Billet plus ancien",
+      "newerPost": "Billet plus récent",
+      "navigation": "Navigation entre billets",
+      "untranslated": {
+        "eyebrow": "Original en {language}",
+        "body": "Ce billet n'est pas encore traduit : ce qui suit est l'original.",
+        "readOriginal": "Lire l'original",
+        "language": {
+          "en": "anglais",
+          "fr": "français"
+        },
+        "badge": "En {language}"
+      }
+    }
+  },
+  "errors": {
+    "notFound": {
+      "title": "Erreur 404",
+      "eyebrow": "Zone non cartographiée",
+      "lineOne": "404",
+      "lineTwo": "INTROUVABLE",
+      "heading": "Erreur 404 · page introuvable",
+      "body": "La page que vous cherchez n'existe pas ou a été déplacée.",
+      "home": "Retour à l'accueil"
+    },
+    "runtime": {
+      "eyebrow": "Anomalie détectée",
+      "lineOne": "ERREUR",
+      "lineTwo": "INATTENDUE",
+      "heading": "Une erreur inattendue est survenue",
+      "body": "Quelque chose s'est cassé de notre côté. Réessayer suffit parfois.",
+      "reference": "Référence :",
+      "retry": "Réessayer",
+      "home": "Accueil"
+    }
+  },
+  "legal": {
+    "lastUpdatedLabel": "Dernière mise à jour :",
+    "lastUpdated": "6 août 2026",
+    "prevails": "",
+    "publisher": {
+      "heading": "Éditeur du site",
+      "individual": "{name}, particulier. Ce site est un site personnel, sans activité commerciale et sans publicité.",
+      "director": "Directeur de la publication : {name}",
+      "contactLabel": "Contact :",
+      "lcen": "L'article 6, III, 2 de la loi pour la confiance dans l'économie numérique autorise un éditeur non professionnel à ne diffuser publiquement que les coordonnées de son hébergeur, sous réserve d'avoir communiqué à celui-ci ses éléments d'identification personnelle. Je choisis de m'identifier malgré tout, et ne m'appuie sur cette disposition que pour ne pas publier mon adresse postale : celle-ci est détenue par l'hébergeur nommé ci-dessous."
+    },
+    "host": {
+      "heading": "Hébergeur"
+    },
+    "intellectualProperty": {
+      "heading": "Propriété intellectuelle",
+      "owned": "Les billets, textes, illustrations et éléments graphiques publiés sur ce site, logo compris, sont la propriété de {name}. Tous droits réservés.",
+      "reuse": "Toute reproduction ou republication, intégrale ou substantielle, sans accord écrit préalable est interdite. Le droit de citation demeure applicable : une citation courte reste autorisée, à condition qu'elle mentionne le nom de l'auteur et renvoie par un lien vers la page d'origine.",
+      "code": "Le code fait exception. Le code source du site est publié sous licence MIT : voir le <repo>dépôt du site</repo>.",
+      "snippets": "Les extraits de code publiés dans les billets sont librement réutilisables : copiez-les, adaptez-les, intégrez-les à un projet, y compris commercial, sans autorisation ni mention d'origine. Ils sont fournis sans garantie d'aucune sorte."
+    },
+    "liability": {
+      "heading": "Responsabilité",
+      "body": "Le contenu de ce site est publié à titre informatif. Malgré le soin apporté à sa rédaction, des erreurs ou des omissions peuvent subsister, et certaines informations techniques peuvent devenir obsolètes. L'auteur ne saurait être tenu responsable des conséquences d'une utilisation des informations publiées."
+    },
+    "externalLinks": {
+      "heading": "Liens externes",
+      "body": "Ce site renvoie vers des sites tiers sur lesquels l'auteur n'exerce aucun contrôle. Leur contenu n'engage que leurs éditeurs respectifs, et ces liens ne valent pas approbation."
+    },
+    "personalData": {
+      "heading": "Données personnelles",
+      "body": "Le traitement des données est décrit dans la <privacy>politique de confidentialité</privacy>."
+    }
+  },
+  "privacy": {
+    "lastUpdatedLabel": "Dernière mise à jour :",
+    "lastUpdated": "16 août 2026",
+    "prevails": "",
+    "summary": {
+      "heading": "En résumé",
+      "body": "Ce site ne mesure pas son audience, ne profile personne et ne vend rien. Il n'embarque aucun script tiers, aucun outil d'analyse et aucune régie publicitaire. Il n'y a donc pas de bandeau de consentement à afficher, faute de traceur à faire accepter."
+    },
+    "stored": {
+      "heading": "Ce qui est stocké dans votre navigateur",
+      "theme": "Deux valeurs au plus sont enregistrées dans votre navigateur. La première, sous la clé <code>{themeKey}</code>, est conservée dans le stockage local, et uniquement si vous basculez entre le thème clair et le thème sombre. Elle vaut <code>light</code> ou <code>dark</code>, rien d'autre.",
+      "locale": "La seconde, le cookie <code>{localeCookie}</code>, n'est déposée que si vous changez de langue depuis le sélecteur de l'en-tête. Elle contient le code de la langue choisie, et permet à une visite ultérieure de s'ouvrir dans cette langue plutôt que de la deviner d'après les réglages de votre navigateur.",
+      "neverLeaves": "Aucune de ces deux valeurs ne vous identifie, et aucune ne sert à vous suivre. Vous pouvez les supprimer à tout moment en effaçant les données de site depuis les réglages de votre navigateur.",
+      "consent": "Toutes deux étant strictement nécessaires à un service que vous avez demandé, à savoir mémoriser une préférence d'affichage et une langue, elles ne relèvent pas du consentement préalable au sens des lignes directrices de la CNIL."
+    },
+    "logs": {
+      "heading": "Journaux de l'hébergeur",
+      "processor": "Le site est hébergé par {host}, qui agit comme sous-traitant au sens du RGPD. Comme tout hébergeur, {host} enregistre techniquement les requêtes reçues : adresse IP, date et heure, page demandée, type de navigateur. Ces journaux servent à fournir le service, à le sécuriser et à diagnostiquer les pannes. Ce traitement repose sur l'intérêt légitime à faire fonctionner un site accessible et sûr.",
+      "notRead": "Je ne consulte pas ces journaux, n'en conserve aucune copie et n'en tire aucune statistique. Leur durée de conservation est déterminée par l'hébergeur seul, selon les règles décrites dans sa <link>politique de confidentialité</link>.",
+      "transfer": "{host} étant établie aux États-Unis, un transfert de données hors de l'Union européenne intervient. Il est encadré par les clauses contractuelles types de la Commission européenne, ainsi que par la certification de {host} au titre du cadre de protection des données UE/États-Unis (EU-US Data Privacy Framework)."
+    },
+    "writing": {
+      "heading": "Si vous m'écrivez",
+      "body": "Il n'y a pas de formulaire sur ce site. Si vous m'écrivez à <mail>{email}</mail>, votre adresse et le contenu de votre message sont utilisés uniquement pour vous répondre, et restent dans ma messagerie. Ils ne sont ni transmis, ni réutilisés à d'autres fins."
+    },
+    "rights": {
+      "heading": "Vos droits",
+      "body": "Le règlement général sur la protection des données vous ouvre un droit d'accès, de rectification, d'effacement, de limitation, d'opposition et de portabilité sur vos données. Pour l'exercer, écrivez à <mail>{email}</mail>.",
+      "complaint": "Si une réponse ne vous satisfait pas, vous pouvez saisir la Commission nationale de l'informatique et des libertés : <cnil>www.cnil.fr</cnil>."
+    },
+    "controller": {
+      "heading": "Responsable du traitement",
+      "body": "Le responsable du traitement est {name}, joignable à <mail>{email}</mail>. Le seul sous-traitant est {host}, au titre de l'hébergement décrit plus haut. Aucune donnée n'est transmise à d'autres destinataires. Les informations d'édition figurent dans les <legal>mentions légales</legal>."
+    }
+  }
+}

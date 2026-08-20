@@ -1,15 +1,18 @@
+import { useTranslations } from "next-intl";
 import { FaEnvelope, FaGithub, FaLinkedinIn } from "react-icons/fa6";
 import { Button } from "@/components/ui/button";
 import { person, social } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
 export function SocialLinks({ className }: { className?: string }) {
+  const t = useTranslations("common");
+
   return (
     <div className={cn("flex gap-2", className)}>
       <Button
         size="icon-lg"
         variant="outline"
-        aria-label="Me contacter par email"
+        aria-label={t("email")}
         nativeButton={false}
         render={<a href={person.email} />}
       >
@@ -18,7 +21,7 @@ export function SocialLinks({ className }: { className?: string }) {
       <Button
         size="icon-lg"
         variant="outline"
-        aria-label="GitHub"
+        aria-label={t("github")}
         nativeButton={false}
         render={<a href={social.github} target="_blank" rel="noreferrer" />}
       >
@@ -27,7 +30,7 @@ export function SocialLinks({ className }: { className?: string }) {
       <Button
         size="icon-lg"
         variant="outline"
-        aria-label="LinkedIn"
+        aria-label={t("linkedin")}
         nativeButton={false}
         render={<a href={social.linkedin} target="_blank" rel="noreferrer" />}
       >

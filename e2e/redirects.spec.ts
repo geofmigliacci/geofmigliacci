@@ -3,7 +3,10 @@ import { expect, test } from "@playwright/test";
 import { publishedSlugs } from "./routes";
 
 /** `redirects()` in next.config is the only thing holding these open. */
-const MOVED = ["/articles", ...publishedSlugs().map((s) => `/articles/${s}`)];
+const MOVED = [
+  "/articles",
+  ...publishedSlugs("fr").map((s) => `/articles/${s}`),
+];
 
 for (const from of MOVED) {
   const to = from.replace("/articles", "/blog");

@@ -1,16 +1,22 @@
-import Link from "next/link";
-import { person } from "@/lib/site";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
+import { person, SECTION_PATHS } from "@/lib/site";
 
 // Build time, not the visitor's clock: a rebuild is what rolls it over.
 const currentYear = new Date().getFullYear();
 
-const COLOPHON_LINKS = [
-  { href: "/legal", label: "Mentions légales" },
-  { href: "/privacy-policy", label: "Confidentialité" },
-  { href: "/feed.xml", label: "RSS" },
-] as const;
-
 export function SiteFooter() {
+  const t = useTranslations("nav");
+
+  const colophon = [
+    { href: SECTION_PATHS.legal, label: t("sections.legal.name") },
+    {
+      href: SECTION_PATHS.privacyPolicy,
+      label: t("sections.privacyPolicy.short"),
+    },
+    { href: "/feed.xml", label: t("rss") },
+  ];
+
   return (
     <footer className="mt-auto border-t border-border/60">
       <div className="site-container flex flex-wrap items-center justify-between gap-x-6 gap-y-2 py-8">
@@ -18,10 +24,10 @@ export function SiteFooter() {
           © {currentYear} {person.name}
         </p>
         <nav
-          aria-label="Informations légales"
+          aria-label={t("legalInformation")}
           className="flex flex-wrap gap-x-4 gap-y-2"
         >
-          {COLOPHON_LINKS.map(({ href, label }) => (
+          {colophon.map(({ href, label }) => (
             <Link
               key={href}
               href={href}

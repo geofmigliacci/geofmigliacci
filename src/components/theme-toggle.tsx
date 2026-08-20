@@ -1,12 +1,15 @@
 "use client";
 
 import { Moon, Sun } from "lucide-react";
+import { useTranslations } from "next-intl";
 import type { KeyboardEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { THEME_STORAGE_KEY } from "@/lib/theme";
 
 /** Both icons render and CSS picks one, so nothing reads the theme during render. */
 export function ThemeToggle() {
+  const t = useTranslations("common");
+
   // A held Enter repeats, and every repeat synthesises a click that strobes the fade.
   const handleKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
     if (event.repeat && (event.key === "Enter" || event.key === " ")) {
@@ -37,7 +40,7 @@ export function ThemeToggle() {
     <Button
       variant="ghost"
       size="icon-lg"
-      aria-label="Changer de thème"
+      aria-label={t("theme")}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
     >

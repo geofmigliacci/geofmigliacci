@@ -2,13 +2,13 @@ import { expect, expectStructuredData, test } from "./smoke";
 
 // A client navigation that throws leaves the previous page up, so the URL alone proves nothing.
 const NAV_TARGETS = [
-  { link: "Blog", path: "/blog", heading: "Blog" },
-  { link: "À propos", path: "/about", heading: "Geoffrey Migliacci" },
+  { link: "Blog", path: "/fr/blog", heading: "Blog" },
+  { link: "À propos", path: "/fr/about", heading: "Geoffrey Migliacci" },
 ];
 
 for (const { link, path, heading } of NAV_TARGETS) {
   test(`the header nav reaches ${path}`, async ({ page }) => {
-    await page.goto("/");
+    await page.goto("/fr");
 
     // `button`, not `link`: Base UI's `Button` stamps the role on the anchor it renders.
     await page
@@ -26,17 +26,17 @@ for (const { link, path, heading } of NAV_TARGETS) {
 }
 
 const COLOPHON_TARGETS = [
-  { link: "Mentions légales", path: "/legal", heading: "Mentions légales" },
+  { link: "Mentions légales", path: "/fr/legal", heading: "Mentions légales" },
   {
     link: "Confidentialité",
-    path: "/privacy-policy",
+    path: "/fr/privacy-policy",
     heading: "Politique de confidentialité",
   },
 ];
 
 for (const { link, path, heading } of COLOPHON_TARGETS) {
   test(`the footer reaches ${path}`, async ({ page }) => {
-    await page.goto("/");
+    await page.goto("/fr");
 
     await page
       .getByRole("navigation", { name: "Informations légales" })
@@ -50,8 +50,34 @@ for (const { link, path, heading } of COLOPHON_TARGETS) {
   });
 }
 
+test("switching language leaves a dark reader in the dark", async ({
+  page,
+}) => {
+  await page.goto("/fr");
+  await page.getByRole("button", { name: "Changer de thème" }).click();
+  await expect(page.locator("html")).toHaveClass(/dark/);
+
+  await page.getByRole("link", { name: "English" }).click();
+
+  await expect(page).toHaveURL("/en");
+  await expect(page.locator("html")).toHaveClass(/dark/);
+});
+
+test("reading the original leaves a dark reader in the dark", async ({
+  page,
+}) => {
+  await page.goto("/en/blog/ef-core-lazy-loading");
+  await page.getByRole("button", { name: "Switch theme" }).click();
+  await expect(page.locator("html")).toHaveClass(/dark/);
+
+  await page.getByRole("link", { name: "Read the original" }).click();
+
+  await expect(page).toHaveURL("/fr/blog/ef-core-lazy-loading");
+  await expect(page.locator("html")).toHaveClass(/dark/);
+});
+
 test("a post opens from the listing", async ({ page }) => {
-  await page.goto("/blog");
+  await page.goto("/fr/blog");
 
   const row = page.getByRole("main").getByRole("listitem").first();
   const title = (

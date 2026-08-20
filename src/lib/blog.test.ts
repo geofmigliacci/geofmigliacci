@@ -1,6 +1,6 @@
 import fs from "node:fs/promises";
 import { describe, expect, it, vi } from "vitest";
-import { getBlogPosts, listSlugs } from "@/lib/blog";
+import { getBlogPosts, listSlugs, resolveContentLocale } from "@/lib/blog";
 
 vi.mock("server-only", () => ({}));
 
@@ -11,7 +11,7 @@ vi.mock("node:fs/promises", () => ({
   },
 }));
 
-vi.mock("@/content/blog/post-a.mdx", () => ({
+vi.mock("@/content/blog/fr/post-a.mdx", () => ({
   metadata: {
     title: "Post A",
     description: "Description A",
@@ -20,7 +20,7 @@ vi.mock("@/content/blog/post-a.mdx", () => ({
   },
 }));
 
-vi.mock("@/content/blog/post-b.mdx", () => ({
+vi.mock("@/content/blog/fr/post-b.mdx", () => ({
   metadata: {
     title: "Post B",
     description: "Description B",
@@ -46,7 +46,7 @@ const DIR_WITH_DRAFT = [
 const freshGetPosts = async () => {
   vi.resetModules();
   const { getBlogPosts: fresh } = await import("@/lib/blog");
-  return fresh();
+  return fresh("fr");
 };
 
 const listSlugsUnderNodeEnv = async (nodeEnv: string) => {
@@ -54,7 +54,7 @@ const listSlugsUnderNodeEnv = async (nodeEnv: string) => {
   vi.stubEnv("NODE_ENV", nodeEnv);
   vi.resetModules();
   const { listSlugs: freshListSlugs } = await import("@/lib/blog");
-  const slugs = await freshListSlugs();
+  const slugs = await freshListSlugs("fr");
   vi.stubEnv("NODE_ENV", original ?? "test");
   return slugs;
 };
@@ -63,7 +63,7 @@ describe("listSlugs", () => {
   it("keeps only .mdx files and excludes underscore-prefixed ones", async () => {
     mockedReaddir.mockResolvedValue(DIR_WITH_DRAFT);
 
-    await expect(listSlugs()).resolves.toEqual([
+    await expect(listSlugs("fr")).resolves.toEqual([
       "post-a",
       "post-b",
       "work-in-progress.draft",
@@ -86,6 +86,68 @@ describe("listSlugs", () => {
       "post-b",
     ]);
   });
+
+  it("reads a missing locale directory as an empty blog", async () => {
+    mockedReaddir.mockRejectedValue(
+      Object.assign(new Error("ENOENT"), { code: "ENOENT" }),
+    );
+
+    await expect(listSlugs("en")).resolves.toEqual([]);
+  });
+});
+
+describe("resolveContentLocale", () => {
+  it("prefers the locale asked for when it has the post", async () => {
+    mockedReaddir.mockResolvedValue(["post-a.mdx"] as never);
+
+    await expect(resolveContentLocale("fr", "post-a")).resolves.toBe("fr");
+  });
+
+  it("falls back to another locale that wrote the post", async () => {
+    vi.resetModules();
+    const { resolveContentLocale: fresh } = await import("@/lib/blog");
+    mockedReaddir.mockImplementation((async (dir: string) =>
+      String(dir).includes("fr") ? ["post-a.mdx"] : []) as never);
+
+    await expect(fresh("en", "post-a")).resolves.toBe("fr");
+  });
+
+  it("resolves nothing for a slug no locale wrote", async () => {
+    vi.resetModules();
+    const { resolveContentLocale: fresh } = await import("@/lib/blog");
+    mockedReaddir.mockResolvedValue([] as never);
+
+    await expect(fresh("en", "ghost")).resolves.toBeUndefined();
+  });
+});
+
+describe("postLocales", () => {
+  const onlyFrenchWrote = (async (dir: string) =>
+    String(dir).includes("fr") ? ["post-a.mdx"] : []) as never;
+
+  it("names every locale that wrote the slug", async () => {
+    vi.resetModules();
+    const { postLocales: fresh } = await import("@/lib/blog");
+    mockedReaddir.mockResolvedValue(["post-a.mdx"] as never);
+
+    await expect(fresh("post-a")).resolves.toEqual(["en", "fr"]);
+  });
+
+  it("leaves out a locale that only falls back to the slug", async () => {
+    vi.resetModules();
+    const { postLocales: fresh } = await import("@/lib/blog");
+    mockedReaddir.mockImplementation(onlyFrenchWrote);
+
+    await expect(fresh("post-a")).resolves.toEqual(["fr"]);
+  });
+
+  it("names nothing for a slug no locale wrote", async () => {
+    vi.resetModules();
+    const { postLocales: fresh } = await import("@/lib/blog");
+    mockedReaddir.mockResolvedValue([] as never);
+
+    await expect(fresh("ghost")).resolves.toEqual([]);
+  });
 });
 
 describe("getBlogPosts", () => {
@@ -97,11 +159,12 @@ describe("getBlogPosts", () => {
       return `export const metadata = {\n  title: "x",\n};\n\n${body}`;
     });
 
-    const posts = await getBlogPosts();
+    const posts = await getBlogPosts("fr");
 
     expect(posts).toEqual([
       {
         slug: "post-b",
+        contentLocale: "fr",
         readingTime: 1,
         title: "Post B",
         description: "Description B",
@@ -110,6 +173,7 @@ describe("getBlogPosts", () => {
       },
       {
         slug: "post-a",
+        contentLocale: "fr",
         readingTime: 3,
         title: "Post A",
         description: "Description A",
@@ -124,7 +188,7 @@ describe("getBlogPosts", () => {
     mockedReaddir.mockResolvedValue(["post-a.mdx"] as never);
     mockedReadFile.mockResolvedValue(
       [
-        'import cover from "./post-a.jpg";',
+        'import cover from "../covers/post-a.jpg";',
         "",
         "export const metadata = {",
         '  title: "x",',

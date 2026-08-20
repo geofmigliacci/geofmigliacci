@@ -1,4 +1,5 @@
 import { ArrowRight } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
 import { Badge } from "@/components/ui/badge";
 import type { BlogPostMeta } from "@/lib/blog";
 import { formatDate } from "@/lib/format";
@@ -11,17 +12,37 @@ export function BlogPostSummary({
   post: BlogPostMeta;
   titleAs?: "h2" | "h3";
 }) {
+  const t = useTranslations("blog");
+  const locale = useLocale();
+  const translated = post.contentLocale === locale;
+
   return (
     <>
       <p className="font-mono text-xs text-muted-foreground">
-        {formatDate(post.date)} · {post.readingTime} min de lecture
+        {formatDate(post.date, locale)} ·{" "}
+        {t("post.readingTime", { count: post.readingTime })}
       </p>
       {/* `max-w-2xl` holds the title to the same measure as the description below it. */}
-      <Title className="mt-2 max-w-2xl text-2xl font-bold tracking-tight text-balance transition-colors group-hover:text-primary md:text-3xl">
+      <Title
+        lang={translated ? undefined : post.contentLocale}
+        className="mt-2 max-w-2xl text-2xl font-bold tracking-tight text-balance transition-colors group-hover:text-primary md:text-3xl"
+      >
         {post.title}
       </Title>
-      <p className="mt-3 max-w-2xl text-muted-foreground">{post.description}</p>
+      <p
+        lang={translated ? undefined : post.contentLocale}
+        className="mt-3 max-w-2xl text-muted-foreground"
+      >
+        {post.description}
+      </p>
       <div className="mt-4 flex flex-wrap gap-2">
+        {!translated && (
+          <Badge variant="outline" className="border-primary/40 text-primary">
+            {t("post.untranslated.badge", {
+              language: t(`post.untranslated.language.${post.contentLocale}`),
+            })}
+          </Badge>
+        )}
         {post.tags.map((tag) => (
           <Badge key={tag} variant="outline">
             {tag}
@@ -29,7 +50,7 @@ export function BlogPostSummary({
         ))}
       </div>
       <p className="mt-6 inline-flex items-center gap-2 font-medium text-primary">
-        Lire le billet
+        {t("list.readPost")}
         <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
       </p>
     </>

@@ -1,0 +1,443 @@
+import cover from "../covers/aspnet-core-cancellation-token.jpg";
+
+export const metadata = {
+  title: "Le jeudi qui n'a pas encore eu lieu",
+  description:
+    "Un incident qui n'est arrivé à personne, et qui attend dans votre code : une page lente que plus personne n'annule. CancellationToken et garde-fous.",
+  date: "2026-08-08",
+  tags: ["dotnet", "aspnet-core", "performance"],
+  cover,
+  coverAlt:
+    "Gros plan à contre-jour : menthe, citron vert et glaçons derrière la buée des verres ; en arrière-plan flou, des bancs occupés le long de l'eau.",
+  coverCaption: "Deux verres d'Hugo Spritz sur une table à Arona, devant une promenade au bord du Lac Majeur.",
+};
+
+import { RequestStorm } from "@/components/diagram/scenes/request-storm";
+
+*D'après une histoire fausse. Aucune équipe n'a été blessée durant l'écriture
+de cet article, aucun jeudi n'a été ruiné, aucune base de données n'a souffert.
+Les mécanismes, eux, viennent du terrain ; le code est déjà chez vous.*
+
+Il est 14 h 23, un jeudi. En salle, quatre tables occupées et un serveur qui
+n'a plus grand-chose à faire. En cuisine, les huit postes tournent à plein
+régime depuis quatorze minutes : ça crie, ça s'active, personne ne lève la
+tête.
+
+Toutes les trente secondes, une assiette sort au passe. Elle est parfaite.
+Elle part pour une table qui s'est levée il y a un quart d'heure.
+
+Ce jeudi n'a pas eu lieu, et c'est la seule bonne nouvelle de l'article : le
+décor est déjà monté chez vous ; il manque juste les quarante commerciaux.
+
+Avançons.
+
+## L'histoire
+
+<Chapter marker="Aujourd'hui" title="Un écran honnête" />
+
+L'écran existe dans à peu près toutes les applications de gestion : une liste
+déroulante d'années, un bouton *Afficher*, le classement des clients par
+montant.
+
+```csharp
+// Simplifié pour l'article. Le mécanisme, lui, est identique.
+[HttpGet("clients/ranking")]
+public async Task<IActionResult> Ranking(int year)
+{
+    var start = new DateTime(year, 1, 1);
+    var end = start.AddYears(1);
+
+    var rows = await db.Contracts
+        .AsNoTracking()
+        .Where(c => c.CreatedAt >= start && c.CreatedAt < end)
+        .GroupBy(c => c.ClientId)
+        .OrderByDescending(g => g.Sum(c => c.Amount))
+        .Select(g => new ClientTotal(g.Key, g.Count(), g.Sum(c => c.Amount)))
+        .ToListAsync();
+
+    return View(rows);
+}
+```
+
+Regardez-le bien, parce que la suite en dépend : ce code est bon. La leçon de
+[l'écran des contrats](/blog/ef-core-lazy-loading) a porté. Projection vers un
+DTO, agrégation en SQL, un intervalle de dates qui laisse l'index travailler.
+
+Il fera quand même tomber la production. Pas aujourd'hui : aujourd'hui il
+répond en 300 ms.
+
+<Chapter marker="Dans quatorze mois" title="Neuf secondes" />
+
+Les trimestres passeront, et l'écran mettra neuf secondes à s'afficher. Rien
+n'aura changé dans la requête : l'index fait toujours son travail, le plan est
+toujours le bon. Il y a simplement 200 000 contrats à additionner là où il y
+en avait 3 000.
+
+Neuf secondes : trop lent pour être agréable, pas assez pour être un incident.
+Personne n'escalade ça, et le folklore tient une explication toute prête :
+
+<Quote author="Une équipe, quelque part, en ce moment même">
+
+C'est lent, c'est normal, ça calcule.
+
+</Quote>
+
+Neuf secondes, ce n'est pas une panne : c'est une condition initiale.
+
+<Chapter marker="Un jeudi, 14 h 02" title="Fin de trimestre" />
+
+Quarante commerciaux devront boucler leurs chiffres avant vendredi midi. Ils
+ouvrent tous le même écran dans la même demi-heure. Ce n'est ni un pic anormal
+ni une attaque : c'est l'usage prévu, simplement concentré, comme le sont
+toutes les fins de trimestre depuis l'invention du trimestre.
+
+La base encaisse en dégradant poliment. L'écran passe à vingt-cinq secondes.
+Tout est encore réparable.
+
+<Chapter marker="14 h 09" title="F5" />
+
+Vingt-cinq secondes.
+
+Personne n'attend vingt-cinq secondes devant une page blanche. Au bout de dix,
+on se demande si le clic est passé. Au bout de quinze, on conclut que non.
+Alors on fait ce que vous faites plusieurs fois par semaine sans y penser : on
+reclique, ou on tape F5.
+
+Le navigateur se comporte impeccablement : il abandonne la requête et coupe la
+connexion. Kestrel le remarque aussitôt et fait son métier d'aboyeur.
+
+"La 12 est partie !"
+
+La brigade répond "oui chef" par réflexe et continue de dresser : personne ici
+n'a jamais eu à apprendre ce qu'on fait de cette information.
+
+Le plat sera donc dressé et envoyé. La requête, elle, va agréger jusqu'au bout
+les 200 000 contrats de l'année, garder sa connexion jusqu'au bout, puis
+écrire un résultat parfaitement correct dans une socket fermée depuis
+longtemps.
+
+Pendant ce temps, la table 12 vient de recommander la même chose. Pour la
+cuisine, c'est un couvert de plus.
+
+<Chapter marker="14 h 14" title="Le coup de feu" />
+
+Un rafraîchissement ajoute du travail. Il n'en retire jamais.
+
+Chaque utilisateur agacé double donc sa propre charge, ce qui ralentit la
+base, ce qui allonge l'attente des autres, qui rafraîchissent à leur tour. La
+lenteur est devenue son propre carburant.
+
+Le pool de connexions sature, et les requêtes suivantes renoncent au bout du
+`Connect Timeout` :
+
+```text
+System.InvalidOperationException: Timeout expired. The timeout period elapsed
+prior to obtaining a connection from the pool.
+```
+
+Et que fait un utilisateur devant une page d'erreur ? Il réessaie. L'échec
+lui-même s'est mis à produire de la charge.
+
+Les autres écrans tombent avec : une cuisine saturée ne sert plus personne,
+pas même ceux qui avaient commandé une salade.
+
+<RequestStorm mode="without" />
+
+<Chapter marker="14 h 23" title="La salle est vide" />
+
+Deux écrans posés côte à côte, et ils se contredisent. Le dashboard applicatif
+est calme : peu de requêtes servies par seconde, comme tous les jeudis à cette
+heure-là. La base, elle, est à 100 % de CPU. Les deux disent la vérité ; ils
+ne parlent simplement pas des mêmes clients.
+
+```text
+session_id  status     last_wait_type         elapsed_ms   command
+------------------------------------------------------------------
+    57      runnable   SOS_SCHEDULER_YIELD        28 400   SELECT
+    58      suspended  PAGEIOLATCH_SH             27 950   SELECT
+    61      runnable   SOS_SCHEDULER_YIELD        26 800   SELECT
+    64      suspended  PAGEIOLATCH_SH             26 100   SELECT
+    ...     (96 autres sessions, requête identique)
+```
+
+En face, il reste peut-être une douzaine d'humains devant leur écran. 100
+assiettes au passe, 12 clients en salle, et depuis quatorze minutes, ce que la
+cuisine entend crier sans y prêter attention, ce sont des annulations.
+
+Personne n'a déployé depuis trois semaines. La cause n'est pas une ligne
+écrite un peu vite : c'est un paramètre qui n'a jamais été écrit du tout.
+
+## En cuisine
+
+Redémarrage du pool applicatif, tout le monde se calme, l'écran retrouve ses
+neuf secondes. Reste la question : pourquoi personne n'a prévenu la cuisine ?
+
+Mauvaise question. La cuisine a été prévenue 100 fois.
+
+ASP.NET Core sait parfaitement que la table est partie. `HttpContext` expose
+un `CancellationToken` nommé `RequestAborted`, déclenché par Kestrel dès que
+la connexion est rompue. Mieux : ajoutez un paramètre `CancellationToken` à la
+signature de l'action, et le model binder le lie tout seul. Pas d'attribut,
+pas de configuration, et le même réflexe vaut pour les Razor Pages et les
+minimal APIs.
+
+L'aboyeur crie donc, gratuitement, à chaque déconnexion. Rien dans le code ne
+demande à l'entendre.
+
+Tout tient dans une surcharge de méthode : chaque appel asynchrone d'EF Core
+en a une qui accepte un token, et c'est l'argument qui manque.
+
+Sans token, EF Core attend que SQL Server ait fini. Avec, ADO.NET envoie un
+paquet *attention* : l'exécution est interrompue côté base, la connexion
+retourne au pool, et la méthode lève une `OperationCanceledException` qui
+remonte le pipeline sans rien casser, puisqu'il n'y a plus personne à qui
+répondre. Bruyante, en revanche : on verra plus bas quoi en faire.
+
+Et non, il n'y a rien à corriger dans la requête du premier chapitre. Il
+existe sûrement plus malin (précalculer, mettre en cache), comme il existe de
+meilleurs couteaux que celui de votre tiroir : aucun ne vous dispense
+d'entendre que la table est partie.
+
+Optimiser traite la lenteur, annuler traite l'emballement, et le second est le
+plus dangereux : il transforme un inconfort linéaire en panne exponentielle.
+Une cuisine ne s'effondre pas parce qu'elle cuisine trop lentement, mais parce
+qu'elle cuisine des plats que plus personne n'attend.
+
+## Le service à blanc
+
+Tout ce qui précède est une fiction, à un détail près : la manipulation qui
+suit prend cinq minutes, et vous pouvez la faire maintenant.
+
+Prenez la page la plus lente de votre application, celle dont tout le monde
+dit qu'elle est "un peu longue, mais bon, elle calcule". Lancez-la, fermez
+l'onglet sans attendre, puis regardez votre base :
+
+```text
+session_id  status     elapsed_ms   command
+--------------------------------------------
+    54      runnable         7 200   SELECT
+```
+
+Vous êtes parti depuis six secondes ; la requête, elle, est toujours là.
+
+Maintenant le vrai sujet : regardez votre supervision. Taux d'erreur, zéro.
+Alerte, aucune. Votre APM affiche une requête servie avec succès en neuf
+secondes, ce qui est exact, à ceci près que son destinataire était parti au
+bout de deux. Aucun tableau de bord ne fait la différence entre une assiette
+mangée et une assiette posée devant une chaise vide.
+
+Un oubli qui ne déclenche aucune alerte n'est pas un oubli sans conséquence :
+c'est un oubli sans témoin. Et il a raison presque tout le temps. Sur une
+action qui répond en 40 ms, oublier le token ne coûte rigoureusement rien : on
+écrit des dizaines de routes courtes, on n'est puni sur aucune, et l'habitude
+est prise bien avant qu'un écran ne soit devenu lent.
+
+On ne paie pas cet oubli là où on le commet, mais des années plus tard, sur un
+écran écrit par quelqu'un d'autre, avec exactement la même habitude.
+
+## Annuler la commande
+
+Deux modifications, sur une seule méthode :
+
+```csharp
+public async Task<IActionResult> Ranking(
+    int year,
+    CancellationToken cancellationToken)
+{
+    var start = new DateTime(year, 1, 1);
+    var end = start.AddYears(1);
+
+    var rows = await db.Contracts
+        .AsNoTracking()
+        .Where(c => c.CreatedAt >= start && c.CreatedAt < end)
+        .GroupBy(c => c.ClientId)
+        .OrderByDescending(g => g.Sum(c => c.Amount))
+        .Select(g => new ClientTotal(g.Key, g.Count(), g.Sum(c => c.Amount)))
+        .ToListAsync(cancellationToken);
+
+    return View(rows);
+}
+```
+
+Un paramètre dans la signature, un argument dans l'appel. Rien d'autre n'a
+bougé, et rien d'autre n'avait besoin de bouger. Quand l'utilisateur reclique
+sur *Afficher*, la requête précédente s'arrête pour de bon : la charge cesse
+de s'empiler, et le rafraîchissement redevient ce qu'il croyait être depuis le
+début, recommander plutôt que commander deux fois.
+
+<RequestStorm mode="with" />
+
+## Ce qu'annuler ne règle pas
+
+Quatre nuances, parce qu'un token distribué sans réflexion crée ses propres
+incidents.
+
+**Encore faut-il que le signal arrive.** Derrière un reverse proxy, vérifiez
+que la déconnexion client est propagée : Nginx le fait par défaut
+(`proxy_ignore_client_abort` est à `off`), mais les couches qui bufferisent la
+réponse avant de la relayer, certains CDN et répartiteurs de charge, lisent
+l'amont jusqu'au bout sans jamais remonter l'abandon.
+
+**Ce n'est pas un remplaçant du timeout.** Le token se déclenche quand
+l'utilisateur part : c'est le cri de l'aboyeur quand la 12 s'en va. Le client
+patient, lui, ne se lève jamais, et il faut un plafond que la patience humaine
+ne fixe pas. Le `CommandTimeout` de SqlClient en est un, trente secondes par
+défaut, mais notre jeudi montre sa limite : 100 requêtes de vingt-cinq
+secondes passent dessous sans le déclencher. Un plafond utile se taille à
+l'écran, et depuis .NET 8, il se pose sur la requête elle-même :
+
+```csharp
+builder.Services.AddRequestTimeouts();
+app.UseRequestTimeouts();
+
+[RequestTimeout(milliseconds: 15000)]  // sur l'action, rien d'autre à changer
+```
+
+Le middleware annule le token de la requête : le paramètre ajouté plus haut
+devient le plafond, par le même mécanisme qu'un onglet fermé.
+
+**Ce n'est pas fait pour les écritures.** En lecture, annuler est bénin : au
+pire on jette une assiette que personne n'aurait mangée. En écriture, c'est
+une décision métier, un onglet fermé après la validation ne demande pas
+d'annuler une commande déjà passée en caisse. Annulez librement
+les lectures ; au-delà du point de non-retour, `CancellationToken.None` se
+défend très bien.
+
+**Vos logs vont crier.** Le lendemain de la mise en production, votre taux
+d'erreur va grimper : des `TaskCanceledException` partout, la forme sous
+laquelle l'`OperationCanceledException` de tout à l'heure remonte le plus
+souvent. Filtrez-les sur l'annulation, pas sur le type. Une requête annulée
+n'est pas une erreur, c'est un succès : du travail que vous ne payez plus. EF
+Core émet même un événement dédié, `RelationalEventId.CommandCanceled`.
+Surtout, ne "corrigez" pas ça en retirant ce que vous venez d'ajouter.
+
+## Que ça n'arrive jamais
+
+Le correctif tient sur une méthode, mais il y a quatre-vingts autres méthodes
+dans votre application. Quatre garde-fous, du code vers l'écran :
+
+- **L'analyseur.** La règle `CA2016` signale un `CancellationToken` disponible
+  dans la portée et une méthode appelée sans lui. Livrée avec le SDK, en
+  simple suggestion ; promue en erreur, elle transforme un oubli en build
+  rouge :
+
+  ```text
+  # .editorconfig
+  dotnet_diagnostic.CA2016.severity = error
+  ```
+
+  Le premier passage sera bruyant : c'est la mesure de la dette. Un détail
+  l'éteint sans prévenir, en revanche : elle ne se déclenche que si le
+  `CancellationToken` est le **dernier** paramètre de la méthode.
+
+- **Le test de convention.** CA2016 attrape la non-propagation, jamais
+  l'absence : sans token dans la signature, il n'y a rien à propager, et notre
+  `Ranking(int year)` d'origine ne l'aurait jamais réveillée. Ce que l'action
+  oublie de demander, un test le réclame : parcourez vos points d'entrée par
+  réflexion, gardez les asynchrones, et exigez un `CancellationToken` en
+  dernier paramètre. En dernier, comme CA2016 : une seule signature à réparer
+  pour réveiller les deux garde-fous à la fois.
+
+  Pas de code ici, il ne ressemblerait pas au vôtre : contrôleurs, Razor
+  Pages, minimal APIs, classe de base maison, la liste de vos points d'entrée
+  est une convention d'équipe.
+
+- **Le plafond de couverts.** La ceinture de sécurité, celle qui tient le jour
+  où quelqu'un oublie tout le reste. Depuis .NET 7, le rate limiter est dans
+  le framework :
+
+  ```csharp
+  builder.Services.AddRateLimiter(options =>
+  {
+      options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+      options.AddConcurrencyLimiter("ranking", limiter =>
+      {
+          limiter.PermitLimit = 4;
+          limiter.QueueLimit = 8;
+      });
+  });
+
+  app.UseRateLimiter();
+
+  [EnableRateLimiting("ranking")]  // sans ça, la politique ne limite rien
+  ```
+
+  4 affichages simultanés au maximum, 8 en file, le reste refusé proprement,
+  en 429 plutôt que le 503 par défaut. Un écran coûteux ne peut plus consommer
+  toute l'application : il devient lent pour ses seuls utilisateurs. Un bon
+  maître d'hôtel refuse des couverts, et c'est l'essentiel de son métier.
+
+- **Le bouton désactivé.** Le moins cher des quatre, et le seul qui agit avant
+  la requête : grisez *Afficher* pendant le traitement. Ça ne change rien aux
+  effets d'un F5, mais ça en réduit le nombre.
+
+## Ce qu'il faut retenir
+
+<Takeaways>
+
+<Takeaway title="Un rafraîchissement ajoute du travail, il n'en retire jamais">
+
+Sans annulation, chaque utilisateur agacé double sa propre charge, et la
+lenteur devient son propre carburant.
+
+</Takeaway>
+
+<Takeaway title="Le token ne se paie pas là où on l'oublie">
+
+Sur une route à 40 ms, l'oublier ne coûte rien et n'alerte personne : le
+réflexe ne se prend donc jamais. La facture arrive sur le premier écran devenu
+lent.
+
+</Takeaway>
+
+<Takeaway title="Optimiser traite la lenteur, annuler traite l'emballement">
+
+Deux problèmes distincts. Corriger la requête sans propager le token, c'est
+traiter le symptôme et laisser le mécanisme en place.
+
+</Takeaway>
+
+<Takeaway title="Annuler librement en lecture, décider en écriture">
+
+Un onglet fermé n'est pas une demande d'annulation de commande. La vie d'une
+opération métier ne devrait jamais dépendre de celle d'une requête HTTP.
+
+</Takeaway>
+
+<Takeaway title="Un analyseur et un plafond valent mieux qu'une relecture">
+
+`CA2016` attrape la non-propagation, un test de convention l'absence, et un
+concurrency limiter couvre le jour où ni l'un ni l'autre n'aura suffi.
+
+</Takeaway>
+
+</Takeaways>
+
+<Epilogue title="Épilogue">
+
+Il faut rendre justice à l'utilisateur de cette histoire, parce que le jour où
+elle arrivera pour de bon, on lui reprochera beaucoup.
+
+Il n'aura rien fait de déraisonnable : il aura cliqué sur un bouton, il n'aura
+rien vu venir pendant vingt-cinq secondes, et il aura recommandé. C'est
+probablement le comportement humain le plus prévisible de toute
+l'informatique, si prévisible qu'il porte un nom dans la littérature des
+systèmes distribués : *retry storm*. On ne le cherche pas ici, parce qu'entre
+le bouton et la base il n'y a qu'une page MVC de trente lignes, et que trente
+lignes, ça n'a pas l'air d'un système distribué.
+
+C'en est un pourtant, et cet humain en fait partie, avec son propre timeout et
+sa propre politique de retry. Vingt-cinq secondes dépassent son timeout : ce
+n'est pas un bug de l'utilisateur, c'est une entrée que vous n'aviez pas
+modélisée.
+
+L'annulation ne rendra pas l'écran rapide, ce n'est pas son travail. Elle
+garantit seulement que votre lenteur reste de la lenteur au lieu de devenir
+une panne. Ce jeudi n'a pas encore eu lieu ; le jour où il aura lieu,
+l'aboyeur criera 100 fois que la table 12 est partie, et il aura raison
+100 fois.
+
+Il suffit d'ajouter le paramètre aujourd'hui, pendant que la cuisine est
+encore calme.
+
+</Epilogue>
