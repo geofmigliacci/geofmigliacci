@@ -14,7 +14,7 @@ const mockedUsePathname = vi.mocked(usePathname);
 
 /** Composition only: the crumb and the active-link rule are tested in their own files. */
 describe("SiteHeader", () => {
-  it("assembles the crumb, the section nav and the theme toggle", () => {
+  it("assembles the crumb, the section nav, the burger and the theme toggle", () => {
     mockedUsePathname.mockReturnValue("/");
     render(<SiteHeader />);
 
@@ -23,6 +23,9 @@ describe("SiteHeader", () => {
     ).toBeInTheDocument();
     expect(
       screen.getByRole("navigation", { name: "Navigation principale" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Ouvrir le menu" }),
     ).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: "Changer de thème" }),
@@ -40,9 +43,10 @@ describe("SiteHeader", () => {
       screen.queryByRole("button", { name: "Accueil" }),
     ).not.toBeInTheDocument();
     expect(
-      within(nav)
-        .getAllByRole("button")
-        .map((button) => button.textContent),
-    ).toEqual(["Blog", "À propos"]);
+      within(nav).getByRole("button", { name: "Blog" }),
+    ).toBeInTheDocument();
+    expect(
+      within(nav).getByRole("button", { name: "À propos" }),
+    ).toBeInTheDocument();
   });
 });

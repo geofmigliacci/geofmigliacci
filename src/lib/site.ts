@@ -18,6 +18,11 @@ export type SectionKey = keyof typeof SECTION_PATHS;
 
 export const SECTION_KEYS = Object.keys(SECTION_PATHS) as SectionKey[];
 
+export const HEADER_SECTIONS = [
+  "blog",
+  "about",
+] as const satisfies readonly SectionKey[];
+
 /** Bare address, for display. `person.email` needs the `mailto:` schema.org form. */
 export const contactEmail = "geoffrey.migliacci@gmail.com";
 

@@ -1,9 +1,10 @@
 import { useTranslations } from "next-intl";
 import { HeaderBreadcrumb } from "@/components/header-breadcrumb";
+import { HeaderMenu } from "@/components/header-menu";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { NavLink } from "@/components/nav-link";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { SECTION_PATHS } from "@/lib/site";
+import { HEADER_SECTIONS, SECTION_PATHS } from "@/lib/site";
 
 export function SiteHeader() {
   const t = useTranslations("nav");
@@ -14,15 +15,20 @@ export function SiteHeader() {
         <HeaderBreadcrumb />
         {/* `shrink-0` so the crumb, not the nav, absorbs a narrow viewport. */}
         <div className="flex shrink-0 items-center gap-2">
+          {/* The burger sits inside the landmark: a nav with only hidden children has no box. */}
           <nav aria-label={t("main")} className="flex items-center gap-2">
-            <NavLink href={SECTION_PATHS.blog}>
-              {t("sections.blog.name")}
-            </NavLink>
-            <NavLink href={SECTION_PATHS.about}>
-              {t("sections.about.name")}
-            </NavLink>
+            <div className="hidden items-center gap-2 sm:flex">
+              {HEADER_SECTIONS.map((key) => (
+                <NavLink key={key} href={SECTION_PATHS[key]}>
+                  {t(`sections.${key}.name`)}
+                </NavLink>
+              ))}
+            </div>
+            <HeaderMenu />
           </nav>
-          <LanguageSwitcher />
+          <div className="hidden sm:block">
+            <LanguageSwitcher />
+          </div>
           <ThemeToggle />
         </div>
       </div>
